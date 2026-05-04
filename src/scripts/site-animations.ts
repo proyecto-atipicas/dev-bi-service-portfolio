@@ -1,0 +1,198 @@
+import { animate, stagger } from 'animejs';
+
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Nav + textos con scroll: todas las páginas que usan Layout. */
+export function initNavAndTextAnimations(): void {
+  if (reducedMotion()) return;
+
+  const navItems = document.querySelectorAll('[data-animate-nav]');
+  if (navItems.length > 0) {
+    navItems.forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-14px)';
+    });
+    animate(Array.from(navItems), {
+      opacity: [0, 1],
+      y: [-14, 0],
+      duration: 550,
+      delay: stagger(80),
+      ease: 'outCubic',
+    });
+  }
+
+  const animatedText = document.querySelectorAll('[data-animate-text]');
+  if (animatedText.length === 0) return;
+
+  animatedText.forEach((el) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+  });
+
+  const textObserver = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const target = entry.target;
+        animate(target, {
+          opacity: [0, 1],
+          y: [20, 0],
+          duration: 780,
+          ease: 'outCubic',
+          onComplete: () => {
+            if (target instanceof HTMLElement) {
+              target.style.removeProperty('opacity');
+              target.style.removeProperty('transform');
+            }
+          },
+        });
+        obs.unobserve(target);
+      });
+    },
+    { threshold: 0.08, rootMargin: '0px 0px -4% 0px' }
+  );
+
+  animatedText.forEach((el) => textObserver.observe(el));
+}
+
+/** Bloques, grid de servicios y videos: solo home. */
+export function initHomePageEffects(): void {
+  document.querySelectorAll('[data-service-preview]').forEach((el) => {
+    if (!(el instanceof HTMLVideoElement)) return;
+    el.loop = true;
+    el.addEventListener('ended', () => {
+      el.currentTime = 0;
+      void el.play();
+    });
+  });
+
+  if (reducedMotion()) return;
+
+  const fadeBlocks = document.querySelectorAll('[data-animate]');
+  fadeBlocks.forEach((el) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(22px)';
+  });
+
+  const staggerContainers = document.querySelectorAll('[data-stagger]');
+  staggerContainers.forEach((container) => {
+    container.style.opacity = '1';
+    container.style.transform = 'none';
+    Array.from(container.children).forEach((child) => {
+      child.style.opacity = '0';
+      child.style.transform = 'translateY(22px)';
+    });
+  });
+
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const target = entry.target;
+        if (target.hasAttribute('data-stagger')) {
+          const items = Array.from(target.children);
+          animate(items, {
+            opacity: [0, 1],
+            y: [22, 0],
+            duration: 580,
+            delay: stagger(90, { start: 0 }),
+            ease: 'outCubic',
+            onComplete: () => {
+              items.forEach((node) => {
+                if (node instanceof HTMLElement) {
+                  node.style.removeProperty('opacity');
+                  node.style.removeProperty('transform');
+                }
+              });
+            },
+          });
+        } else {
+          animate(target, {
+            opacity: [0, 1],
+            y: [22, 0],
+            duration: 620,
+            ease: 'outCubic',
+            onComplete: () => {
+              if (target instanceof HTMLElement) {
+                target.style.removeProperty('opacity');
+                target.style.removeProperty('transform');
+              }
+            },
+          });
+        }
+        obs.unobserve(target);
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  fadeBlocks.forEach((block) => observer.observe(block));
+  staggerContainers.forEach((block) => observer.observe(block));
+
+  const serviceCards = document.querySelectorAll('[data-service-card]');
+  const cardObserver = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const card = entry.target;
+        const media = card.querySelector('.service-media');
+        if (media instanceof HTMLElement) {
+          media.style.opacity = '0.55';
+          media.style.transform = 'scale(1.08)';
+          animate(media, {
+            opacity: [0.55, 1],
+            scale: [1.08, 1],
+            duration: 900,
+            ease: 'outCubic',
+            onComplete: () => {
+              media.style.removeProperty('opacity');
+              media.style.removeProperty('transform');
+            },
+          });
+        }
+        obs.unobserve(card);
+      });
+    },
+    { threshold: 0.2 }
+  );
+  serviceCards.forEach((card) => cardObserver.observe(card));
+}
+
+/**
+ * Slider horizontal de palabras clave (home, sección contacto):
+ * desplazamiento continuo + flechas; bucle con dos copias del contenido.
+ */
+export function initContactKeywordSlider(): void {
+  const scroller = document.getElementById('contact-tags-slider');
+  if (!scroller || !(scroller instanceof HTMLElement)) return;
+
+  scroller.classList.add('scrollbar-none');
+
+  const halfWidth = () => scroller.scrollWidth / 2;
+
+  let running = false;
+  const io = new IntersectionObserver(
+    (entries) => {
+      running = entries.some((e) => e.isIntersecting);
+    },
+    { threshold: 0.04, rootMargin: '40px 0px' }
+  );
+  io.observe(scroller);
+
+  const speed = reducedMotion() ? 0 : 0.48;
+
+  const tick = (): void => {
+    if (!document.hidden && running && speed > 0) {
+      scroller.scrollLeft += speed;
+      const half = halfWidth();
+      if (half > 0 && scroller.scrollLeft >= half - 0.5) {
+        scroller.scrollLeft -= half;
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+
+  if (speed > 0) {
+    requestAnimationFrame(tick);
+  }
+}

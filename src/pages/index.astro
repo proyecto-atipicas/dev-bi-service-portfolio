@@ -1,11 +1,369 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const currentYear = new Date().getFullYear();
+
+const contactMarqueeTags = [
+  'Tableros de control',
+  'Análisis electoral',
+  'Automatización',
+  'Desarrollo a la medida orientado a los datos',
+  'Estructuración de bases de datos',
+];
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Servicios internos de Business Intelligence"
+  description="Portafolio interno del area de Business Intelligence: automatizacion, reporteria, desarrollo a la medida en datos y estructuracion de bases con sincronizacion."
+>
+  <main class="bg-white text-slate-900">
+    <section class="hero-visual relative isolate min-h-[calc(100vh-73px)] overflow-hidden" data-animate>
+      <video
+        src="/hero.mp4"
+        poster="/portada.png"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-label="Animacion de servicios internos de Business Intelligence"
+        class="absolute inset-0 -z-20 h-full w-full object-cover"
+      ></video>
+    </section>
+
+    <section
+      id="servicios"
+      class="relative scroll-mt-20 bg-slate-950 py-16 text-slate-100 md:py-24"
+      aria-labelledby="servicios-heading"
+      data-animate
+    >
+      <div
+        class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(59,130,246,0.14),transparent_55%)]"
+        aria-hidden="true"
+      ></div>
+      <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" aria-hidden="true"></div>
+
+      <div class="relative mx-auto w-[92%] max-w-7xl">
+        <header class="mb-12 max-w-3xl md:mb-16">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400" data-animate-text>Lineas de servicio</p>
+          <h2
+            id="servicios-heading"
+            class="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl"
+            data-animate-text
+          >
+            Servicios del area de Business Intelligence
+          </h2>
+          <p class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg" data-animate-text>
+            Cuatro frentes de trabajo con entregables claros: cada tarjeta resume el valor, el alcance y el enlace al detalle
+            operativo. Asi priorizamos escaneo rapido, comparacion entre lineas y siguiente paso evidente.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6" data-stagger>
+          <article
+            data-service-card
+            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
+          >
+            <div class="relative aspect-video overflow-hidden bg-slate-950">
+              <div
+                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
+                aria-hidden="true"
+              ></div>
+              <video
+                id="servicio-automatizacion-preview"
+                data-service-preview
+                src="/servicio-automatizacion.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                aria-label="Vista previa del servicio de automatizacion para BI"
+                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              ></video>
+            </div>
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
+              <div class="flex items-baseline gap-2">
+                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">01</span>
+                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
+              </div>
+              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl" data-animate-text>
+                Automatizacion
+              </h3>
+              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
+                Automatizacion de captura, procesamiento y monitoreo de informacion para BI. Cubrimos ingesta asistida
+                (bots, visores, apps), transformacion y validacion del dato, orquestacion con flujos como n8n y
+                monitoreo de KPIs y alertas ligado a las capas analiticas del area para datos oportunos y trazables.
+              </p>
+              <a
+                href="/servicio/automatizacion"
+                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+              >
+                Ver detalle
+                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article
+            data-service-card
+            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
+          >
+            <div class="relative aspect-video overflow-hidden bg-slate-950">
+              <div
+                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
+                aria-hidden="true"
+              ></div>
+              <video
+                id="servicio-reporteria-preview"
+                data-service-preview
+                src="/servicio-reporteria.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                aria-label="Vista previa del servicio de reporteria"
+                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              ></video>
+            </div>
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
+              <div class="flex items-baseline gap-2">
+                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">02</span>
+                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
+              </div>
+              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl" data-animate-text>Reporteria</h3>
+              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
+                Reporteria para consumo interno: catalogos de reportes y extractos, metricas versionadas frente a fuentes
+                oficiales, entregas programadas y suscripciones, y formatos homogeneos para cifras auditables y menos
+                solicitudes repetitivas.
+              </p>
+              <a
+                href="/servicio/reporteria"
+                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+              >
+                Ver detalle
+                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article
+            data-service-card
+            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
+          >
+            <div class="relative aspect-video overflow-hidden bg-slate-950">
+              <div
+                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
+                aria-hidden="true"
+              ></div>
+              <video
+                id="servicio-desarrollo-preview"
+                data-service-preview
+                src="/servicio-desarrollo.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                aria-label="Vista previa del servicio de desarrollo a la medida enfocado a los datos"
+                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              ></video>
+            </div>
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
+              <div class="flex items-baseline gap-2">
+                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">03</span>
+                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
+              </div>
+              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-[1.125rem]" data-animate-text>
+                Desarrollo a la medida enfocado a los datos
+              </h3>
+              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
+                Desarrollo a la medida sobre datos: APIs y servicios con reglas de negocio, integraciones con contratos
+                claros, componentes reutilizables para validar y enriquecer, y observabilidad para desplegar con confianza
+                y acelerar el analisis.
+              </p>
+              <a
+                href="/servicio/desarrollo-medida-datos"
+                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+              >
+                Ver detalle
+                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article
+            data-service-card
+            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
+          >
+            <div class="relative aspect-video overflow-hidden bg-slate-950">
+              <div
+                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
+                aria-hidden="true"
+              ></div>
+              <video
+                id="servicio-basesdatos-preview"
+                data-service-preview
+                src="/servicio-basesdatos.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="auto"
+                aria-label="Vista previa del servicio de estructuracion de bases de datos y sincronizacion"
+                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              ></video>
+            </div>
+            <div class="flex flex-1 flex-col p-5 sm:p-6">
+              <div class="flex items-baseline gap-2">
+                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">04</span>
+                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
+              </div>
+              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-[1.125rem]" data-animate-text>
+                Estructuracion de bases de datos y sincronizacion
+              </h3>
+              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
+                Modelo logico y fisico de bases de datos, migraciones con impacto controlado en reportes y apps, y
+                sincronizacion entre sistemas con cargas incrementales, deduplicacion, reintentos y chequeos de
+                consistencia entre entornos.
+              </p>
+              <a
+                href="/servicio/estructuracion-bases-sincronizacion"
+                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+              >
+                Ver detalle
+                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="contacto"
+      class="relative scroll-mt-20 overflow-x-hidden border-t border-slate-200 bg-white pb-16 pt-10 text-slate-900 md:pb-20 md:pt-14"
+      data-animate
+    >
+      <div
+        class="relative left-1/2 mb-10 w-screen max-w-none -translate-x-1/2 border-b border-slate-100 bg-white px-4 py-3 sm:px-8 md:mb-12 md:py-4"
+        role="region"
+        aria-roledescription="carrusel"
+        aria-label="Palabras clave del área de Business Intelligence"
+      >
+        <div class="slider-fade-x relative min-h-[5.25rem] overflow-hidden sm:min-h-[5.5rem] md:min-h-[5.75rem]">
+          <div
+            id="contact-tags-slider"
+            class="flex h-full overflow-x-auto overscroll-x-contain py-1"
+            tabindex="0"
+          >
+            <div class="flex w-max shrink-0 items-stretch gap-4 sm:gap-5 md:gap-6">
+              {
+                [...contactMarqueeTags, ...contactMarqueeTags].map((label, i) => (
+                  <span
+                    class="inline-flex min-h-[4.5rem] w-[13.75rem] shrink-0 items-stretch gap-3 rounded-xl border border-slate-200/95 bg-white p-3 shadow-sm ring-1 ring-slate-950/[0.04] sm:min-h-[4.75rem] sm:w-[15rem] sm:gap-3.5 sm:p-3.5 md:min-h-[5rem] md:w-[16.5rem] md:p-4"
+                    aria-hidden={i >= contactMarqueeTags.length ? true : undefined}
+                  >
+                    <span
+                      class="w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-blue-500 to-blue-600/85"
+                      aria-hidden="true"
+                    />
+                    <span class="flex min-w-0 flex-1 items-center text-pretty text-[13px] font-medium leading-snug tracking-tight text-slate-800 sm:text-sm md:leading-snug">
+                      {label}
+                    </span>
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="galeria-herramientas"
+        class="relative mx-auto mb-12 w-[92%] max-w-7xl scroll-mt-20 md:mb-16"
+        role="region"
+        aria-labelledby="galeria-heading"
+        data-animate
+      >
+        <header class="mb-6 max-w-3xl md:mb-8">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600" data-animate-text>
+            Galería
+          </p>
+          <h2
+            id="galeria-heading"
+            class="mt-2 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
+            data-animate-text
+          >
+            Aplicaciones del área
+          </h2>
+          <p class="mt-3 text-pretty text-base leading-relaxed text-slate-600" data-animate-text>
+            Vista del conjunto de soluciones y herramientas disponibles para las áreas usuarias.
+          </p>
+        </header>
+
+        <figure
+          class="mx-auto max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm ring-1 ring-slate-950/[0.03] sm:max-w-lg md:max-w-xl"
+        >
+          <img
+            src="/herramientas/allapps.png"
+            alt="Vista general de aplicaciones y herramientas del área de Business Intelligence"
+            class="h-auto w-full object-contain object-center"
+            width="688"
+            height="684"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+
+      <div class="relative mx-auto flex w-[92%] max-w-7xl justify-center">
+        <div
+          class="w-full max-w-lg rounded-3xl border border-slate-200 bg-white px-8 py-10 text-center shadow-sm ring-1 ring-slate-900/[0.03] md:max-w-xl md:px-12 md:py-12"
+        >
+          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600" data-animate-text>
+            Mesa de trabajo
+          </p>
+          <h2
+            class="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-[1.75rem] md:leading-snug"
+            data-animate-text
+          >
+            Coordinamos requerimientos con el área de BI
+          </h2>
+          <p
+            class="mx-auto mt-5 max-w-md text-pretty text-[15px] leading-relaxed text-slate-600 md:max-w-[26rem] md:text-base md:leading-relaxed"
+            data-animate-text
+          >
+            Priorizamos iniciativas con cada área, acordamos alcance y entregables, y acompañamos la puesta en marcha
+            para que la operación se mantenga estable y la adopción sea efectiva en el día a día.
+          </p>
+          <a
+            href="mailto:john.rojas@linktic.com"
+            class="cta-header-attention relative mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/35 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
+            data-animate-text
+          >
+            Solicitar mesa de trabajo con BI
+            <span class="text-base leading-none opacity-90" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 py-8">
+    <div class="mx-auto w-[92%] max-w-7xl text-center text-sm text-slate-500">
+      <p data-animate-text>&copy; {currentYear} DataVision BI. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    import { initContactKeywordSlider, initHomePageEffects } from '../scripts/site-animations';
+    try {
+      initHomePageEffects();
+      initContactKeywordSlider();
+    } catch (e) {
+      console.error('[animaciones] Error en efectos de la home.', e);
+    }
+  </script>
 </Layout>

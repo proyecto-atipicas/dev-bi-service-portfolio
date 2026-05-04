@@ -9,9 +9,27 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "remotion:studio": "remotion studio src/remotion/index.ts",
+    "remotion:render": "remotion render src/remotion/index.ts TestVideo out/test-video.mp4",
+    "remotion:render:hero": "remotion render src/remotion/index.ts HeroVideo public/hero.mp4",
+    "remotion:render:automatizacion": "remotion render src/remotion/index.ts AutomatizacionVideo public/servicio-automatizacion.mp4",
+    "remotion:render:reporteria": "remotion render src/remotion/index.ts ReporteriaVideo public/servicio-reporteria.mp4",
+    "remotion:render:desarrollo": "remotion render src/remotion/index.ts DesarrolloVideo public/servicio-desarrollo.mp4",
+    "remotion:render:basesdatos": "remotion render src/remotion/index.ts BasesDatosVideo public/servicio-basesdatos.mp4"
   },
   "dependencies": {
-    "astro": "^6.1.10"
+    "@astrojs/react": "^5.0.4",
+    "@remotion/cli": "^4.0.457",
+    "@tailwindcss/vite": "^4.2.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "animejs": "^4.4.1",
+    "astro": "^6.1.10",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "remotion": "^4.0.457",
+    "tailwindcss": "^4.2.4",
+    "three": "^0.184.0"
   }
 }
