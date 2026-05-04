@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DataVision BI — Servicios internos de Business Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg: oklch(0.15 0.015 250);
+    --bg-2: oklch(0.19 0.018 250);
+    --bg-3: oklch(0.23 0.02 250);
+    --fg: oklch(0.96 0.005 250);
+    --fg-mute: oklch(0.72 0.012 250);
+    --fg-dim: oklch(0.52 0.012 250);
+    --line: oklch(0.32 0.018 250);
+    --line-2: oklch(0.26 0.018 250);
+    --acc: oklch(0.84 0.19 145);   /* electric lime */
+    --acc-2: oklch(0.78 0.16 70);  /* amber */
+    --acc-3: oklch(0.72 0.16 280); /* violet */
+    --serif: 'Instrument Serif', 'Times New Roman', serif;
+    --sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-feature-settings:"ss01","cv11"}
+  body{overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;
+    background:linear-gradient(to bottom, oklch(0.15 0.015 250 / 0.85), transparent);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;letter-spacing:0.02em}
+  .brand-mark{
+    width:22px;height:22px;position:relative;
+    transform-style:preserve-3d;animation:spin 18s linear infinite;
+  }
+  .brand-mark span{
+    position:absolute;inset:0;border:1.5px solid var(--acc);
+  }
+  .brand-mark span:nth-child(2){transform:rotateY(60deg)}
+  .brand-mark span:nth-child(3){transform:rotateY(120deg)}
+  @keyframes spin{to{transform:rotateY(360deg) rotateX(15deg)}}
+  .brand b{font-weight:600}
+  .brand em{font-style:normal;color:var(--fg-mute)}
+  .nav-links{display:flex;gap:28px;font-family:var(--mono);font-size:12px;color:var(--fg-mute)}
+  .nav-links a{position:relative;padding:6px 0;transition:color .2s}
+  .nav-links a:hover{color:var(--fg)}
+  .nav-links a::before{content:"";position:absolute;left:-10px;top:50%;width:3px;height:3px;background:var(--fg-dim);border-radius:50%;transform:translateY(-50%);opacity:0;transition:opacity .2s,background .2s}
+  .nav-links a:hover::before{opacity:1;background:var(--acc)}
+  .nav-cta{
+    font-family:var(--mono);font-size:12px;
+    border:1px solid var(--line);padding:8px 14px;border-radius:999px;
+    display:flex;align-items:center;gap:8px;transition:all .2s;
+  }
+  .nav-cta:hover{border-color:var(--acc);color:var(--acc)}
+  .pulse{width:6px;height:6px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 0 var(--acc);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 oklch(0.84 0.19 145 / 0.6)}70%{box-shadow:0 0 0 8px oklch(0.84 0.19 145 / 0)}100%{box-shadow:0 0 0 0 oklch(0.84 0.19 145 / 0)}}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;min-height:100vh;
+    padding:120px 32px 60px;
+    display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:end;
+    overflow:hidden;
+  }
+  #scene{position:absolute;inset:0;z-index:0}
+  .hero-grid-bg{
+    position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(to right, oklch(0.32 0.018 250 / 0.25) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.32 0.018 250 / 0.25) 1px, transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 80%);
+  }
+  .hero-vignette{
+    position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse 100% 60% at 50% 100%, oklch(0.15 0.015 250) 0%, transparent 60%);
+  }
+  .hero-content{position:relative;z-index:2;max-width:680px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.18em;
+    color:var(--fg-mute);
+    border:1px solid var(--line);padding:6px 12px;border-radius:999px;
+    background:oklch(0.19 0.018 250 / 0.5);backdrop-filter:blur(6px);
+    margin-bottom:32px;
+  }
+  .eyebrow b{color:var(--acc);font-weight:500}
+  h1.hero-title{
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(56px, 9vw, 132px);line-height:0.95;letter-spacing:-0.02em;
+    margin-bottom:28px;
+  }
+  h1.hero-title .it{font-style:italic;color:var(--acc)}
+  h1.hero-title .stack{display:block}
+  h1.hero-title .small{font-size:0.42em;font-style:italic;color:var(--fg-mute);letter-spacing:0;display:block;margin-top:8px;font-family:var(--serif)}
+  .hero-lede{
+    font-size:17px;line-height:1.55;color:var(--fg-mute);max-width:520px;
+    margin-bottom:36px;text-wrap:pretty;
+  }
+  .hero-lede b{color:var(--fg);font-weight:500}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:14px 22px;border-radius:999px;
+    font-family:var(--mono);font-size:13px;letter-spacing:0.02em;
+    transition:all .25s cubic-bezier(.2,.8,.2,1);
+    position:relative;
+  }
+  .btn-primary{background:var(--acc);color:oklch(0.16 0.05 145);font-weight:500}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px -8px oklch(0.84 0.19 145 / 0.4)}
+  .btn-ghost{border:1px solid var(--line);color:var(--fg)}
+  .btn-ghost:hover{border-color:var(--fg);background:oklch(0.23 0.02 250 / 0.5)}
+  .btn .arr{transition:transform .25s}
+  .btn:hover .arr{transform:translateX(3px)}
+
+  /* live readout panel in hero right */
+  .hero-meter{
+    position:relative;z-index:2;
+    align-self:end;justify-self:end;
+    width:100%;max-width:440px;
+    border:1px solid var(--line);
+    background:oklch(0.19 0.018 250 / 0.6);
+    backdrop-filter:blur(10px);
+    padding:20px;
+    font-family:var(--mono);font-size:11px;
+    color:var(--fg-mute);
+  }
+  .hero-meter::before,.hero-meter::after{content:"";position:absolute;width:8px;height:8px;border:1px solid var(--acc)}
+  .hero-meter::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+  .hero-meter::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+  .meter-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--line-2)}
+  .meter-head .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc);margin-right:6px;animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.3}}
+  .meter-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed oklch(0.26 0.018 250 / 0.5)}
+  .meter-row:last-child{border-bottom:none}
+  .meter-row .k{color:var(--fg-mute)}
+  .meter-row .v{color:var(--fg);font-variant-numeric:tabular-nums}
+  .meter-row .v b{color:var(--acc);font-weight:500}
+  .bar{display:inline-block;width:60px;height:6px;background:oklch(0.26 0.018 250);position:relative;margin-right:8px;vertical-align:middle}
+  .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--acc);transition:width .4s ease}
+
+  /* scroll cue */
+  .scroll-cue{
+    position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+    z-index:3;
+    font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.2em;color:var(--fg-dim);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .scroll-cue .line{width:1px;height:40px;background:linear-gradient(to bottom, var(--fg-dim), transparent);position:relative;overflow:hidden}
+  .scroll-cue .line::after{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:var(--acc);animation:slide 1.8s ease-in-out infinite}
+  @keyframes slide{0%{top:-12px}100%{top:40px}}
+
+  /* ---------- TICKER ---------- */
+  .ticker{
+    position:relative;z-index:5;
+    border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2);
+    padding:16px 0;overflow:hidden;
+    background:oklch(0.13 0.015 250);
+    font-family:var(--mono);font-size:13px;color:var(--fg-mute);
+  }
+  .ticker-track{display:flex;gap:48px;width:max-content;animation:tick 40s linear infinite}
+  .ticker-track span{display:inline-flex;align-items:center;gap:14px;white-space:nowrap}
+  .ticker-track i{display:inline-block;width:5px;height:5px;background:var(--acc);transform:rotate(45deg);font-style:normal}
+  .ticker-track b{color:var(--fg);font-weight:400}
+  @keyframes tick{to{transform:translateX(-50%)}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{position:relative;padding:120px 32px}
+  .container{max-width:1320px;margin:0 auto;position:relative;z-index:2}
+  .section-head{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:end;margin-bottom:64px;border-bottom:1px solid var(--line-2);padding-bottom:28px}
+  .section-num{font-family:var(--mono);font-size:11px;color:var(--fg-dim);letter-spacing:0.18em;text-transform:uppercase;writing-mode:vertical-rl;transform:rotate(180deg);align-self:start;padding-top:8px}
+  .section-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6vw,84px);line-height:0.98;letter-spacing:-0.015em;max-width:980px}
+  .section-head h2 .it{font-style:italic;color:var(--acc)}
+  .section-sub{font-family:var(--mono);font-size:12px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:0.18em;margin-bottom:20px}
+
+  /* ---------- PRINCIPLES (4 col) ---------- */
+  .principles-intro{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:80px;align-items:start}
+  .principles-intro p{font-size:18px;line-height:1.55;color:var(--fg-mute);text-wrap:pretty;max-width:560px}
+  .principles-intro p b{color:var(--fg);font-weight:500}
+  .principles{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+  .principle{
+    padding:32px 24px 28px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    position:relative;
+    transition:background .3s;
+  }
+  .principle:last-child{border-right:none}
+  .principle:hover{background:oklch(0.19 0.018 250 / 0.6)}
+  .principle .num{font-family:var(--mono);font-size:11px;color:var(--fg-dim);margin-bottom:48px;display:flex;justify-content:space-between}
+  .principle .num b{color:var(--acc);font-weight:500}
+  .principle h3{font-family:var(--serif);font-size:32px;font-weight:400;letter-spacing:-0.01em;margin-bottom:14px}
+  .principle h3 em{font-style:italic;color:var(--acc)}
+  .principle p{font-size:14px;line-height:1.55;color:var(--fg-mute);text-wrap:pretty}
+  .principle .glyph{
+    position:absolute;top:24px;right:24px;width:42px;height:42px;
+    border:1px solid var(--line-2);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .3s;
+  }
+  .principle:hover .glyph{border-color:var(--acc);transform:rotate(45deg)}
+  .principle .glyph svg{width:18px;height:18px;color:var(--fg-mute);transition:color .3s}
+  .principle:hover .glyph svg{color:var(--acc)}
+
+  /* ---------- SERVICES (3D cards) ---------- */
+  .services-wrap{position:relative}
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1800px}
+  .svc-card{
+    position:relative;
+    background:linear-gradient(180deg, oklch(0.21 0.02 250) 0%, oklch(0.17 0.018 250) 100%);
+    border:1px solid var(--line);
+    padding:0;
+    transform-style:preserve-3d;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .25s;
+    cursor:default;
+    overflow:hidden;
+    min-height:560px;
+    display:flex;flex-direction:column;
+  }
+  .svc-card:hover{border-color:var(--acc)}
+  .svc-card .card-top{
+    height:240px;position:relative;overflow:hidden;
+    background:oklch(0.13 0.015 250);
+    border-bottom:1px solid var(--line);
+  }
+  .svc-card canvas{position:absolute;inset:0;width:100%;height:100%}
+  .svc-card .card-tag{
+    position:absolute;top:14px;left:14px;
+    font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.16em;
+    color:var(--fg-mute);
+    background:oklch(0.13 0.015 250 / 0.7);
+    padding:5px 9px;border:1px solid var(--line-2);
+    z-index:2;
+  }
+  .svc-card .card-tag b{color:var(--acc);font-weight:500;margin-right:6px}
+  .svc-card .card-id{
+    position:absolute;top:14px;right:14px;
+    font-family:var(--mono);font-size:10px;color:var(--fg-dim);z-index:2;
+  }
+  .svc-card .card-body{padding:28px 26px 26px;flex:1;display:flex;flex-direction:column}
+  .svc-card h3{
+    font-family:var(--serif);font-weight:400;font-size:36px;line-height:1;
+    letter-spacing:-0.012em;margin-bottom:14px;
+  }
+  .svc-card h3 em{font-style:italic;color:var(--acc)}
+  .svc-card p{font-size:14.5px;line-height:1.55;color:var(--fg-mute);margin-bottom:22px;text-wrap:pretty}
+  .svc-feat{
+    margin-top:auto;border-top:1px dashed var(--line-2);padding-top:18px;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .svc-feat .row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px}
+  .svc-feat .row .k{color:var(--fg-dim);text-transform:uppercase;letter-spacing:0.12em}
+  .svc-feat .row .v{color:var(--fg);font-variant-numeric:tabular-nums}
+  .svc-feat .row .v b{color:var(--acc);font-weight:500}
+  .svc-link{
+    display:inline-flex;align-items:center;gap:8px;
+    margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--fg);
+    border-top:1px solid var(--line);padding-top:18px;
+    transition:color .2s;
+  }
+  .svc-card:hover .svc-link{color:var(--acc)}
+  .svc-link .arr{transition:transform .2s}
+  .svc-card:hover .svc-link .arr{transform:translateX(4px)}
+
+  /* ---------- METHOD (3D cube + steps) ---------- */
+  .method{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+  .method-vis{position:relative;height:560px;display:flex;align-items:center;justify-content:center}
+  #method-canvas{width:100%;height:100%}
+  .method-steps{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+  .step{
+    padding:24px 0;border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;
+    cursor:pointer;transition:padding .25s;
+    position:relative;
+  }
+  .step:hover{padding-left:14px}
+  .step::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--acc);transition:width .25s;
+  }
+  .step:hover::before,.step.active::before{width:3px}
+  .step .step-num{font-family:var(--mono);font-size:11px;color:var(--fg-dim);letter-spacing:0.12em}
+  .step.active .step-num,.step:hover .step-num{color:var(--acc)}
+  .step h4{font-family:var(--serif);font-size:28px;font-weight:400;letter-spacing:-0.01em}
+  .step h4 em{font-style:italic}
+  .step p{display:none}
+  .step .step-arr{font-family:var(--mono);font-size:14px;color:var(--fg-dim);transition:transform .25s,color .25s}
+  .step:hover .step-arr,.step.active .step-arr{color:var(--acc);transform:rotate(45deg)}
+
+  /* ---------- CTA ---------- */
+  .cta-section{
+    position:relative;padding:140px 32px;overflow:hidden;
+    border-top:1px solid var(--line);
+  }
+  .cta-bg{
+    position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 100%, oklch(0.84 0.19 145 / 0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 80% 0%, oklch(0.78 0.16 70 / 0.08) 0%, transparent 60%);
+  }
+  .cta-grid{
+    position:absolute;inset:0;z-index:0;
+    background-image:
+      linear-gradient(to right, oklch(0.32 0.018 250 / 0.3) 1px, transparent 1px),
+      linear-gradient(to bottom, oklch(0.32 0.018 250 / 0.3) 1px, transparent 1px);
+    background-size:80px 80px;
+    mask-image:radial-gradient(ellipse 70% 70% at 50% 50%, #000 30%, transparent 75%);
+  }
+  .cta-inner{position:relative;z-index:2;max-width:1320px;margin:0 auto;text-align:center}
+  .cta-inner h2{font-family:var(--serif);font-weight:400;font-size:clamp(56px,8vw,128px);line-height:0.95;letter-spacing:-0.02em;margin-bottom:28px}
+  .cta-inner h2 em{font-style:italic;color:var(--acc)}
+  .cta-inner p{font-size:18px;line-height:1.55;color:var(--fg-mute);max-width:620px;margin:0 auto 40px;text-wrap:pretty}
+  .cta-card{
+    margin-top:80px;
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border:1px solid var(--line);
+    background:oklch(0.17 0.018 250 / 0.6);
+    backdrop-filter:blur(8px);
+  }
+  .cta-stat{padding:28px 24px;text-align:left;border-right:1px solid var(--line)}
+  .cta-stat:last-child{border-right:none}
+  .cta-stat .k{font-family:var(--mono);font-size:11px;color:var(--fg-dim);text-transform:uppercase;letter-spacing:0.16em;margin-bottom:14px}
+  .cta-stat .v{font-family:var(--serif);font-size:54px;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+  .cta-stat .v em{font-style:italic;color:var(--acc)}
+  .cta-stat .desc{font-size:13px;color:var(--fg-mute);margin-top:8px;line-height:1.5}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:48px 32px 32px;border-top:1px solid var(--line);background:oklch(0.13 0.015 250)}
+  .foot{max-width:1320px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;color:var(--fg-dim);flex-wrap:wrap;gap:20px}
+  .foot b{color:var(--fg);font-weight:500}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 980px){
+    .hero{grid-template-columns:1fr;padding:110px 20px 60px}
+    .hero-meter{justify-self:start;max-width:100%}
+    .principles-intro{grid-template-columns:1fr;gap:24px}
+    .principles{grid-template-columns:repeat(2,1fr)}
+    .principle:nth-child(2){border-right:none}
+    .services{grid-template-columns:1fr}
+    .svc-card{min-height:auto}
+    .method{grid-template-columns:1fr;gap:40px}
+    .method-vis{height:380px}
+    .cta-card{grid-template-columns:1fr}
+    .cta-stat{border-right:none;border-bottom:1px solid var(--line)}
+    .cta-stat:last-child{border-bottom:none}
+    .nav-links{display:none}
+    section{padding:80px 20px}
+    .section-head{grid-template-columns:1fr}
+    .section-num{writing-mode:horizontal-tb;transform:none}
+  }
+
+  /* selection */
+  ::selection{background:var(--acc);color:oklch(0.16 0.05 145)}
+
+  /* scrollbar */
+  html{scrollbar-color:var(--line) var(--bg);scrollbar-width:thin}
+</style>
+</head>
+<body>
+
+<!-- ======================== NAV ======================== -->
+<nav class="nav">
+  <div class="brand">
+    <div class="brand-mark"><span></span><span></span><span></span></div>
+    <span><b>DataVision</b> <em>· BI</em></span>
+  </div>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#principios">Método</a>
+    <a href="#contacto">Mesa de trabajo</a>
+    <a href="#contacto">Estado del área</a>
+  </div>
+  <a href="#contacto" class="nav-cta">
+    <span class="pulse"></span>
+    <span>Área operativa</span>
+  </a>
+</nav>
+
+<!-- ======================== HERO ======================== -->
+<header class="hero">
+  <canvas id="scene"></canvas>
+  <div class="hero-grid-bg"></div>
+  <div class="hero-vignette"></div>
+
+  <div class="hero-content">
+    <div class="eyebrow">
+      <span class="pulse"></span>
+      <span><b>BI · v4.2</b> · Servicios internos activos</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="stack">Datos que</span>
+      <span class="stack"><span class="it">deciden</span> por</span>
+      <span class="stack">la organización.</span>
+    </h1>
+    <p class="hero-lede">
+      El área de Business Intelligence presta <b>servicios especializados</b> que combinan automatización, analítica avanzada y visualización para convertir datos en <b>decisiones informadas</b>, con una experiencia clara para cada tipo de usuario interno.
+    </p>
+    <div class="cta-row">
+      <a href="#servicios" class="btn btn-primary">
+        <span>Conocer servicios</span>
+        <span class="arr">→</span>
+      </a>
+      <a href="#contacto" class="btn btn-ghost">
+        <span>Solicitar apoyo interno</span>
+        <span class="arr">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <aside class="hero-meter" aria-hidden="true">
+    <div class="meter-head">
+      <span><span class="dot"></span>BI · LIVE STREAM</span>
+      <span id="clock">00:00:00</span>
+    </div>
+    <div class="meter-row">
+      <span class="k">Pipelines activos</span>
+      <span class="v"><span class="bar"><i id="b1"></i></span><b id="v1">42</b> / 50</span>
+    </div>
+    <div class="meter-row">
+      <span class="k">Tableros publicados</span>
+      <span class="v"><span class="bar"><i id="b2"></i></span><b id="v2">128</b></span>
+    </div>
+    <div class="meter-row">
+      <span class="k">Latencia ETL</span>
+      <span class="v"><span class="bar"><i id="b3"></i></span><b id="v3">1.2</b>s</span>
+    </div>
+    <div class="meter-row">
+      <span class="k">Solicitudes en curso</span>
+      <span class="v"><span class="bar"><i id="b4"></i></span><b id="v4">7</b> áreas</span>
+    </div>
+  </aside>
+
+  <div class="scroll-cue">
+    <span>scroll</span>
+    <span class="line"></span>
+  </div>
+</header>
+
+<!-- ======================== TICKER ======================== -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <!-- duplicated for seamless loop -->
+    <span><i></i><b>Automatización</b> de captura y monitoreo</span>
+    <span><i></i><b>Analítica electoral</b> con fuentes especializadas</span>
+    <span><i></i><b>Tableros</b> Power BI a medida</span>
+    <span><i></i><b>Mesa de trabajo</b> BI interna</span>
+    <span><i></i>Trazabilidad <b>extremo a extremo</b></span>
+    <span><i></i>Adopción y <b>continuidad operativa</b></span>
+    <span><i></i><b>Automatización</b> de captura y monitoreo</span>
+    <span><i></i><b>Analítica electoral</b> con fuentes especializadas</span>
+    <span><i></i><b>Tableros</b> Power BI a medida</span>
+    <span><i></i><b>Mesa de trabajo</b> BI interna</span>
+    <span><i></i>Trazabilidad <b>extremo a extremo</b></span>
+    <span><i></i>Adopción y <b>continuidad operativa</b></span>
+  </div>
+</div>
+
+<!-- ======================== PRINCIPIOS ======================== -->
+<section id="principios">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">01 / Estructura</span>
+      <h2>Una experiencia diseñada para <span class="it">decidir</span>, no solo para mirar.</h2>
+    </div>
+
+    <div class="principles-intro">
+      <div>
+        <div class="section-sub">Lógica UI/UX · Jerarquía informativa</div>
+        <p>La landing sigue un recorrido por bloques funcionales: <b>contexto, servicios, casos de uso, método y llamado a la acción</b>. Cada nivel responde a una pregunta concreta del usuario interno.</p>
+      </div>
+      <div>
+        <div class="section-sub">Cuatro principios operativos</div>
+        <p>Orientan tanto la página como el modo de trabajo del área de BI con cada equipo solicitante.</p>
+      </div>
+    </div>
+
+    <div class="principles">
+      <article class="principle">
+        <div class="num"><span>01</span><b>Claridad</b></div>
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></div>
+        <h3><em>Claridad</em></h3>
+        <p>Contenido escaneable por bloques funcionales. Cada sección tiene una sola intención y un solo paso siguiente.</p>
+      </article>
+      <article class="principle">
+        <div class="num"><span>02</span><b>Relevancia</b></div>
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg></div>
+        <h3><em>Relevancia</em></h3>
+        <p>Información alineada a las necesidades reales de las áreas internas que solicitan analítica y automatización.</p>
+      </article>
+      <article class="principle">
+        <div class="num"><span>03</span><b>Confianza</b></div>
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3><em>Confianza</em></h3>
+        <p>Énfasis en trazabilidad y seguridad de datos en todo el ciclo: origen, transformación, consumo y bitácora.</p>
+      </article>
+      <article class="principle">
+        <div class="num"><span>04</span><b>Acción</b></div>
+        <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></div>
+        <h3><em>Acción</em></h3>
+        <p>Solicitudes claras para la gestión interna de requerimientos, sin pasos intermedios innecesarios.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SERVICIOS ======================== -->
+<section id="servicios" style="background:linear-gradient(180deg, var(--bg) 0%, oklch(0.13 0.015 250) 100%)">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">02 / Servicios</span>
+      <h2>Tres frentes que el área de BI <span class="it">opera</span> de forma continua.</h2>
+    </div>
+
+    <div class="services-wrap">
+      <div class="services">
+
+        <article class="svc-card" data-svc="auto">
+          <div class="card-top">
+            <canvas data-vis="flow"></canvas>
+            <div class="card-tag"><b>01</b>Automatización</div>
+            <div class="card-id">SVC-AUTO-01</div>
+          </div>
+          <div class="card-body">
+            <h3>Automatización <em>operativa</em></h3>
+            <p>Automatización de captura, procesamiento y monitoreo de información para Business Intelligence. Reducción del trabajo manual y datos siempre disponibles.</p>
+            <div class="svc-feat">
+              <div class="row"><span class="k">Procesos automatizados</span><span class="v"><b>+ 60</b></span></div>
+              <div class="row"><span class="k">Frecuencia mínima</span><span class="v">15 min</span></div>
+              <div class="row"><span class="k">Casos en producción</span><span class="v">12 áreas</span></div>
+            </div>
+            <a href="#contacto" class="svc-link"><span>Ver casos de éxito</span><span class="arr">→</span></a>
+          </div>
+        </article>
+
+        <article class="svc-card" data-svc="electoral">
+          <div class="card-top">
+            <canvas data-vis="globe"></canvas>
+            <div class="card-tag"><b>02</b>Analítica electoral</div>
+            <div class="card-id">SVC-ELEC-02</div>
+          </div>
+          <div class="card-body">
+            <h3>Analítica <em>electoral</em></h3>
+            <p>Análisis de contexto electoral con fuentes especializadas y encuestas nacionales. Lectura de tendencias, geografías y segmentos para decisiones estratégicas.</p>
+            <div class="svc-feat">
+              <div class="row"><span class="k">Fuentes integradas</span><span class="v"><b>24</b></span></div>
+              <div class="row"><span class="k">Cobertura territorial</span><span class="v">Nacional</span></div>
+              <div class="row"><span class="k">Reportes activos</span><span class="v">Mensual / ad-hoc</span></div>
+            </div>
+            <a href="#contacto" class="svc-link"><span>Ver capacidades</span><span class="arr">→</span></a>
+          </div>
+        </article>
+
+        <article class="svc-card" data-svc="dash">
+          <div class="card-top">
+            <canvas data-vis="bars"></canvas>
+            <div class="card-tag"><b>03</b>Tableros &amp; Desarrollo</div>
+            <div class="card-id">SVC-DASH-03</div>
+          </div>
+          <div class="card-body">
+            <h3>Tableros <em>a medida</em></h3>
+            <p>Power BI y desarrollo a medida para convertir datos en activos estratégicos. Tableros gobernados, KPIs vivos y consumo según el rol de cada usuario.</p>
+            <div class="svc-feat">
+              <div class="row"><span class="k">Tableros publicados</span><span class="v"><b>128</b></span></div>
+              <div class="row"><span class="k">Usuarios atendidos</span><span class="v">+ 800</span></div>
+              <div class="row"><span class="k">Stack</span><span class="v">Power BI / SQL</span></div>
+            </div>
+            <a href="#contacto" class="svc-link"><span>Ver tableros</span><span class="arr">→</span></a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== METODO ======================== -->
+<section id="metodo">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-num">03 / Método</span>
+      <h2>Coordinamos <span class="it">requerimientos</span> con cada área interna.</h2>
+    </div>
+
+    <div class="method">
+      <div class="method-vis">
+        <canvas id="method-canvas"></canvas>
+      </div>
+
+      <div class="method-steps">
+        <div class="step active" data-step="0">
+          <span class="step-num">01</span>
+          <h4>Levantamos la <em>necesidad</em> con tu equipo</h4>
+          <span class="step-arr">↗</span>
+        </div>
+        <div class="step" data-step="1">
+          <span class="step-num">02</span>
+          <h4>Priorizamos contra otras <em>iniciativas</em></h4>
+          <span class="step-arr">↗</span>
+        </div>
+        <div class="step" data-step="2">
+          <span class="step-num">03</span>
+          <h4>Definimos <em>alcance</em> y entregables</h4>
+          <span class="step-arr">↗</span>
+        </div>
+        <div class="step" data-step="3">
+          <span class="step-num">04</span>
+          <h4>Implementamos con <em>trazabilidad</em></h4>
+          <span class="step-arr">↗</span>
+        </div>
+        <div class="step" data-step="4">
+          <span class="step-num">05</span>
+          <h4>Acompañamos la <em>adopción</em> interna</h4>
+          <span class="step-arr">↗</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CTA ======================== -->
+<section id="contacto" class="cta-section">
+  <div class="cta-grid"></div>
+  <div class="cta-bg"></div>
+  <div class="cta-inner">
+    <div class="section-sub" style="margin-bottom:24px">04 / Mesa de trabajo BI</div>
+    <h2>Solicita tu <em>mesa de trabajo</em><br/>con el área de BI</h2>
+    <p>Priorizamos iniciativas con cada área, acordamos alcance y entregables, y acompañamos la puesta en marcha para que la operación se mantenga estable y la adopción sea efectiva en el día a día.</p>
+    <div class="cta-row" style="justify-content:center">
+      <a href="mailto:john.rojas@linktic.com" class="btn btn-primary">
+        <span>Solicitar mesa de trabajo con BI</span>
+        <span class="arr">→</span>
+      </a>
+      <a href="#servicios" class="btn btn-ghost">
+        <span>Volver a servicios</span>
+        <span class="arr">↑</span>
+      </a>
+    </div>
+
+    <div class="cta-card">
+      <div class="cta-stat">
+        <div class="k">Tiempo de respuesta</div>
+        <div class="v"><em>48</em>h</div>
+        <div class="desc">Primer contacto del área de BI tras la solicitud.</div>
+      </div>
+      <div class="cta-stat">
+        <div class="k">Continuidad operativa</div>
+        <div class="v"><em>99.4</em>%</div>
+        <div class="desc">Disponibilidad promedio de pipelines y tableros publicados.</div>
+      </div>
+      <div class="cta-stat">
+        <div class="k">Áreas atendidas</div>
+        <div class="v"><em>22</em></div>
+        <div class="desc">Equipos internos con servicios BI implementados activos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <span><b>DataVision · BI</b> — Servicios internos de Business Intelligence</span>
+    <span>Trazabilidad y seguridad de datos · v4.2 · 2026</span>
+  </div>
+</footer>
+
+<!-- ======================== THREE.JS HERO + METHOD ======================== -->
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<script>
+  // -------- HERO 3D : data field of bars --------
+  (function(){
+    const canvas = document.getElementById('scene');
+    if(!canvas || typeof THREE === 'undefined') return;
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
+    camera.position.set(0, 14, 22);
+    camera.lookAt(0, 0, 0);
+
+    // soft lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+    const key = new THREE.DirectionalLight(0xffffff, 0.9);
+    key.position.set(6, 12, 8); scene.add(key);
+    const rim = new THREE.DirectionalLight(0xb6ff66, 0.6);
+    rim.position.set(-8, 6, -4); scene.add(rim);
+
+    // grid floor
+    const gridGeo = new THREE.PlaneGeometry(80, 80, 40, 40);
+    const gridMat = new THREE.MeshBasicMaterial({color:0x1a2230, wireframe:true, transparent:true, opacity:0.18});
+    const grid = new THREE.Mesh(gridGeo, gridMat);
+    grid.rotation.x = -Math.PI/2;
+    grid.position.y = -0.01;
+    scene.add(grid);
+
+    // bars
+    const cols = 22, rows = 14;
+    const spacing = 0.85;
+    const bars = [];
+    const baseGeo = new THREE.BoxGeometry(0.55, 1, 0.55);
+    const baseMat = new THREE.MeshStandardMaterial({color:0x9ef064, roughness:0.4, metalness:0.1, emissive:0x2a3818, emissiveIntensity:0.4});
+    const dimMat = new THREE.MeshStandardMaterial({color:0x2c3a4d, roughness:0.6, metalness:0.05});
+    for(let i=0;i<cols;i++){
+      for(let j=0;j<rows;j++){
+        const useAcc = Math.random() < 0.08;
+        const m = new THREE.Mesh(baseGeo, useAcc ? baseMat.clone() : dimMat.clone());
+        m.position.x = (i - cols/2) * spacing;
+        m.position.z = (j - rows/2) * spacing;
+        m.userData = {
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.6 + Math.random()*1.2,
+          amp: 0.6 + Math.random()*2.6,
+          baseY: 0,
+          accent: useAcc
+        };
+        scene.add(m);
+        bars.push(m);
+      }
+    }
+
+    // mouse parallax
+    const mouse = {x:0, y:0, tx:0, ty:0};
+    window.addEventListener('mousemove', (e)=>{
+      mouse.tx = (e.clientX/window.innerWidth - 0.5) * 2;
+      mouse.ty = (e.clientY/window.innerHeight - 0.5) * 2;
+    }, {passive:true});
+
+    function resize(){
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+    }
+    new ResizeObserver(resize).observe(canvas);
+    resize();
+
+    let scrollY = 0;
+    window.addEventListener('scroll', ()=>{ scrollY = window.scrollY; }, {passive:true});
+
+    const t0 = performance.now();
+    function tick(){
+      const t = (performance.now() - t0) / 1000;
+      mouse.x += (mouse.tx - mouse.x) * 0.04;
+      mouse.y += (mouse.ty - mouse.y) * 0.04;
+
+      camera.position.x = mouse.x * 2.5;
+      camera.position.y = 14 + mouse.y * 1.5 + Math.min(scrollY*0.01, 6);
+      camera.lookAt(0, 0, 0);
+
+      for(const b of bars){
+        const s = 0.5 + (Math.sin(t*b.userData.speed + b.userData.phase) + 1) * 0.5 * b.userData.amp;
+        b.scale.y = s;
+        b.position.y = s/2;
+        if(b.userData.accent){
+          b.material.emissiveIntensity = 0.35 + Math.sin(t*2 + b.userData.phase)*0.25;
+        }
+      }
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  // -------- METHOD : floating data cube --------
+  (function(){
+    const canvas = document.getElementById('method-canvas');
+    if(!canvas || typeof THREE === 'undefined') return;
+    const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+    camera.position.set(0, 0, 8);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    const l1 = new THREE.DirectionalLight(0xffffff, 0.7); l1.position.set(4,4,4); scene.add(l1);
+    const l2 = new THREE.DirectionalLight(0xb6ff66, 0.5); l2.position.set(-3,-2,3); scene.add(l2);
+
+    const group = new THREE.Group(); scene.add(group);
+
+    // outer wireframe cube
+    const wire = new THREE.LineSegments(
+      new THREE.EdgesGeometry(new THREE.BoxGeometry(3.4, 3.4, 3.4)),
+      new THREE.LineBasicMaterial({color:0x9ef064, transparent:true, opacity:0.7})
+    );
+    group.add(wire);
+
+    // inner small cubes (3x3x3 minus center)
+    const inner = new THREE.Group();
+    const small = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const matDim = new THREE.MeshStandardMaterial({color:0x2c3a4d, roughness:0.5});
+    const matAcc = new THREE.MeshStandardMaterial({color:0x9ef064, emissive:0x4a7a1f, emissiveIntensity:0.6, roughness:0.3});
+    let cubeRefs = [];
+    for(let x=-1;x<=1;x++)for(let y=-1;y<=1;y++)for(let z=-1;z<=1;z++){
+      if(x===0&&y===0&&z===0) continue;
+      const accent = Math.random() < 0.18;
+      const c = new THREE.Mesh(small, accent ? matAcc.clone() : matDim.clone());
+      c.position.set(x*0.85, y*0.85, z*0.85);
+      c.userData = {accent, idx: cubeRefs.length, baseScale:1};
+      inner.add(c);
+      cubeRefs.push(c);
+    }
+    group.add(inner);
+
+    // axes lines
+    const axMat = new THREE.LineBasicMaterial({color:0x5a6b80, transparent:true, opacity:0.6});
+    [[1,0,0],[0,1,0],[0,0,1]].forEach(v=>{
+      const g = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(-2.4*v[0],-2.4*v[1],-2.4*v[2]),
+        new THREE.Vector3( 2.4*v[0], 2.4*v[1], 2.4*v[2])
+      ]);
+      group.add(new THREE.Line(g, axMat));
+    });
+
+    let activeStep = 0;
+    document.querySelectorAll('.step').forEach(s=>{
+      s.addEventListener('mouseenter', ()=>{
+        document.querySelectorAll('.step').forEach(x=>x.classList.remove('active'));
+        s.classList.add('active');
+        activeStep = parseInt(s.dataset.step,10) || 0;
+      });
+    });
+
+    function resize(){
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+    }
+    new ResizeObserver(resize).observe(canvas);
+    resize();
+
+    const t0 = performance.now();
+    function tick(){
+      const t = (performance.now() - t0) / 1000;
+      group.rotation.y = t * 0.25;
+      group.rotation.x = Math.sin(t*0.4) * 0.25;
+
+      // pulse accent cubes near current step pattern
+      cubeRefs.forEach((c,i)=>{
+        const isPulse = (i + activeStep) % 5 === 0;
+        const base = c.userData.accent ? 1 : 0.85;
+        const target = isPulse ? base + 0.25 + Math.sin(t*3 + i)*0.08 : base;
+        c.scale.setScalar(c.scale.x + (target - c.scale.x)*0.08);
+      });
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+
+  // -------- SERVICE CARD MINI VIS (canvas 2D) --------
+  (function(){
+    const cards = document.querySelectorAll('.svc-card canvas[data-vis]');
+    cards.forEach(cv=>{
+      const ctx = cv.getContext('2d');
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      function size(){
+        cv.width = cv.clientWidth * dpr;
+        cv.height = cv.clientHeight * dpr;
+      }
+      new ResizeObserver(size).observe(cv);
+      size();
+
+      const kind = cv.dataset.vis;
+      const t0 = performance.now();
+
+      function draw(){
+        const t = (performance.now() - t0) / 1000;
+        const W = cv.width, H = cv.height;
+        ctx.clearRect(0,0,W,H);
+
+        // dotted grid
+        ctx.fillStyle = 'rgba(120,140,170,0.12)';
+        const gap = 18*dpr;
+        for(let x=gap; x<W; x+=gap){
+          for(let y=gap; y<H; y+=gap){
+            ctx.fillRect(x, y, 1*dpr, 1*dpr);
+          }
+        }
+
+        if(kind === 'flow'){
+          // flow lines + nodes (automation pipeline)
+          ctx.lineWidth = 1.2*dpr;
+          for(let i=0;i<5;i++){
+            const y = H * (0.2 + i*0.15);
+            ctx.strokeStyle = 'rgba(158,240,100,0.18)';
+            ctx.beginPath();
+            for(let x=0;x<=W;x+=6*dpr){
+              const yy = y + Math.sin((x*0.02 + t*1.5 + i))*8*dpr;
+              if(x===0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
+            }
+            ctx.stroke();
+          }
+          // moving dots
+          for(let i=0;i<6;i++){
+            const phase = (t*0.4 + i*0.17) % 1;
+            const y = H * (0.2 + (i%5)*0.15);
+            const x = phase * W;
+            const yy = y + Math.sin((x*0.02 + t*1.5 + (i%5)))*8*dpr;
+            ctx.fillStyle = i%3===0 ? 'rgba(158,240,100,1)' : 'rgba(220,230,245,0.7)';
+            ctx.beginPath(); ctx.arc(x, yy, 2.5*dpr, 0, Math.PI*2); ctx.fill();
+          }
+        }
+        else if(kind === 'globe'){
+          // wireframe globe / regions
+          const cx = W/2, cy = H/2, R = Math.min(W,H)*0.32;
+          ctx.strokeStyle = 'rgba(158,240,100,0.5)';
+          ctx.lineWidth = 1*dpr;
+          // meridians
+          for(let i=0;i<8;i++){
+            const a = i * Math.PI/8 + t*0.2;
+            ctx.beginPath();
+            ctx.ellipse(cx, cy, Math.abs(Math.cos(a))*R, R, 0, 0, Math.PI*2);
+            ctx.stroke();
+          }
+          // parallels
+          for(let i=1;i<5;i++){
+            const r = (i/5)*R;
+            ctx.strokeStyle = 'rgba(120,140,170,0.25)';
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+          }
+          // pulse points
+          for(let i=0;i<10;i++){
+            const a = i*0.7 + t*0.3;
+            const r = R * (0.4 + ((i*7)%10)/16);
+            const x = cx + Math.cos(a)*r;
+            const y = cy + Math.sin(a)*r*0.6;
+            const pulse = (Math.sin(t*2 + i)+1)/2;
+            ctx.fillStyle = `rgba(158,240,100,${0.4 + pulse*0.6})`;
+            ctx.beginPath(); ctx.arc(x, y, (1.5+pulse*2)*dpr, 0, Math.PI*2); ctx.fill();
+          }
+        }
+        else if(kind === 'bars'){
+          // bar chart KPI dashboard
+          const N = 14, pad = 12*dpr;
+          const bw = (W - pad*2) / N;
+          for(let i=0;i<N;i++){
+            const h = (Math.sin(t*1.2 + i*0.5)*0.4 + 0.6) * (H - pad*2);
+            const x = pad + i*bw + bw*0.15;
+            const y = H - pad - h;
+            const w = bw*0.7;
+            const accent = (i + Math.floor(t)) % 4 === 0;
+            ctx.fillStyle = accent ? 'rgba(158,240,100,0.95)' : 'rgba(90,110,140,0.75)';
+            ctx.fillRect(x, y, w, h);
+            // glow tip on accent
+            if(accent){
+              ctx.fillStyle = 'rgba(158,240,100,0.35)';
+              ctx.fillRect(x-1, y-3*dpr, w+2, 3*dpr);
+            }
+          }
+          // baseline
+          ctx.strokeStyle = 'rgba(120,140,170,0.4)';
+          ctx.beginPath(); ctx.moveTo(pad, H-pad); ctx.lineTo(W-pad, H-pad); ctx.stroke();
+        }
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    });
+  })();
+
+  // -------- live meter readouts --------
+  (function(){
+    const els = {
+      v1: document.getElementById('v1'), b1: document.getElementById('b1'),
+      v2: document.getElementById('v2'), b2: document.getElementById('b2'),
+      v3: document.getElementById('v3'), b3: document.getElementById('b3'),
+      v4: document.getElementById('v4'), b4: document.getElementById('b4'),
+      clock: document.getElementById('clock')
+    };
+    function tick(){
+      const t = Date.now()/1000;
+      const p1 = 38 + Math.round(Math.sin(t*0.4)*5 + Math.random()*2);
+      const p2 = 124 + Math.round(Math.sin(t*0.2)*4);
+      const p3 = (1.0 + Math.sin(t*0.6)*0.4 + Math.random()*0.1).toFixed(1);
+      const p4 = 5 + Math.round((Math.sin(t*0.3)+1)*2);
+      els.v1.textContent = p1;
+      els.v2.textContent = p2;
+      els.v3.textContent = p3;
+      els.v4.textContent = p4;
+      els.b1.style.width = (p1/50*100)+'%';
+      els.b2.style.width = (p2/180*100)+'%';
+      els.b3.style.width = (Math.min(p3/3,1)*100)+'%';
+      els.b4.style.width = (p4/12*100)+'%';
+      const d = new Date();
+      els.clock.textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+    }
+    tick(); setInterval(tick, 700);
+  })();
+
+  // -------- count-up CTA stats --------
+  (function(){
+    const els = document.querySelectorAll('.cta-stat .v em');
+    const targets = [48, 99.4, 22];
+    const decimals = [0, 1, 0];
+    let started = false;
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting && !started){
+          started = true;
+          els.forEach((el, i)=>{
+            const target = targets[i], dec = decimals[i];
+            const dur = 1400; const t0 = performance.now();
+            function step(){
+              const t = Math.min(1, (performance.now()-t0)/dur);
+              const eased = 1 - Math.pow(1-t, 3);
+              el.textContent = (target*eased).toFixed(dec);
+              if(t<1) requestAnimationFrame(step);
+            }
+            step();
+          });
+        }
+      });
+    }, {threshold:0.3});
+    const sec = document.querySelector('.cta-section');
+    if(sec) obs.observe(sec);
+  })();
+</script>
+
+</body>
+</html>
