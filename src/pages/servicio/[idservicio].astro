@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { services } from '../../data/services';
+import VerticalTimeline from '../../components/shared/VerticalTimeline.astro';
+import { electionTimeline } from '../../data/timeline-elecciones';
 
 export function getStaticPaths() {
   return Object.keys(services).map((idservicio) => ({ params: { idservicio } }));
@@ -12,6 +14,8 @@ const service = services[idservicio ?? ''];
 if (!service) {
   return Astro.redirect('/#servicios');
 }
+
+const showElectionTimeline = idservicio === 'reporteria';
 
 const bulletCards = service.bullets ?? [];
 
@@ -224,6 +228,18 @@ const currentServiceItems = ITEMS.filter((item) => item.service === idservicio);
       </div>
     </section>
 
+    {
+      showElectionTimeline && (
+        <VerticalTimeline
+          id="linea-tiempo-elecciones"
+          eyebrow="Evolución del servicio"
+          heading="Línea de tiempo de elecciones atípicas, Congreso 2026 y Presidencia 2026"
+          description="Recorrido cronológico de los tableros que ha publicado el área de Business Intelligence durante el ciclo electoral. Cada parada concentra la fecha, el contexto y los tableros embebidos del despliegue, e ilustra cómo ha madurado la práctica de reportería al pasar de las atípicas locales a los hitos nacionales."
+          events={electionTimeline}
+        />
+      )
+    }
+
     <section
       id="casos-exito"
       class="scroll-mt-20 bg-slate-50 py-14 md:py-20"
@@ -315,8 +331,10 @@ const currentServiceItems = ITEMS.filter((item) => item.service === idservicio);
 
   <script>
     import { initHomePageEffects } from '../../scripts/site-animations';
+    import { initVerticalTimelines } from '../../scripts/vertical-timeline';
     try {
       initHomePageEffects();
+      initVerticalTimelines();
     } catch (e) {
       console.error('[animaciones] Error en página de detalle de servicio.', e);
     }

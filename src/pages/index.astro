@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { services } from '../data/services';
 
 const currentYear = new Date().getFullYear();
 
@@ -10,11 +11,26 @@ const contactMarqueeTags = [
   'Desarrollo a la medida orientado a los datos',
   'Estructuración de bases de datos',
 ];
+
+/* Orden controlado para el showcase (numeración 01..04). */
+const showcaseOrder = [
+  'automatizacion',
+  'reporteria',
+  'desarrollo-medida-datos',
+  'estructuracion-bases-sincronizacion',
+] as const;
+
+const showcaseEntries = showcaseOrder.map((id, index) => ({
+  id,
+  number: String(index + 1).padStart(2, '0'),
+  ...services[id],
+}));
+const totalShowcase = String(showcaseEntries.length).padStart(2, '0');
 ---
 
 <Layout
   title="Servicios internos de Business Intelligence"
-  description="Portafolio interno del area de Business Intelligence: automatizacion, reporteria, desarrollo a la medida en datos y estructuracion de bases con sincronizacion."
+  description="Portafolio interno del área de Business Intelligence: automatización, reportería, desarrollo a la medida enfocado a los datos y estructuración de bases con sincronización."
 >
   <main class="bg-white text-slate-900">
     <section class="hero-visual relative isolate min-h-[calc(100vh-73px)] overflow-hidden" data-animate>
@@ -26,7 +42,7 @@ const contactMarqueeTags = [
         loop
         playsinline
         preload="auto"
-        aria-label="Animacion de servicios internos de Business Intelligence"
+        aria-label="Animación de servicios internos de Business Intelligence"
         class="absolute inset-0 -z-20 h-full w-full object-cover"
       ></video>
     </section>
@@ -36,6 +52,7 @@ const contactMarqueeTags = [
       class="relative scroll-mt-20 bg-slate-950 py-16 text-slate-100 md:py-24"
       aria-labelledby="servicios-heading"
       data-animate
+      data-services-showcase
     >
       <div
         class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(59,130,246,0.14),transparent_55%)]"
@@ -44,201 +61,241 @@ const contactMarqueeTags = [
       <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" aria-hidden="true"></div>
 
       <div class="relative mx-auto w-[92%] max-w-7xl">
-        <header class="mb-12 max-w-3xl md:mb-16">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400" data-animate-text>Lineas de servicio</p>
-          <h2
-            id="servicios-heading"
-            class="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl"
-            data-animate-text
+        <header class="mb-10 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 md:mb-14">
+          <div class="max-w-2xl">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400" data-animate-text>Líneas de servicio</p>
+            <h2
+              id="servicios-heading"
+              class="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl"
+              data-animate-text
+            >
+              Servicios del área de Business Intelligence
+            </h2>
+            <p class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg" data-animate-text>
+              Recorre los cuatro frentes desde una sola vista: las pestañas avanzan solas, las puedes detener al pasar el cursor
+              y navegarlas con teclado (↑/↓ o las teclas 1–4) para ir al detalle que más te interese.
+            </p>
+          </div>
+
+          {/* Contador grande: ancla visual permanente para que el usuario no se pierda. */}
+          <div
+            class="flex items-baseline gap-3 self-start rounded-full border border-white/10 bg-white/5 px-4 py-2 text-slate-200 md:self-end"
+            aria-live="polite"
           >
-            Servicios del area de Business Intelligence
-          </h2>
-          <p class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg" data-animate-text>
-            Cuatro frentes de trabajo con entregables claros: cada tarjeta resume el valor, el alcance y el enlace al detalle
-            operativo. Asi priorizamos escaneo rapido, comparacion entre lineas y siguiente paso evidente.
-          </p>
+            <span
+              class="font-mono text-2xl font-bold tabular-nums text-white md:text-3xl"
+              data-showcase-counter
+            >
+              01
+            </span>
+            <span class="font-mono text-sm text-slate-400">/ {totalShowcase}</span>
+            <span class="ml-2 hidden text-[11px] uppercase tracking-[0.18em] text-slate-400 sm:inline">
+              Servicios
+            </span>
+          </div>
         </header>
 
-        <div class="grid grid-cols-2 gap-4 sm:gap-5 md:gap-6" data-stagger>
-          <article
-            data-service-card
-            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
+        {/* Browser interactivo: lista a la izquierda, preview + panel a la derecha */}
+        <div class="grid gap-6 lg:grid-cols-12 lg:gap-10">
+          {/* Lista de pestañas */}
+          <ol
+            class="services-tablist relative space-y-2 lg:col-span-5 lg:space-y-3"
+            role="tablist"
+            aria-label="Servicios del área de Business Intelligence"
           >
-            <div class="relative aspect-video overflow-hidden bg-slate-950">
-              <div
-                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
-                aria-hidden="true"
-              ></div>
-              <video
-                id="servicio-automatizacion-preview"
-                data-service-preview
-                src="/servicio-automatizacion.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-                preload="auto"
-                aria-label="Vista previa del servicio de automatizacion para BI"
-                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              ></video>
-            </div>
-            <div class="flex flex-1 flex-col p-5 sm:p-6">
-              <div class="flex items-baseline gap-2">
-                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">01</span>
-                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
-              </div>
-              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl" data-animate-text>
-                Automatizacion
-              </h3>
-              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
-                Automatizacion de captura, procesamiento y monitoreo de informacion para BI. Cubrimos ingesta asistida
-                (bots, visores, apps), transformacion y validacion del dato, orquestacion con flujos como n8n y
-                monitoreo de KPIs y alertas ligado a las capas analiticas del area para datos oportunos y trazables.
-              </p>
-              <a
-                href="/servicio/automatizacion"
-                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-              >
-                Ver detalle
-                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </article>
+            {
+              showcaseEntries.map((entry, index) => (
+                <li>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={index === 0 ? 'true' : 'false'}
+                    aria-controls={`servicio-panel-${entry.id}`}
+                    id={`servicio-tab-${entry.id}`}
+                    tabindex={index === 0 ? 0 : -1}
+                    data-showcase-tab
+                    data-tab-index={index}
+                    data-active={index === 0 ? 'true' : 'false'}
+                    class="service-tab group relative block w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-900/55 px-5 py-4 text-left ring-1 ring-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:px-6 md:py-5"
+                  >
+                    {/* Barra vertical de "activo" */}
+                    <span
+                      class="service-tab-bar pointer-events-none absolute inset-y-3 left-0 w-[3px] origin-top scale-y-0 rounded-r-full bg-gradient-to-b from-blue-400 to-blue-600 transition-transform duration-500"
+                      aria-hidden="true"
+                    />
+                    <div class="flex items-start gap-4">
+                      <span class="service-tab-number font-mono text-sm font-semibold tabular-nums tracking-[0.18em] text-slate-500 transition group-hover:text-blue-300">
+                        {entry.number}
+                      </span>
+                      <div class="min-w-0 flex-1">
+                        <div class="flex items-baseline justify-between gap-3">
+                          <h3 class="service-tab-title text-base font-semibold leading-snug tracking-tight text-slate-200 transition md:text-lg">
+                            {entry.title}
+                          </h3>
+                          <span
+                            class="service-tab-arrow text-base leading-none text-slate-500 transition"
+                            aria-hidden="true"
+                          >
+                            →
+                          </span>
+                        </div>
+                        <p class="service-tab-desc mt-1 text-pretty text-[13px] leading-relaxed text-slate-400 transition md:text-sm">
+                          {entry.shortDesc}
+                        </p>
+                        {/* Barra de progreso de auto-rotación */}
+                        <div
+                          class="service-tab-progress mt-3 h-[2px] w-full overflow-hidden rounded-full bg-white/10"
+                          aria-hidden="true"
+                        >
+                          <div
+                            class="h-full origin-left scale-x-0 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600"
+                            data-showcase-progress-fill
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                </li>
+              ))
+            }
+          </ol>
 
-          <article
-            data-service-card
-            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
-          >
-            <div class="relative aspect-video overflow-hidden bg-slate-950">
+          {/* Preview + panel del activo */}
+          <div class="lg:col-span-7">
+            {/* Preview con crossfade entre videos */}
+            <div class="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl shadow-black/40 ring-1 ring-white/5">
               <div
-                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
+                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-slate-950/15 to-transparent"
                 aria-hidden="true"
               ></div>
-              <video
-                id="servicio-reporteria-preview"
-                data-service-preview
-                src="/servicio-reporteria.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-                preload="auto"
-                aria-label="Vista previa del servicio de reporteria"
-                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              ></video>
+              {
+                showcaseEntries.map((entry, index) => (
+                  <video
+                    src={entry.videoSrc}
+                    data-showcase-video
+                    data-video-index={index}
+                    data-active={index === 0 ? 'true' : 'false'}
+                    autoplay={index === 0}
+                    muted
+                    loop
+                    playsinline
+                    preload={index === 0 ? 'auto' : 'metadata'}
+                    aria-label={`Vista previa del servicio: ${entry.title}`}
+                    class="service-video absolute inset-0 z-0 h-full w-full object-cover opacity-0 transition-opacity duration-700"
+                  />
+                ))
+              }
             </div>
-            <div class="flex flex-1 flex-col p-5 sm:p-6">
-              <div class="flex items-baseline gap-2">
-                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">02</span>
-                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
-              </div>
-              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-xl" data-animate-text>Reporteria</h3>
-              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
-                Reporteria para consumo interno: catalogos de reportes y extractos, metricas versionadas frente a fuentes
-                oficiales, entregas programadas y suscripciones, y formatos homogeneos para cifras auditables y menos
-                solicitudes repetitivas.
-              </p>
-              <a
-                href="/servicio/reporteria"
-                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-              >
-                Ver detalle
-                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </article>
 
-          <article
-            data-service-card
-            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
-          >
-            <div class="relative aspect-video overflow-hidden bg-slate-950">
-              <div
-                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
-                aria-hidden="true"
-              ></div>
-              <video
-                id="servicio-desarrollo-preview"
-                data-service-preview
-                src="/servicio-desarrollo.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-                preload="auto"
-                aria-label="Vista previa del servicio de desarrollo a la medida enfocado a los datos"
-                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              ></video>
+            {/* Paneles de detalle (uno visible a la vez) */}
+            <div class="relative mt-6 min-h-[14rem] md:mt-8 md:min-h-[16rem]">
+              {
+                showcaseEntries.map((entry, index) => (
+                  <article
+                    role="tabpanel"
+                    id={`servicio-panel-${entry.id}`}
+                    aria-labelledby={`servicio-tab-${entry.id}`}
+                    aria-hidden={index === 0 ? 'false' : 'true'}
+                    data-showcase-panel
+                    data-panel-index={index}
+                    data-active={index === 0 ? 'true' : 'false'}
+                    class="service-panel absolute inset-0 opacity-0 transition-all duration-500 ease-out"
+                  >
+                    <div class="flex flex-wrap items-baseline gap-3">
+                      <span class="font-mono text-xs font-medium tabular-nums uppercase tracking-[0.18em] text-blue-300/90">
+                        {entry.number}
+                      </span>
+                      <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">
+                        {entry.badge}
+                      </span>
+                    </div>
+                    <h3 class="mt-2 text-pretty text-xl font-semibold leading-snug tracking-tight text-white md:text-2xl">
+                      {entry.title}
+                    </h3>
+                    <p class="mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-slate-300 md:text-[15px] md:leading-relaxed">
+                      {entry.shortDesc}
+                    </p>
+                    {entry.bullets && entry.bullets.length > 0 && (
+                      <ul class="mt-4 grid gap-2 sm:grid-cols-2">
+                        {entry.bullets.slice(0, 3).map((b) => (
+                          <li class="flex items-start gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-[12.5px] leading-snug text-slate-300 md:text-[13px]">
+                            <span class="mt-0.5 inline-block size-1.5 shrink-0 rounded-full bg-blue-400" aria-hidden="true" />
+                            <span>{b}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <a
+                      href={`/servicio/${entry.id}`}
+                      class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+                    >
+                      Ver detalle de {entry.title}
+                      <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
+                    </a>
+                  </article>
+                ))
+              }
             </div>
-            <div class="flex flex-1 flex-col p-5 sm:p-6">
-              <div class="flex items-baseline gap-2">
-                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">03</span>
-                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
-              </div>
-              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-[1.125rem]" data-animate-text>
-                Desarrollo a la medida enfocado a los datos
-              </h3>
-              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
-                Desarrollo a la medida sobre datos: APIs y servicios con reglas de negocio, integraciones con contratos
-                claros, componentes reutilizables para validar y enriquecer, y observabilidad para desplegar con confianza
-                y acelerar el analisis.
-              </p>
-              <a
-                href="/servicio/desarrollo-medida-datos"
-                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-              >
-                Ver detalle
-                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </article>
-
-          <article
-            data-service-card
-            class="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-lg shadow-black/20 ring-1 ring-white/5 transition duration-300 hover:-translate-y-0.5 hover:border-blue-400/35 hover:shadow-xl hover:shadow-blue-950/40"
-          >
-            <div class="relative aspect-video overflow-hidden bg-slate-950">
-              <div
-                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-80"
-                aria-hidden="true"
-              ></div>
-              <video
-                id="servicio-basesdatos-preview"
-                data-service-preview
-                src="/servicio-basesdatos.mp4"
-                autoplay
-                muted
-                loop
-                playsinline
-                preload="auto"
-                aria-label="Vista previa del servicio de estructuracion de bases de datos y sincronizacion"
-                class="service-media relative z-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              ></video>
-            </div>
-            <div class="flex flex-1 flex-col p-5 sm:p-6">
-              <div class="flex items-baseline gap-2">
-                <span class="font-mono text-xs font-medium tabular-nums text-blue-400/90">04</span>
-                <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Servicio</span>
-              </div>
-              <h3 class="mt-2 text-lg font-semibold leading-snug tracking-tight text-white sm:text-[1.125rem]" data-animate-text>
-                Estructuracion de bases de datos y sincronizacion
-              </h3>
-              <p class="mt-3 flex-1 text-pretty text-sm leading-relaxed text-slate-300 sm:text-[15px] sm:leading-relaxed" data-animate-text>
-                Modelo logico y fisico de bases de datos, migraciones con impacto controlado en reportes y apps, y
-                sincronizacion entre sistemas con cargas incrementales, deduplicacion, reintentos y chequeos de
-                consistencia entre entornos.
-              </p>
-              <a
-                href="/servicio/estructuracion-bases-sincronizacion"
-                class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-              >
-                Ver detalle
-                <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
-              </a>
-            </div>
-          </article>
+          </div>
         </div>
+
+        {/* Hint discreto de teclado */}
+        <p class="mt-8 text-center text-[11px] uppercase tracking-[0.18em] text-slate-500 md:mt-10">
+          ↑ ↓ navega · 1–4 atajos · pausa al pasar el cursor
+        </p>
       </div>
+
+      <style>
+        /* Estados visuales sincronizados con `data-active` que setea el script */
+        [data-services-showcase] [data-showcase-tab][data-active='true'] {
+          background-color: rgba(15, 23, 42, 0.85);
+          border-color: rgba(96, 165, 250, 0.35);
+        }
+        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-bar {
+          transform: scaleY(1);
+        }
+        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-number {
+          color: rgb(96 165 250);
+        }
+        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-title {
+          color: white;
+        }
+        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-desc {
+          color: rgb(203 213 225);
+        }
+        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-arrow {
+          color: rgb(147 197 253);
+          transform: translateX(2px);
+        }
+        [data-services-showcase] [data-showcase-tab]:not([data-active='true']):hover {
+          background-color: rgba(15, 23, 42, 0.65);
+          border-color: rgba(96, 165, 250, 0.18);
+        }
+        [data-services-showcase] [data-showcase-tab]:not([data-active='true']):hover .service-tab-arrow {
+          transform: translateX(2px);
+          color: rgb(148 163 184);
+        }
+        [data-services-showcase] [data-showcase-video][data-active='true'] {
+          opacity: 1;
+        }
+        [data-services-showcase] [data-showcase-panel][data-active='true'] {
+          opacity: 1;
+          pointer-events: auto;
+          transform: translateY(0);
+        }
+        [data-services-showcase] [data-showcase-panel]:not([data-active='true']) {
+          pointer-events: none;
+          transform: translateY(8px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [data-services-showcase] .service-video,
+          [data-services-showcase] .service-panel,
+          [data-services-showcase] .service-tab-bar {
+            transition: none;
+          }
+        }
+      </style>
+
     </section>
 
     <section
@@ -359,9 +416,11 @@ const contactMarqueeTags = [
 
   <script>
     import { initContactKeywordSlider, initHomePageEffects } from '../scripts/site-animations';
+    import { initServicesShowcase } from '../scripts/services-showcase';
     try {
       initHomePageEffects();
       initContactKeywordSlider();
+      initServicesShowcase();
     } catch (e) {
       console.error('[animaciones] Error en efectos de la home.', e);
     }

@@ -1,0 +1,494 @@
+---
+/**
+ * VerticalTimeline.astro
+ * ----------------------
+ * Línea de tiempo vertical, animada y responsiva.
+ *
+ * Diseño:
+ *  - Una sola columna de tarjetas: en móvil y escritorio las tarjetas usan
+ *    todo el ancho disponible. En `md+` la fecha se separa del lado izquierdo
+ *    de la línea como una "etiqueta" prominente, y la línea queda visualmente
+ *    centrada entre la fecha y el contenido.
+ *  - La línea vertical es ancha (4px) con relleno de progreso animado y glow
+ *    azul-ámbar para darle protagonismo visual.
+ *  - Eventos `isHito` reciben marcador más grande, halo y badge dorado.
+ *
+ * Interactividad (delegada a `src/scripts/vertical-timeline.ts`):
+ *  - IntersectionObserver para revelar tarjetas al hacer scroll.
+ *  - Riel de progreso que se rellena conforme el usuario avanza.
+ *  - Mini-nav superior pegajosa con chips de fechas para saltar a cada evento.
+ *  - Lazy-load de iframes de Power BI para no penalizar el TTI.
+ */
+import type { TimelineEvent, TimelineEmbed } from '../../data/timeline-elecciones';
+
+interface Props {
+  /** Eventos ordenados por fecha (asc.). */
+  events: TimelineEvent[];
+  /** Etiqueta superior pequeña (eyebrow). Opcional. */
+  eyebrow?: string;
+  /** Título de la sección. */
+  heading: string;
+  /** Bajada / descripción de la sección. */
+  description?: string;
+  /** ID base del bloque para anclas / aria. */
+  id?: string;
+}
+
+const {
+  events,
+  eyebrow = 'Evolución del servicio',
+  heading,
+  description,
+  id = 'linea-tiempo',
+} = Astro.props;
+
+const orderedEvents = [...events].sort((a, b) => a.date.localeCompare(b.date));
+
+const MONTHS_ES = [
+  'ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN',
+  'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC',
+];
+
+const formatDateBadge = (iso: string): { day: string; monthYear: string } => {
+  const [year, month, day] = iso.split('-');
+  const idx = Math.max(0, Math.min(11, parseInt(month, 10) - 1));
+  return {
+    day: String(parseInt(day, 10)).padStart(2, '0'),
+    monthYear: `${MONTHS_ES[idx]} ${year}`,
+  };
+};
+
+const buildEmbedKey = (eventId: string, index: number): string => `${eventId}-embed-${index}`;
+const isPending = (embeds: TimelineEmbed[]): boolean => embeds.length === 0;
+---
+
+<section
+  id={id}
+  class="vt-section relative isolate scroll-mt-20 overflow-hidden bg-slate-950 py-16 text-slate-100 md:py-24"
+  aria-labelledby={`${id}-heading`}
+  data-vertical-timeline
+>
+  <div
+    class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(59,130,246,0.18),transparent_55%)]"
+    aria-hidden="true"
+  ></div>
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
+    aria-hidden="true"
+  ></div>
+
+  <div class="relative mx-auto w-[92%] max-w-6xl">
+    <header class="mb-10 max-w-3xl md:mb-14">
+      <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400" data-animate-text>
+        {eyebrow}
+      </p>
+      <h2
+        id={`${id}-heading`}
+        class="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl"
+        data-animate-text
+      >
+        {heading}
+      </h2>
+      {description && (
+        <p
+          class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg"
+          data-animate-text
+        >
+          {description}
+        </p>
+      )}
+    </header>
+
+    {/* Mini-nav (sticky) — permite saltar a cualquier elección desde cualquier punto. */}
+    <nav
+      class="vt-jumper sticky top-16 z-10 -mx-2 mb-8 rounded-2xl border border-white/10 bg-slate-950/70 px-2 py-2 backdrop-blur supports-[backdrop-filter]:bg-slate-950/55 md:top-20 md:mb-12 md:px-3 md:py-3"
+      aria-label="Saltar a una elección de la línea de tiempo"
+    >
+      <ol
+        class="vt-jumper-track flex gap-2 overflow-x-auto overscroll-x-contain scroll-smooth py-1"
+        role="list"
+      >
+        {
+          orderedEvents.map((event) => (
+            <li class="shrink-0">
+              <a
+                href={`#${id}-${event.id}`}
+                data-vt-jump
+                data-vt-target={`${id}-${event.id}`}
+                class:list={[
+                  'group inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-medium tracking-tight transition',
+                  event.isHito
+                    ? 'border-amber-300/40 bg-amber-500/10 text-amber-100 hover:border-amber-300/70 hover:bg-amber-500/20'
+                    : 'border-white/10 bg-white/5 text-slate-200 hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white',
+                ]}
+              >
+                <span aria-hidden="true" class:list={[
+                  'inline-block size-1.5 rounded-full',
+                  event.isHito ? 'bg-amber-300' : 'bg-blue-400',
+                ]} />
+                <span class="whitespace-nowrap">{event.title}</span>
+                <span class="hidden text-[11px] text-slate-400 group-hover:text-slate-200 sm:inline">
+                  · {event.dateLabel}
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    {/* Línea + eventos. La línea queda en `left-[1.875rem]` (móvil) y `md:left-[8rem]` (escritorio). */}
+    <div class="vt-rail relative">
+      {/* Riel base (fondo): ancho de 4px, gradiente azul→ámbar muy visible */}
+      <div
+        class="vt-rail-base pointer-events-none absolute top-0 bottom-0 left-[1.875rem] w-[4px] -translate-x-1/2 rounded-full bg-gradient-to-b from-blue-500/30 via-blue-500/40 to-amber-300/30 md:left-[8rem]"
+        aria-hidden="true"
+      ></div>
+      {/* Riel de progreso (animado por JS) con halo */}
+      <div
+        class="vt-rail-progress pointer-events-none absolute top-0 left-[1.875rem] w-[4px] origin-top -translate-x-1/2 scale-y-0 rounded-full bg-gradient-to-b from-blue-400 via-blue-500 to-amber-300 shadow-[0_0_16px_rgba(96,165,250,0.55)] md:left-[8rem]"
+        aria-hidden="true"
+        style="height: 100%;"
+      ></div>
+      {/* Cometa que recorre el riel base de forma continua */}
+      <div
+        class="vt-rail-comet pointer-events-none absolute left-[1.875rem] h-16 w-2 -translate-x-1/2 rounded-full bg-gradient-to-b from-transparent via-blue-200 to-transparent opacity-80 blur-[2px] md:left-[8rem]"
+        aria-hidden="true"
+      ></div>
+
+      <ol class="vt-events relative space-y-14 md:space-y-20" role="list">
+        {
+          orderedEvents.map((event) => {
+            const anchorId = `${id}-${event.id}`;
+            const badge = formatDateBadge(event.date);
+            return (
+              <li
+                id={anchorId}
+                class="vt-event relative scroll-mt-32 md:scroll-mt-40"
+                data-vt-event
+                data-vt-event-id={event.id}
+                data-vt-hito={event.isHito ? 'true' : 'false'}
+              >
+                {/* Marcador sobre la línea — un anchor exterior preserva el
+                    centrado horizontal y el span interior es el que anima. */}
+                <span
+                  aria-hidden="true"
+                  class:list={[
+                    'vt-marker-anchor absolute top-2 left-[1.875rem] -translate-x-1/2 md:left-[8rem]',
+                    event.isHito ? 'size-6' : 'size-4',
+                  ]}
+                >
+                  <span
+                    class:list={[
+                      'vt-marker block size-full rounded-full ring-4',
+                      event.isHito
+                        ? 'bg-amber-300 ring-amber-300/30'
+                        : 'bg-blue-400 ring-blue-400/25',
+                    ]}
+                  >
+                    {event.isHito && (
+                      <span class="vt-marker-pulse absolute inset-0 rounded-full bg-amber-300/70"></span>
+                    )}
+                  </span>
+                </span>
+
+                {/* Etiqueta de fecha (escritorio) — alineada al lado izquierdo de la línea */}
+                <time
+                  datetime={event.date}
+                  class:list={[
+                    'vt-date-side hidden md:absolute md:top-0 md:left-0 md:block md:w-[6.75rem] md:text-right',
+                  ]}
+                >
+                  <span
+                    class:list={[
+                      'block font-mono text-3xl font-bold leading-none tabular-nums tracking-tight',
+                      event.isHito ? 'text-amber-200' : 'text-white',
+                    ]}
+                  >
+                    {badge.day}
+                  </span>
+                  <span
+                    class:list={[
+                      'mt-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.18em]',
+                      event.isHito ? 'text-amber-300/85' : 'text-blue-300/85',
+                    ]}
+                  >
+                    {badge.monthYear}
+                  </span>
+                </time>
+
+                {/* Tarjeta */}
+                <article
+                  class="vt-card relative ml-14 md:ml-[11rem]"
+                  data-vt-card
+                >
+                  <div
+                    class:list={[
+                      'rounded-2xl border bg-slate-900/65 p-5 shadow-lg shadow-black/30 ring-1 ring-white/5 backdrop-blur md:p-6',
+                      event.isHito
+                        ? 'border-amber-300/35 hover:border-amber-300/55'
+                        : 'border-white/10 hover:border-blue-400/40',
+                      'transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-950/40',
+                    ]}
+                  >
+                    <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                      {event.isHito && (
+                        <span class="inline-flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-100">
+                          <span aria-hidden="true">★</span> Hito
+                        </span>
+                      )}
+                      {/* Fecha en línea (móvil) — escondida en escritorio porque la fecha grande va al lado de la línea */}
+                      <time
+                        datetime={event.date}
+                        class:list={[
+                          'font-mono text-[11px] font-semibold tabular-nums uppercase tracking-[0.16em] md:hidden',
+                          event.isHito ? 'text-amber-200/90' : 'text-blue-300/90',
+                        ]}
+                      >
+                        {event.dateLabel}
+                      </time>
+                    </header>
+
+                    <h3 class="mt-2 text-pretty text-lg font-semibold leading-snug tracking-tight text-white md:text-xl">
+                      {event.title}
+                    </h3>
+
+                    {event.location && (
+                      <p class="mt-1 text-[12px] uppercase tracking-[0.16em] text-slate-400">
+                        {event.location}
+                      </p>
+                    )}
+
+                    {event.description && (
+                      <p class="mt-3 text-pretty text-sm leading-relaxed text-slate-300 md:text-[15px] md:leading-relaxed">
+                        {event.description}
+                      </p>
+                    )}
+
+                    {/* Embebidos */}
+                    {isPending(event.embeds) ? (
+                      <p
+                        class="mt-5 rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-4 text-sm leading-relaxed text-slate-400"
+                        role="status"
+                      >
+                        Despliegue pendiente: el espacio está reservado para incorporar los tableros
+                        cuando estén publicados.
+                      </p>
+                    ) : (
+                      <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                        {event.embeds.map((embed, embedIndex) => {
+                          const embedKey = buildEmbedKey(event.id, embedIndex);
+                          return (
+                            <figure
+                              class="vt-embed group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-950/70 ring-1 ring-white/5 transition hover:border-blue-400/40"
+                              data-vt-embed
+                              data-vt-embed-kind={embed.kind}
+                              data-vt-embed-url={embed.url}
+                              data-vt-embed-key={embedKey}
+                            >
+                              <header class="flex items-baseline gap-2 px-3 pt-3">
+                                <span class="font-mono text-[10px] font-medium uppercase tabular-nums tracking-[0.18em] text-blue-300/90">
+                                  {String(embedIndex + 1).padStart(2, '0')}
+                                </span>
+                                <h4 class="text-sm font-semibold text-white">{embed.title}</h4>
+                              </header>
+                              {embed.subtitle && (
+                                <p class="px-3 pb-1 text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                                  {embed.subtitle}
+                                </p>
+                              )}
+                              {embed.kind === 'iframe' && (
+                                <div class="vt-embed-frame relative mt-3 aspect-video w-full bg-slate-900">
+                                  <div
+                                    class="vt-embed-skeleton absolute inset-0 animate-pulse bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
+                                    aria-hidden="true"
+                                  ></div>
+                                  <iframe
+                                    title={`Vista previa: ${embed.title}`}
+                                    data-vt-iframe
+                                    data-vt-iframe-src={embed.url}
+                                    src="about:blank"
+                                    loading="lazy"
+                                    allowfullscreen
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    class="absolute inset-0 h-full w-full"
+                                  ></iframe>
+                                </div>
+                              )}
+                              {embed.kind === 'image' && (
+                                <img
+                                  src={embed.url}
+                                  alt={embed.title}
+                                  loading="lazy"
+                                  decoding="async"
+                                  class="mt-3 aspect-video w-full object-cover"
+                                />
+                              )}
+                              {embed.kind === 'video' && (
+                                <video
+                                  src={embed.url}
+                                  controls
+                                  preload="metadata"
+                                  playsinline
+                                  class="mt-3 aspect-video w-full bg-black"
+                                ></video>
+                              )}
+                              {embed.kind === 'link' && (
+                                <div class="mt-3 flex items-center justify-between gap-2 border-t border-white/5 bg-slate-900/40 px-3 py-2 text-[12px]">
+                                  <span class="truncate text-slate-400">{embed.url === '#' ? 'Enlace pendiente' : embed.url}</span>
+                                </div>
+                              )}
+                              <footer class="mt-auto flex items-center justify-between gap-2 border-t border-white/5 bg-slate-900/40 px-3 py-2">
+                                {embed.url !== '#' ? (
+                                  <a
+                                    href={embed.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-[12px] font-semibold text-blue-300 transition hover:text-blue-200"
+                                  >
+                                    Abrir en pestaña nueva →
+                                  </a>
+                                ) : (
+                                  <span class="text-[12px] font-medium text-slate-500">
+                                    Pendiente de publicación
+                                  </span>
+                                )}
+                              </footer>
+                            </figure>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              </li>
+            );
+          })
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Hace que el card y demás piezas conserven el estado animado por anime.js;
+     anime.js arranca desde estilos inline aplicados en `prepareEvents`. */
+  .vt-section :global([data-vt-card]) {
+    will-change: opacity, transform;
+  }
+  .vt-section :global(.vt-marker-anchor) {
+    /* contenedor de posicionamiento: no anima, solo conserva el centrado. */
+    display: block;
+  }
+  .vt-section :global(.vt-marker) {
+    position: relative;
+    box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.95);
+    will-change: transform, opacity, box-shadow;
+  }
+
+  /* Glow continuo y suave en TODOS los marcadores (más sutil para no-hitos). */
+  @keyframes vt-marker-soft-glow {
+    0%, 100% {
+      box-shadow:
+        0 0 0 4px rgba(15, 23, 42, 0.95),
+        0 0 0 0 rgba(96, 165, 250, 0);
+    }
+    50% {
+      box-shadow:
+        0 0 0 4px rgba(15, 23, 42, 0.95),
+        0 0 18px 2px rgba(96, 165, 250, 0.45);
+    }
+  }
+  @keyframes vt-marker-soft-glow-hito {
+    0%, 100% {
+      box-shadow:
+        0 0 0 4px rgba(15, 23, 42, 0.95),
+        0 0 0 0 rgba(252, 211, 77, 0);
+    }
+    50% {
+      box-shadow:
+        0 0 0 4px rgba(15, 23, 42, 0.95),
+        0 0 22px 4px rgba(252, 211, 77, 0.55);
+    }
+  }
+  .vt-section :global([data-vt-hito='false'] .vt-marker) {
+    animation: vt-marker-soft-glow 3.2s ease-in-out infinite;
+  }
+  .vt-section :global([data-vt-hito='true'] .vt-marker) {
+    animation: vt-marker-soft-glow-hito 2.4s ease-in-out infinite;
+  }
+
+  /* Pulso fuerte solo para hitos (anillo expansivo dentro del marcador). */
+  @keyframes vt-marker-pulse {
+    0% { transform: scale(1); opacity: 0.7; }
+    70% { transform: scale(2.4); opacity: 0; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .vt-section :global(.vt-marker-pulse) {
+    animation: vt-marker-pulse 2.4s ease-out infinite;
+  }
+
+  /* Ripple "ping" one-shot cuando el evento entra al viewport por primera vez. */
+  .vt-section :global(.vt-marker)::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 9999px;
+    background: rgba(96, 165, 250, 0.6);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .vt-section :global([data-vt-hito='true'] .vt-marker)::before {
+    background: rgba(252, 211, 77, 0.65);
+  }
+  @keyframes vt-marker-ping {
+    0% { transform: scale(1); opacity: 0.85; }
+    80% { transform: scale(2.8); opacity: 0; }
+    100% { transform: scale(2.8); opacity: 0; }
+  }
+  .vt-section :global([data-vt-arrived='true'] .vt-marker)::before {
+    animation: vt-marker-ping 0.95s ease-out;
+  }
+
+  /* Cometa que recorre el riel de forma continua. */
+  @keyframes vt-rail-comet {
+    0%   { top: -10%; opacity: 0; }
+    8%   { opacity: 0.85; }
+    92%  { opacity: 0.85; }
+    100% { top: 110%; opacity: 0; }
+  }
+  .vt-section :global(.vt-rail-comet) {
+    top: -10%;
+    animation: vt-rail-comet 5s ease-in-out infinite;
+  }
+
+  /* Hover de tarjeta con micro-flotación y brillo. */
+  .vt-section :global([data-vt-card] > div) {
+    transition:
+      transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      box-shadow 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+      border-color 320ms ease;
+  }
+  .vt-section :global([data-vt-card]:hover > div) {
+    transform: translateY(-3px);
+  }
+
+  .vt-section :global(.vt-jumper-track) {
+    scrollbar-width: none;
+  }
+  .vt-section :global(.vt-jumper-track::-webkit-scrollbar) {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vt-section :global([data-vt-card]) {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .vt-section :global(.vt-marker),
+    .vt-section :global(.vt-marker-pulse),
+    .vt-section :global(.vt-rail-comet) {
+      animation: none !important;
+    }
+  }
+</style>
