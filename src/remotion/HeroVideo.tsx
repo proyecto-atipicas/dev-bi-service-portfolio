@@ -593,12 +593,6 @@ const ContentLayer: React.FC = () => {
     config: { damping: 22, stiffness: 70 },
   });
 
-  const ctaIn = spring({
-    frame: frame - 100,
-    fps,
-    config: { damping: 18, stiffness: 80 },
-  });
-
   return (
     <div
       style={{
@@ -649,15 +643,16 @@ const ContentLayer: React.FC = () => {
         <LiveBadge />
       </div>
 
-      <div style={{ maxWidth: 760 }}>
+      <div>
         <h1
           style={{
             margin: 0,
             color: COLORS.text,
-            fontSize: 86,
+            fontSize: 78,
             fontWeight: 700,
             lineHeight: 0.98,
-            letterSpacing: -2.4,
+            letterSpacing: -2.2,
+            whiteSpace: 'nowrap',
           }}
         >
           {title.split('').map((ch, i) => {
@@ -708,47 +703,6 @@ const ContentLayer: React.FC = () => {
           Plataforma de inteligencia de negocio que conecta automatización,
           reportería y desarrollo a la medida sobre datos confiables.
         </p>
-
-        <div
-          style={{
-            marginTop: 32,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-            opacity: ctaIn,
-            transform: `translateY(${(1 - ctaIn) * 12}px)`,
-          }}
-        >
-          <div
-            style={{
-              padding: '12px 22px',
-              borderRadius: 999,
-              background: `linear-gradient(135deg, ${COLORS.cyan}, ${COLORS.blue})`,
-              color: '#04111f',
-              fontSize: 14,
-              fontWeight: 700,
-              letterSpacing: 0.3,
-              boxShadow: `0 0 28px ${COLORS.cyan}55`,
-            }}
-          >
-            Explorar servicios
-          </div>
-          <div
-            style={{
-              padding: '12px 20px',
-              borderRadius: 999,
-              border: `1px solid ${COLORS.panelBorder}`,
-              color: COLORS.text,
-              fontSize: 14,
-              fontWeight: 500,
-              fontFamily: FONT_MONO,
-              background: 'rgba(8, 14, 30, 0.45)',
-              backdropFilter: 'blur(6px)',
-            }}
-          >
-            ↓ ver portafolio
-          </div>
-        </div>
       </div>
     </div>
   );
