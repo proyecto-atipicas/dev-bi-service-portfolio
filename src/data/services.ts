@@ -176,18 +176,12 @@ export const services: Record<ServiceKey, ServiceDetail> = {
     ],
     deliverables: [
       {
-        kind: 'placeholder',
-        subtitle: 'Arquitectura',
-        title: 'Diagrama de integraciones',
+        kind: 'link',
+        subtitle: 'SIMAE',
+        title: 'Sistema integral de monitoreo y analitica electoral',
         description:
-          'Vista de componentes, contratos y flujos entre sistemas internos. Próxima publicación.',
-      },
-      {
-        kind: 'placeholder',
-        subtitle: 'Servicios internos',
-        title: 'Catálogo de APIs',
-        description:
-          'Endpoints, dominios y contratos versionados consumidos por las aplicaciones del área.',
+          'Tablero de Experiencia Electoral para la presidencial 2026.',
+        url: 'https://simae.actoreselectorales.com/login',
       },
       {
         kind: 'link',
