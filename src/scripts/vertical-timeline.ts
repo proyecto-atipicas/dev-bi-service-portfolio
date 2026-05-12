@@ -5,14 +5,13 @@
  *
  * Responsabilidades:
  *  1. Preparar el estado inicial oculto de marcador, fecha lateral, tarjeta y
- *     embebidos para cada evento, y revelar todo en cascada con anime.js
- *     cuando el evento entra al viewport.
+ *     enlaces para cada evento, y revelar todo en cascada con anime.js cuando
+ *     el evento entra al viewport.
  *  2. Rellenar la barra de progreso (`.vt-rail-progress`) según el avance del
  *     usuario sobre el riel.
- *  3. Lazy-load real de iframes (`[data-vt-iframe]`) cuando el embebido aparece
- *     en pantalla, para no penalizar el TTI con 20+ tableros de Power BI.
- *  4. Resaltar el chip activo de la mini-nav superior, manteniendo el foco
- *     dentro del carril horizontal sin afectar el scroll vertical de la página.
+ *  3. Apertura/cierre exclusivo de los `<dialog>` modales del modo horizontal
+ *     (lg+): un solo modal abierto a la vez, marcado de nodo activo, y cierre
+ *     por backdrop, botón X o tecla Escape (esto último nativo del <dialog>).
  */
 
 import { animate, stagger } from 'animejs';
@@ -29,10 +28,9 @@ const prepareEvents = (root: HTMLElement): void => {
   if (reducedMotion()) return;
   const events = root.querySelectorAll<HTMLElement>('[data-vt-event]');
   events.forEach((event) => {
-    const marker = event.querySelector<HTMLElement>('.vt-marker');
+    const marker = event.querySelector<HTMLElement>('.vt-event-vertical .vt-marker');
     const dateSide = event.querySelector<HTMLElement>('.vt-date-side');
     const card = event.querySelector<HTMLElement>('[data-vt-card]');
-    const embeds = event.querySelectorAll<HTMLElement>('[data-vt-embed]');
 
     if (marker) {
       marker.style.opacity = '0';
@@ -49,28 +47,20 @@ const prepareEvents = (root: HTMLElement): void => {
       card.style.opacity = '0';
       card.style.transform = 'translateY(28px)';
     }
-    embeds.forEach((embed) => {
-      embed.style.opacity = '0';
-      embed.style.transform = 'translateY(18px) scale(0.96)';
-    });
   });
 };
 
 /**
- * Revela un evento completo en cascada cuando entra en viewport: marcador con
- * rebote, fecha lateral con stagger entre día y mes, tarjeta deslizándose
- * hacia arriba y sub-tarjetas embebidas en oleadas.
+ * Revela un evento completo en cascada cuando entra en viewport.
  */
 const revealEvent = (eventEl: HTMLElement): void => {
   if (reducedMotion()) return;
 
-  // El atributo dispara el "ping" CSS sobre `.vt-marker::before`.
   eventEl.setAttribute('data-vt-arrived', 'true');
 
-  const marker = eventEl.querySelector<HTMLElement>('.vt-marker');
+  const marker = eventEl.querySelector<HTMLElement>('.vt-event-vertical .vt-marker');
   const dateSide = eventEl.querySelector<HTMLElement>('.vt-date-side');
   const card = eventEl.querySelector<HTMLElement>('[data-vt-card]');
-  const embeds = eventEl.querySelectorAll<HTMLElement>('[data-vt-embed]');
 
   if (marker) {
     animate(marker, {
@@ -97,17 +87,6 @@ const revealEvent = (eventEl: HTMLElement): void => {
       y: [28, 0],
       duration: 720,
       delay: 80,
-      ease: 'outCubic',
-    });
-  }
-
-  if (embeds.length > 0) {
-    animate(Array.from(embeds), {
-      opacity: [0, 1],
-      y: [18, 0],
-      scale: [0.96, 1],
-      duration: 620,
-      delay: stagger(85, { start: 280 }),
       ease: 'outCubic',
     });
   }
@@ -170,99 +149,95 @@ const initRailProgress = (root: HTMLElement): (() => void) | null => {
   };
 };
 
-const initLazyEmbeds = (root: HTMLElement): IntersectionObserver | null => {
-  const iframes = root.querySelectorAll<HTMLIFrameElement>('[data-vt-iframe]');
-  if (iframes.length === 0) return null;
+/**
+ * Apertura/cierre exclusivo de modales del modo horizontal.
+ *
+ *  - Cada nodo (`button[data-vt-open-modal]`) abre su `<dialog>` modal.
+ *  - Al abrir uno se cierran los demás (un solo modal abierto a la vez).
+ *  - Marca el nodo activo con `data-vt-active='true'` para que el dot crezca y
+ *    para hacer desaparecer el hint inferior mediante `data-vt-modal-open` en
+ *    la sección.
+ *  - El cierre por backdrop se implementa detectando clicks cuyo target sea el
+ *    propio `<dialog>` (los nativos de Escape y `form[method=dialog]` ya
+ *    cierran el modal por sí solos).
+ */
+const initHorizontalModals = (root: HTMLElement): void => {
+  const triggers = root.querySelectorAll<HTMLButtonElement>('[data-vt-open-modal]');
+  const modals = root.querySelectorAll<HTMLDialogElement>('[data-vt-modal]');
+  if (triggers.length === 0 || modals.length === 0) return;
 
-  const observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const iframe = entry.target as HTMLIFrameElement;
-        const src = iframe.dataset.vtIframeSrc;
-        if (src && iframe.src !== src) {
-          iframe.src = src;
-          iframe.addEventListener(
-            'load',
-            () => {
-              const skeleton = iframe.parentElement?.querySelector<HTMLElement>(
-                '.vt-embed-skeleton'
-              );
-              if (skeleton) skeleton.style.opacity = '0';
-            },
-            { once: true }
-          );
-        }
-        obs.unobserve(iframe);
-      });
-    },
-    { threshold: 0.05, rootMargin: '120px 0px' }
-  );
-  iframes.forEach((iframe) => observer.observe(iframe));
-  return observer;
-};
-
-const initJumpHighlights = (root: HTMLElement): IntersectionObserver | null => {
-  const chips = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-vt-jump]'));
-  const events = root.querySelectorAll<HTMLElement>('[data-vt-event]');
-  if (chips.length === 0 || events.length === 0) return null;
-
-  const chipById = new Map<string, HTMLAnchorElement>();
-  chips.forEach((chip) => {
-    const target = chip.dataset.vtTarget;
-    if (target) chipById.set(target, chip);
+  const triggerByModalId = new Map<string, HTMLButtonElement>();
+  triggers.forEach((trigger) => {
+    const id = trigger.dataset.vtOpenModal;
+    if (id) triggerByModalId.set(id, trigger);
   });
 
-  const track = root.querySelector<HTMLElement>('.vt-jumper-track');
-
-  /**
-   * Centra horizontalmente el chip activo dentro del carril de la mini-nav,
-   * sin tocar el scroll vertical de la página. Antes se usaba
-   * `scrollIntoView({ block: 'nearest' })`, pero ese método propaga el
-   * desplazamiento a todos los ancestros y al final del timeline (cuando la
-   * mini-nav sticky ya salió del viewport) terminaba devolviendo la página al
-   * inicio para "traer" el chip a la vista.
-   */
-  const ensureChipVisibleInNav = (chip: HTMLAnchorElement): void => {
-    if (!track) return;
-    const trackRect = track.getBoundingClientRect();
-    const chipRect = chip.getBoundingClientRect();
-    const fullyVisible =
-      chipRect.left >= trackRect.left && chipRect.right <= trackRect.right;
-    if (fullyVisible) return;
-    const target =
-      chip.offsetLeft - track.clientWidth / 2 + chip.clientWidth / 2;
-    track.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  const clearActiveTriggers = (): void => {
+    triggers.forEach((t) => t.removeAttribute('data-vt-active'));
   };
 
-  const setActive = (target: HTMLAnchorElement | null): void => {
-    chips.forEach((chip) => {
-      const isActive = chip === target;
-      chip.classList.toggle('vt-jump-active', isActive);
-      chip.setAttribute('aria-current', isActive ? 'true' : 'false');
-      if (isActive) {
-        chip.style.boxShadow = '0 0 0 1px rgba(96,165,250,0.65)';
-      } else {
-        chip.style.boxShadow = '';
+  const closeAll = (except?: HTMLDialogElement): void => {
+    modals.forEach((dialog) => {
+      if (dialog === except) return;
+      if (dialog.open) dialog.close();
+    });
+  };
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      const modalId = trigger.dataset.vtOpenModal;
+      if (!modalId) return;
+      const dialog = root.querySelector<HTMLDialogElement>(
+        `[data-vt-modal-id="${modalId}"]`
+      );
+      if (!dialog) return;
+      closeAll(dialog);
+      if (typeof dialog.showModal === 'function' && !dialog.open) {
+        try {
+          dialog.showModal();
+        } catch {
+          /* showModal puede lanzar si ya está abierto: ignorar. */
+        }
       }
     });
-    if (target) ensureChipVisibleInNav(target);
-  };
+  });
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting);
-      if (visible.length === 0) return;
-      visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-      const top = visible[0];
-      const eventId = top.target.id;
-      const chip = chipById.get(eventId) ?? null;
-      setActive(chip);
-    },
-    { threshold: [0.25, 0.5, 0.75], rootMargin: '-30% 0px -50% 0px' }
-  );
-  events.forEach((event) => observer.observe(event));
-  return observer;
+  modals.forEach((dialog) => {
+    // Cierre por click en el backdrop (target === el propio dialog).
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    // Marca el nodo activo al abrir y limpia al cerrar.
+    dialog.addEventListener('close', () => {
+      const id = dialog.dataset.vtModalId ?? '';
+      const trigger = triggerByModalId.get(id);
+      if (trigger) trigger.removeAttribute('data-vt-active');
+      const anyOpen = Array.from(modals).some((m) => m.open);
+      if (!anyOpen) root.removeAttribute('data-vt-modal-open');
+    });
+  });
+
+  // Observa cuándo se abre cada modal para reflejarlo en el trigger y en la sección.
+  // `<dialog>` no emite evento "open", pero podemos detectarlo desde el click handler
+  // pre-existente o vigilando el atributo "open" con MutationObserver.
+  const openObserver = new MutationObserver((mutations) => {
+    mutations.forEach((m) => {
+      if (m.type !== 'attributes' || m.attributeName !== 'open') return;
+      const dialog = m.target as HTMLDialogElement;
+      const id = dialog.dataset.vtModalId ?? '';
+      if (dialog.open) {
+        clearActiveTriggers();
+        const trigger = triggerByModalId.get(id);
+        if (trigger) trigger.setAttribute('data-vt-active', 'true');
+        root.setAttribute('data-vt-modal-open', 'true');
+      }
+    });
+  });
+  modals.forEach((dialog) => {
+    openObserver.observe(dialog, { attributes: true, attributeFilter: ['open'] });
+  });
 };
 
 export function initVerticalTimelines(): void {
@@ -271,7 +246,6 @@ export function initVerticalTimelines(): void {
     prepareEvents(section);
     observeRevealEvents(section);
     initRailProgress(section);
-    initLazyEmbeds(section);
-    initJumpHighlights(section);
+    initHorizontalModals(section);
   });
 }

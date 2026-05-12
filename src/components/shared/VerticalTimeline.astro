@@ -2,24 +2,23 @@
 /**
  * VerticalTimeline.astro
  * ----------------------
- * Línea de tiempo vertical, animada y responsiva.
+ * Línea de tiempo vertical (móvil/tablet) y horizontal (lg+).
  *
  * Diseño:
- *  - Una sola columna de tarjetas: en móvil y escritorio las tarjetas usan
- *    todo el ancho disponible. En `md+` la fecha se separa del lado izquierdo
- *    de la línea como una "etiqueta" prominente, y la línea queda visualmente
- *    centrada entre la fecha y el contenido.
- *  - La línea vertical es ancha (4px) con relleno de progreso animado y glow
- *    azul-ámbar para darle protagonismo visual.
- *  - Eventos `isHito` reciben marcador más grande, halo y badge dorado.
+ *  - Vertical: tarjetas apiladas a la derecha del riel. Cada tarjeta muestra
+ *    fecha, contexto y la lista de enlaces a los tableros publicados.
+ *  - Horizontal (lg+): nodos uniformemente distribuidos sobre una línea
+ *    horizontal. Cada nodo es un botón que abre un <dialog> modal con la
+ *    información completa de la elección (fecha, contexto y enlaces).
+ *  - Eventos `isHito` reciben marcador más grande, halo y acento dorado.
  *
  * Interactividad (delegada a `src/scripts/vertical-timeline.ts`):
  *  - IntersectionObserver para revelar tarjetas al hacer scroll.
  *  - Riel de progreso que se rellena conforme el usuario avanza.
- *  - Mini-nav superior pegajosa con chips de fechas para saltar a cada evento.
- *  - Lazy-load de iframes de Power BI para no penalizar el TTI.
+ *  - Apertura/cierre exclusivo de modales horizontales con cierre por
+ *    backdrop, botón X o tecla Escape (nativo del <dialog>).
  */
-import type { TimelineEvent, TimelineEmbed } from '../../data/timeline-elecciones';
+import type { TimelineEvent } from '../../data/timeline-elecciones';
 
 interface Props {
   /** Eventos ordenados por fecha (asc.). */
@@ -57,9 +56,6 @@ const formatDateBadge = (iso: string): { day: string; monthYear: string } => {
     monthYear: `${MONTHS_ES[idx]} ${year}`,
   };
 };
-
-const buildEmbedKey = (eventId: string, index: number): string => `${eventId}-embed-${index}`;
-const isPending = (embeds: TimelineEmbed[]): boolean => embeds.length === 0;
 ---
 
 <section
@@ -99,149 +95,282 @@ const isPending = (embeds: TimelineEmbed[]): boolean => embeds.length === 0;
       )}
     </header>
 
-    {/* Mini-nav (sticky) — permite saltar a cualquier elección desde cualquier punto. */}
-    <nav
-      class="vt-jumper sticky top-16 z-10 -mx-2 mb-8 rounded-2xl border border-white/10 bg-slate-950/70 px-2 py-2 backdrop-blur supports-[backdrop-filter]:bg-slate-950/55 md:top-20 md:mb-12 md:px-3 md:py-3"
-      aria-label="Saltar a una elección de la línea de tiempo"
-    >
-      <ol
-        class="vt-jumper-track flex gap-2 overflow-x-auto overscroll-x-contain scroll-smooth py-1"
-        role="list"
-      >
-        {
-          orderedEvents.map((event) => (
-            <li class="shrink-0">
-              <a
-                href={`#${id}-${event.id}`}
-                data-vt-jump
-                data-vt-target={`${id}-${event.id}`}
-                class:list={[
-                  'group inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-medium tracking-tight transition',
-                  event.isHito
-                    ? 'border-amber-300/40 bg-amber-500/10 text-amber-100 hover:border-amber-300/70 hover:bg-amber-500/20'
-                    : 'border-white/10 bg-white/5 text-slate-200 hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white',
-                ]}
-              >
-                <span aria-hidden="true" class:list={[
-                  'inline-block size-1.5 rounded-full',
-                  event.isHito ? 'bg-amber-300' : 'bg-blue-400',
-                ]} />
-                <span class="whitespace-nowrap">{event.title}</span>
-                <span class="hidden text-[11px] text-slate-400 group-hover:text-slate-200 sm:inline">
-                  · {event.dateLabel}
-                </span>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
-    </nav>
-
-    {/* Línea + eventos. La línea queda en `left-[1.875rem]` (móvil) y `md:left-[8rem]` (escritorio). */}
     <div class="vt-rail relative">
-      {/* Riel base (fondo): ancho de 4px, gradiente azul→ámbar muy visible */}
-      <div
-        class="vt-rail-base pointer-events-none absolute top-0 bottom-0 left-[1.875rem] w-[4px] -translate-x-1/2 rounded-full bg-gradient-to-b from-blue-500/30 via-blue-500/40 to-amber-300/30 md:left-[8rem]"
-        aria-hidden="true"
-      ></div>
-      {/* Riel de progreso (animado por JS) con halo */}
-      <div
-        class="vt-rail-progress pointer-events-none absolute top-0 left-[1.875rem] w-[4px] origin-top -translate-x-1/2 scale-y-0 rounded-full bg-gradient-to-b from-blue-400 via-blue-500 to-amber-300 shadow-[0_0_16px_rgba(96,165,250,0.55)] md:left-[8rem]"
-        aria-hidden="true"
-        style="height: 100%;"
-      ></div>
-      {/* Cometa que recorre el riel base de forma continua */}
-      <div
-        class="vt-rail-comet pointer-events-none absolute left-[1.875rem] h-16 w-2 -translate-x-1/2 rounded-full bg-gradient-to-b from-transparent via-blue-200 to-transparent opacity-80 blur-[2px] md:left-[8rem]"
-        aria-hidden="true"
-      ></div>
+      <p class="vt-h-hint" aria-hidden="true">
+        Pulsa cualquier nodo para abrir el detalle y los tableros de cada despliegue
+      </p>
+      <div class="vt-rail-track relative">
+        {/* Riel base vertical (fondo) */}
+        <div
+          class="vt-rail-base pointer-events-none absolute top-0 bottom-0 left-[1.875rem] w-[4px] -translate-x-1/2 rounded-full bg-gradient-to-b from-blue-500/30 via-blue-500/40 to-amber-300/30 md:left-[8rem]"
+          aria-hidden="true"
+        ></div>
+        {/* Riel de progreso (animado por JS) */}
+        <div
+          class="vt-rail-progress pointer-events-none absolute top-0 left-[1.875rem] w-[4px] origin-top -translate-x-1/2 scale-y-0 rounded-full bg-gradient-to-b from-blue-400 via-blue-500 to-amber-300 shadow-[0_0_16px_rgba(96,165,250,0.55)] md:left-[8rem]"
+          aria-hidden="true"
+          style="height: 100%;"
+        ></div>
+        {/* Cometa que recorre el riel base */}
+        <div
+          class="vt-rail-comet pointer-events-none absolute left-[1.875rem] h-16 w-2 -translate-x-1/2 rounded-full bg-gradient-to-b from-transparent via-blue-200 to-transparent opacity-80 blur-[2px] md:left-[8rem]"
+          aria-hidden="true"
+        ></div>
 
-      <ol class="vt-events relative space-y-14 md:space-y-20" role="list">
+        <ol
+          class="vt-events relative list-none space-y-14 ps-0 md:space-y-20"
+          style={`--vt-count: ${orderedEvents.length}`}
+          role="list"
+        >
         {
-          orderedEvents.map((event) => {
+          orderedEvents.map((event, index) => {
             const anchorId = `${id}-${event.id}`;
+            const modalId = `${id}-modal-${event.id}`;
             const badge = formatDateBadge(event.date);
+            const isAbove = index % 2 === 0;
+            const hasLinks = event.embeds.length > 0;
             return (
               <li
                 id={anchorId}
-                class="vt-event relative scroll-mt-32 md:scroll-mt-40"
+                class="vt-event relative min-w-0 scroll-mt-32 md:scroll-mt-40"
                 data-vt-event
                 data-vt-event-id={event.id}
                 data-vt-hito={event.isHito ? 'true' : 'false'}
+                data-vt-side={isAbove ? 'above' : 'below'}
               >
-                {/* Marcador sobre la línea — un anchor exterior preserva el
-                    centrado horizontal y el span interior es el que anima. */}
-                <span
-                  aria-hidden="true"
-                  class:list={[
-                    'vt-marker-anchor absolute top-2 left-[1.875rem] -translate-x-1/2 md:left-[8rem]',
-                    event.isHito ? 'size-6' : 'size-4',
-                  ]}
+                {/* ---------- Modo vertical (móvil/tablet) ---------- */}
+                <div class="vt-event-vertical relative max-lg:block lg:hidden">
+                  <span
+                    aria-hidden="true"
+                    class:list={[
+                      'vt-marker-anchor absolute top-2 left-[1.875rem] -translate-x-1/2 md:left-[8rem]',
+                      event.isHito ? 'size-6' : 'size-4',
+                    ]}
+                  >
+                    <span
+                      class:list={[
+                        'vt-marker block size-full rounded-full ring-4',
+                        event.isHito
+                          ? 'bg-amber-300 ring-amber-300/30'
+                          : 'bg-blue-400 ring-blue-400/25',
+                      ]}
+                    >
+                      {event.isHito && (
+                        <span class="vt-marker-pulse absolute inset-0 rounded-full bg-amber-300/70"></span>
+                      )}
+                    </span>
+                  </span>
+
+                  <time
+                    datetime={event.date}
+                    class:list={[
+                      'vt-date-side hidden md:absolute md:top-0 md:left-0 md:block md:w-[6.75rem] md:text-right',
+                    ]}
+                  >
+                    <span
+                      class:list={[
+                        'block font-mono text-3xl font-bold leading-none tabular-nums tracking-tight',
+                        event.isHito ? 'text-amber-200' : 'text-white',
+                      ]}
+                    >
+                      {badge.day}
+                    </span>
+                    <span
+                      class:list={[
+                        'mt-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.18em]',
+                        event.isHito ? 'text-amber-300/85' : 'text-blue-300/85',
+                      ]}
+                    >
+                      {badge.monthYear}
+                    </span>
+                  </time>
+
+                  <article class="vt-card relative ml-14 md:ml-[11rem]" data-vt-card>
+                    <div
+                      class:list={[
+                        'rounded-2xl border bg-slate-900/65 p-5 shadow-lg shadow-black/30 ring-1 ring-white/5 backdrop-blur md:p-6',
+                        event.isHito
+                          ? 'border-amber-300/35 hover:border-amber-300/55'
+                          : 'border-white/10 hover:border-blue-400/40',
+                        'transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-950/40',
+                      ]}
+                    >
+                      <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        {event.isHito && (
+                          <span class="inline-flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-100">
+                            <span aria-hidden="true">★</span> Hito
+                          </span>
+                        )}
+                        <time
+                          datetime={event.date}
+                          class:list={[
+                            'font-mono text-[11px] font-semibold tabular-nums uppercase tracking-[0.16em] md:hidden',
+                            event.isHito ? 'text-amber-200/90' : 'text-blue-300/90',
+                          ]}
+                        >
+                          {event.dateLabel}
+                        </time>
+                      </header>
+
+                      <h3 class="mt-2 text-pretty text-lg font-semibold leading-snug tracking-tight text-white md:text-xl">
+                        {event.title}
+                      </h3>
+
+                      {event.location && (
+                        <p class="mt-1 text-[12px] uppercase tracking-[0.16em] text-slate-400">
+                          {event.location}
+                        </p>
+                      )}
+
+                      {event.description && (
+                        <p class="mt-3 text-pretty text-sm leading-relaxed text-slate-300 md:text-[15px] md:leading-relaxed">
+                          {event.description}
+                        </p>
+                      )}
+
+                      {hasLinks ? (
+                        <ul
+                          class="mt-5 grid gap-2 sm:grid-cols-2"
+                          aria-label={`Tableros publicados de ${event.title}`}
+                        >
+                          {event.embeds.map((embed, embedIndex) => (
+                            <li class="min-w-0">
+                              {embed.url !== '#' ? (
+                                <a
+                                  href={embed.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class:list={[
+                                    'group flex items-start gap-3 rounded-xl border bg-slate-950/60 p-3 transition hover:-translate-y-0.5',
+                                    event.isHito
+                                      ? 'border-amber-300/25 hover:border-amber-300/55 hover:bg-amber-500/5'
+                                      : 'border-white/10 hover:border-blue-400/45 hover:bg-blue-500/5',
+                                  ]}
+                                >
+                                  <span
+                                    class:list={[
+                                      'mt-0.5 font-mono text-[10px] font-semibold uppercase tabular-nums tracking-[0.18em]',
+                                      event.isHito ? 'text-amber-200/90' : 'text-blue-300/90',
+                                    ]}
+                                  >
+                                    {String(embedIndex + 1).padStart(2, '0')}
+                                  </span>
+                                  <span class="min-w-0 flex-1">
+                                    <span class="block truncate text-sm font-semibold text-white group-hover:text-blue-100">
+                                      {embed.title}
+                                    </span>
+                                    {embed.subtitle && (
+                                      <span class="mt-0.5 block truncate text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                                        {embed.subtitle}
+                                      </span>
+                                    )}
+                                  </span>
+                                  <span
+                                    class="mt-0.5 text-blue-300 transition group-hover:translate-x-0.5 group-hover:text-blue-200"
+                                    aria-hidden="true"
+                                  >
+                                    ↗
+                                  </span>
+                                </a>
+                              ) : (
+                                <span class="flex items-start gap-3 rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-3 text-sm text-slate-400">
+                                  <span class="mt-0.5 font-mono text-[10px] font-semibold uppercase tabular-nums tracking-[0.18em] text-slate-500">
+                                    {String(embedIndex + 1).padStart(2, '0')}
+                                  </span>
+                                  <span class="min-w-0 flex-1">
+                                    <span class="block truncate text-sm font-semibold text-slate-300">
+                                      {embed.title}
+                                    </span>
+                                    <span class="mt-0.5 block text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                                      Pendiente de publicación
+                                    </span>
+                                  </span>
+                                </span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p
+                          class="mt-5 rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-4 text-sm leading-relaxed text-slate-400"
+                          role="status"
+                        >
+                          Despliegue pendiente: el espacio está reservado para incorporar los tableros
+                          cuando estén publicados.
+                        </p>
+                      )}
+                    </div>
+                  </article>
+                </div>
+
+                {/* ---------- Modo horizontal (lg+): trigger del modal ---------- */}
+                <button
+                  type="button"
+                  class="vt-h vt-h-summary hidden lg:block"
+                  data-vt-h-side={isAbove ? 'above' : 'below'}
+                  data-vt-open-modal={modalId}
+                  aria-haspopup="dialog"
+                  aria-controls={modalId}
+                  aria-label={`${event.title}, ${event.dateLabel}. Abrir detalles y tableros.`}
                 >
+                  <span class:list={['vt-h-stick', isAbove ? 'vt-h-stick-above' : 'vt-h-stick-below']}>
+                    <time datetime={event.date} class="vt-h-label" aria-hidden="true">
+                      <span class:list={['vt-h-day', event.isHito ? 'text-amber-100' : 'text-white']}>
+                        {badge.day}
+                      </span>
+                      <span class:list={['vt-h-month', event.isHito ? 'text-amber-300/90' : 'text-blue-300/90']}>
+                        {badge.monthYear.replace(' ', ' ')}
+                      </span>
+                    </time>
+                    <span class:list={['vt-h-name', event.isHito ? 'text-amber-100/90' : 'text-slate-200/85']}>
+                      {event.title}
+                    </span>
+                    <span class="vt-h-line" aria-hidden="true" />
+                  </span>
+
                   <span
                     class:list={[
-                      'vt-marker block size-full rounded-full ring-4',
-                      event.isHito
-                        ? 'bg-amber-300 ring-amber-300/30'
-                        : 'bg-blue-400 ring-blue-400/25',
+                      'vt-marker vt-h-dot',
+                      event.isHito ? 'vt-h-dot-hito' : '',
                     ]}
+                    aria-hidden="true"
                   >
                     {event.isHito && (
-                      <span class="vt-marker-pulse absolute inset-0 rounded-full bg-amber-300/70"></span>
+                      <span class="vt-marker-pulse absolute inset-0 rounded-full bg-amber-300/70" />
                     )}
                   </span>
-                </span>
+                </button>
 
-                {/* Etiqueta de fecha (escritorio) — alineada al lado izquierdo de la línea */}
-                <time
-                  datetime={event.date}
-                  class:list={[
-                    'vt-date-side hidden md:absolute md:top-0 md:left-0 md:block md:w-[6.75rem] md:text-right',
-                  ]}
+                {/* ---------- Modal nativo del nodo (lg+) ---------- */}
+                <dialog
+                  id={modalId}
+                  class="vt-modal"
+                  data-vt-modal
+                  data-vt-modal-id={modalId}
+                  data-vt-hito={event.isHito ? 'true' : 'false'}
+                  aria-labelledby={`${modalId}-title`}
                 >
-                  <span
-                    class:list={[
-                      'block font-mono text-3xl font-bold leading-none tabular-nums tracking-tight',
-                      event.isHito ? 'text-amber-200' : 'text-white',
-                    ]}
-                  >
-                    {badge.day}
-                  </span>
-                  <span
-                    class:list={[
-                      'mt-1 block font-mono text-[11px] font-semibold uppercase tracking-[0.18em]',
-                      event.isHito ? 'text-amber-300/85' : 'text-blue-300/85',
-                    ]}
-                  >
-                    {badge.monthYear}
-                  </span>
-                </time>
+                  <form method="dialog" class="vt-modal-close-form">
+                    <button
+                      type="submit"
+                      class="vt-modal-close"
+                      aria-label="Cerrar"
+                    >
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </form>
 
-                {/* Tarjeta */}
-                <article
-                  class="vt-card relative ml-14 md:ml-[11rem]"
-                  data-vt-card
-                >
-                  <div
-                    class:list={[
-                      'rounded-2xl border bg-slate-900/65 p-5 shadow-lg shadow-black/30 ring-1 ring-white/5 backdrop-blur md:p-6',
-                      event.isHito
-                        ? 'border-amber-300/35 hover:border-amber-300/55'
-                        : 'border-white/10 hover:border-blue-400/40',
-                      'transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-950/40',
-                    ]}
-                  >
-                    <header class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <div class="vt-modal-content">
+                    <header class="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                       {event.isHito && (
                         <span class="inline-flex items-center gap-1 rounded-full border border-amber-300/40 bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-100">
                           <span aria-hidden="true">★</span> Hito
                         </span>
                       )}
-                      {/* Fecha en línea (móvil) — escondida en escritorio porque la fecha grande va al lado de la línea */}
                       <time
                         datetime={event.date}
                         class:list={[
-                          'font-mono text-[11px] font-semibold tabular-nums uppercase tracking-[0.16em] md:hidden',
+                          'font-mono text-[11px] font-semibold uppercase tracking-[0.16em] tabular-nums',
                           event.isHito ? 'text-amber-200/90' : 'text-blue-300/90',
                         ]}
                       >
@@ -249,123 +378,114 @@ const isPending = (embeds: TimelineEmbed[]): boolean => embeds.length === 0;
                       </time>
                     </header>
 
-                    <h3 class="mt-2 text-pretty text-lg font-semibold leading-snug tracking-tight text-white md:text-xl">
+                    <h3
+                      id={`${modalId}-title`}
+                      class="mt-3 text-pretty text-xl font-semibold leading-snug tracking-tight text-white md:text-2xl"
+                    >
                       {event.title}
                     </h3>
 
                     {event.location && (
-                      <p class="mt-1 text-[12px] uppercase tracking-[0.16em] text-slate-400">
+                      <p class="mt-1 text-[11px] uppercase tracking-[0.16em] text-slate-400">
                         {event.location}
                       </p>
                     )}
 
                     {event.description && (
-                      <p class="mt-3 text-pretty text-sm leading-relaxed text-slate-300 md:text-[15px] md:leading-relaxed">
+                      <p class="mt-4 text-pretty text-[13px] leading-relaxed text-slate-300 md:text-sm">
                         {event.description}
                       </p>
                     )}
 
-                    {/* Embebidos */}
-                    {isPending(event.embeds) ? (
+                    {hasLinks ? (
+                      <>
+                        <p class="mt-6 text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-300/85">
+                          Tableros publicados
+                        </p>
+                        <ul
+                          class="mt-3 grid gap-2"
+                          aria-label={`Tableros publicados de ${event.title}`}
+                        >
+                          {event.embeds.map((embed, embedIndex) => (
+                            <li class="min-w-0">
+                              {embed.url !== '#' ? (
+                                <a
+                                  href={embed.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class:list={[
+                                    'group flex items-start gap-3 rounded-xl border bg-slate-950/60 p-3 transition hover:-translate-y-0.5',
+                                    event.isHito
+                                      ? 'border-amber-300/25 hover:border-amber-300/55 hover:bg-amber-500/5'
+                                      : 'border-white/10 hover:border-blue-400/45 hover:bg-blue-500/5',
+                                  ]}
+                                >
+                                  <span
+                                    class:list={[
+                                      'mt-0.5 font-mono text-[10px] font-semibold uppercase tabular-nums tracking-[0.18em]',
+                                      event.isHito ? 'text-amber-200/90' : 'text-blue-300/90',
+                                    ]}
+                                  >
+                                    {String(embedIndex + 1).padStart(2, '0')}
+                                  </span>
+                                  <span class="min-w-0 flex-1">
+                                    <span class="block text-sm font-semibold text-white group-hover:text-blue-100">
+                                      {embed.title}
+                                    </span>
+                                    {embed.subtitle && (
+                                      <span class="mt-0.5 block text-[11px] uppercase tracking-[0.14em] text-slate-400">
+                                        {embed.subtitle}
+                                      </span>
+                                    )}
+                                    {embed.description && (
+                                      <span class="mt-1 block text-[12px] leading-relaxed text-slate-400">
+                                        {embed.description}
+                                      </span>
+                                    )}
+                                  </span>
+                                  <span
+                                    class="mt-0.5 text-blue-300 transition group-hover:translate-x-0.5 group-hover:text-blue-200"
+                                    aria-hidden="true"
+                                  >
+                                    ↗
+                                  </span>
+                                </a>
+                              ) : (
+                                <span class="flex items-start gap-3 rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-3 text-sm text-slate-400">
+                                  <span class="mt-0.5 font-mono text-[10px] font-semibold uppercase tabular-nums tracking-[0.18em] text-slate-500">
+                                    {String(embedIndex + 1).padStart(2, '0')}
+                                  </span>
+                                  <span class="min-w-0 flex-1">
+                                    <span class="block text-sm font-semibold text-slate-300">
+                                      {embed.title}
+                                    </span>
+                                    <span class="mt-0.5 block text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                                      Pendiente de publicación
+                                    </span>
+                                  </span>
+                                </span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    ) : (
                       <p
-                        class="mt-5 rounded-xl border border-dashed border-slate-700 bg-slate-900/40 p-4 text-sm leading-relaxed text-slate-400"
+                        class="mt-5 rounded-lg border border-dashed border-slate-600 bg-slate-950/50 p-3 text-[12px] leading-relaxed text-slate-400"
                         role="status"
                       >
                         Despliegue pendiente: el espacio está reservado para incorporar los tableros
                         cuando estén publicados.
                       </p>
-                    ) : (
-                      <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                        {event.embeds.map((embed, embedIndex) => {
-                          const embedKey = buildEmbedKey(event.id, embedIndex);
-                          return (
-                            <figure
-                              class="vt-embed group flex flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-950/70 ring-1 ring-white/5 transition hover:border-blue-400/40"
-                              data-vt-embed
-                              data-vt-embed-kind={embed.kind}
-                              data-vt-embed-url={embed.url}
-                              data-vt-embed-key={embedKey}
-                            >
-                              <header class="flex items-baseline gap-2 px-3 pt-3">
-                                <span class="font-mono text-[10px] font-medium uppercase tabular-nums tracking-[0.18em] text-blue-300/90">
-                                  {String(embedIndex + 1).padStart(2, '0')}
-                                </span>
-                                <h4 class="text-sm font-semibold text-white">{embed.title}</h4>
-                              </header>
-                              {embed.subtitle && (
-                                <p class="px-3 pb-1 text-[11px] uppercase tracking-[0.14em] text-slate-400">
-                                  {embed.subtitle}
-                                </p>
-                              )}
-                              {embed.kind === 'iframe' && (
-                                <div class="vt-embed-frame relative mt-3 aspect-video w-full bg-slate-900">
-                                  <div
-                                    class="vt-embed-skeleton absolute inset-0 animate-pulse bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-                                    aria-hidden="true"
-                                  ></div>
-                                  <iframe
-                                    title={`Vista previa: ${embed.title}`}
-                                    data-vt-iframe
-                                    data-vt-iframe-src={embed.url}
-                                    src="about:blank"
-                                    loading="lazy"
-                                    allowfullscreen
-                                    referrerpolicy="strict-origin-when-cross-origin"
-                                    class="absolute inset-0 h-full w-full"
-                                  ></iframe>
-                                </div>
-                              )}
-                              {embed.kind === 'image' && (
-                                <img
-                                  src={embed.url}
-                                  alt={embed.title}
-                                  loading="lazy"
-                                  decoding="async"
-                                  class="mt-3 aspect-video w-full object-cover"
-                                />
-                              )}
-                              {embed.kind === 'video' && (
-                                <video
-                                  src={embed.url}
-                                  controls
-                                  preload="metadata"
-                                  playsinline
-                                  class="mt-3 aspect-video w-full bg-black"
-                                ></video>
-                              )}
-                              {embed.kind === 'link' && (
-                                <div class="mt-3 flex items-center justify-between gap-2 border-t border-white/5 bg-slate-900/40 px-3 py-2 text-[12px]">
-                                  <span class="truncate text-slate-400">{embed.url === '#' ? 'Enlace pendiente' : embed.url}</span>
-                                </div>
-                              )}
-                              <footer class="mt-auto flex items-center justify-between gap-2 border-t border-white/5 bg-slate-900/40 px-3 py-2">
-                                {embed.url !== '#' ? (
-                                  <a
-                                    href={embed.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-[12px] font-semibold text-blue-300 transition hover:text-blue-200"
-                                  >
-                                    Abrir en pestaña nueva →
-                                  </a>
-                                ) : (
-                                  <span class="text-[12px] font-medium text-slate-500">
-                                    Pendiente de publicación
-                                  </span>
-                                )}
-                              </footer>
-                            </figure>
-                          );
-                        })}
-                      </div>
                     )}
                   </div>
-                </article>
+                </dialog>
               </li>
             );
           })
         }
-      </ol>
+        </ol>
+      </div>
     </div>
   </div>
 </section>
@@ -489,6 +609,380 @@ const isPending = (embeds: TimelineEmbed[]): boolean => embeds.length === 0;
     .vt-section :global(.vt-marker-pulse),
     .vt-section :global(.vt-rail-comet) {
       animation: none !important;
+    }
+  }
+
+  /* Hint en la zona del riel horizontal (sólo lg+). Se desvanece cuando hay un
+     modal abierto, marcado por el script con `data-vt-modal-open` en la sección. */
+  .vt-section :global(.vt-h-hint) {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .vt-section :global(.vt-h-hint) {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(var(--vt-row-height) + 1rem);
+      margin: 0;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(148, 163, 184, 0.7);
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+    .vt-section[data-vt-modal-open='true'] :global(.vt-h-hint) {
+      opacity: 0;
+    }
+  }
+
+  /*
+   * Modo horizontal (lg+): línea recta a lo ancho con nodos uniformemente
+   * distribuidos. Cada nodo es un <button> que abre un <dialog> modal.
+   */
+  @media (min-width: 1024px) {
+    .vt-section :global(.vt-rail) {
+      overflow-x: visible;
+      overflow-y: visible;
+      scroll-behavior: auto;
+      --vt-row-height: 26rem;
+      padding-bottom: 3rem;
+      margin-top: 0.5rem;
+    }
+    .vt-section :global(.vt-rail-track) {
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      padding: 0;
+    }
+    .vt-section :global(.vt-rail-base) {
+      top: calc(var(--vt-row-height) / 2);
+      bottom: auto;
+      left: 0;
+      right: 0;
+      width: auto;
+      height: 2px;
+      transform: translateY(-50%);
+      border-radius: 9999px;
+      background-image: linear-gradient(
+        to right,
+        rgba(96, 165, 250, 0.55),
+        rgba(96, 165, 250, 0.75),
+        rgba(252, 211, 77, 0.55)
+      );
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.25);
+    }
+    .vt-section :global(.vt-rail-progress),
+    .vt-section :global(.vt-rail-comet) {
+      display: none !important;
+    }
+    .vt-section :global(.vt-events) {
+      display: grid;
+      grid-template-columns: repeat(var(--vt-count, 8), minmax(0, 1fr));
+      gap: 0;
+      align-items: stretch;
+    }
+    .vt-section :global(.vt-events > * + *) {
+      margin-top: 0;
+    }
+    .vt-section :global(.vt-rail .vt-event) {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: var(--vt-row-height);
+      padding: 0;
+    }
+
+    /* Botón disparador del modal: ocupa toda la columna del evento. */
+    .vt-section :global(.vt-h-summary) {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      display: block;
+      cursor: pointer;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      color: inherit;
+      font: inherit;
+      text-align: inherit;
+      outline: none;
+    }
+    .vt-section :global(.vt-h-summary:focus-visible) {
+      outline: 2px solid rgba(96, 165, 250, 0.85);
+      outline-offset: 4px;
+      border-radius: 0.5rem;
+    }
+
+    /* Anular el glow animado heredado para que el halo del nodo horizontal
+       mantenga su tamaño y composición uniforme. */
+    .vt-section :global(.vt-h-summary .vt-marker) {
+      animation: none !important;
+    }
+
+    /* Nodo (punto sobre la línea). */
+    .vt-section :global(.vt-h-dot) {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      transform: translate(-50%, -50%);
+      border-radius: 9999px;
+      background: rgb(96, 165, 250);
+      box-shadow:
+        0 0 0 5px rgba(15, 23, 42, 0.95),
+        0 0 0 6px rgba(96, 165, 250, 0.35),
+        0 0 18px 2px rgba(96, 165, 250, 0.55);
+      transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1),
+        box-shadow 240ms ease;
+    }
+    .vt-section :global(.vt-h-dot-hito) {
+      background: rgb(252, 211, 77);
+      box-shadow:
+        0 0 0 5px rgba(15, 23, 42, 0.95),
+        0 0 0 6px rgba(252, 211, 77, 0.35),
+        0 0 22px 3px rgba(252, 211, 77, 0.65);
+    }
+    .vt-section :global(.vt-h-summary:hover .vt-h-dot) {
+      transform: translate(-50%, -50%) scale(1.18);
+    }
+    .vt-section :global(.vt-h-summary[data-vt-active='true'] .vt-h-dot) {
+      transform: translate(-50%, -50%) scale(1.28);
+      box-shadow:
+        0 0 0 5px rgba(15, 23, 42, 0.95),
+        0 0 0 7px rgba(96, 165, 250, 0.55),
+        0 0 24px 4px rgba(96, 165, 250, 0.7);
+    }
+    .vt-section :global(.vt-h-summary[data-vt-active='true'] .vt-h-dot-hito) {
+      box-shadow:
+        0 0 0 5px rgba(15, 23, 42, 0.95),
+        0 0 0 7px rgba(252, 211, 77, 0.55),
+        0 0 26px 5px rgba(252, 211, 77, 0.8);
+    }
+
+    /* Stick (línea fina + etiqueta) que sale del nodo hacia arriba o abajo. */
+    .vt-section :global(.vt-h-stick) {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      width: max-content;
+      max-width: calc(100% + 4rem);
+      pointer-events: none;
+    }
+    .vt-section :global(.vt-h-stick-above) {
+      bottom: 50%;
+      margin-bottom: 0.75rem;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .vt-section :global(.vt-h-stick-below) {
+      top: 50%;
+      margin-top: 0.75rem;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+    }
+    .vt-section :global(.vt-h-line) {
+      width: 1.5px;
+      height: 0.9rem;
+      border-radius: 9999px;
+      background: linear-gradient(
+        to bottom,
+        rgba(148, 163, 184, 0.1),
+        rgba(96, 165, 250, 0.75)
+      );
+    }
+    .vt-section :global(.vt-h-stick-below .vt-h-line) {
+      background: linear-gradient(
+        to top,
+        rgba(148, 163, 184, 0.1),
+        rgba(96, 165, 250, 0.75)
+      );
+    }
+    .vt-section :global([data-vt-hito='true'] .vt-h-line) {
+      background: linear-gradient(
+        to bottom,
+        rgba(148, 163, 184, 0.1),
+        rgba(252, 211, 77, 0.8)
+      );
+    }
+    .vt-section :global([data-vt-hito='true'] .vt-h-stick-below .vt-h-line) {
+      background: linear-gradient(
+        to top,
+        rgba(148, 163, 184, 0.1),
+        rgba(252, 211, 77, 0.8)
+      );
+    }
+
+    /* Etiqueta de fecha (al extremo del stick). */
+    .vt-section :global(.vt-h-label) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.125rem;
+      padding: 0 0.5rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      text-align: center;
+      transition: transform 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+    .vt-section :global(.vt-h-day) {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .vt-section :global(.vt-h-month) {
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .vt-section :global(.vt-h-summary:hover .vt-h-label) {
+      transform: translateY(-2px);
+    }
+    .vt-section :global(.vt-h-stick-below ~ .vt-h-summary:hover .vt-h-label),
+    .vt-section :global(.vt-h-summary[data-vt-h-side='below']:hover .vt-h-label) {
+      transform: translateY(2px);
+    }
+
+    /* Nombre del evento en orientación vertical. */
+    .vt-section :global(.vt-h-name) {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      max-height: 8rem;
+      max-width: 1.05rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      line-height: 1;
+      text-align: center;
+      user-select: none;
+      transition: color 240ms ease, transform 240ms ease;
+    }
+    .vt-section :global(.vt-h-stick-above .vt-h-name) {
+      margin: 0.5rem 0 0.25rem;
+    }
+    .vt-section :global(.vt-h-stick-below .vt-h-name) {
+      margin: 0.25rem 0 0.5rem;
+    }
+    .vt-section :global(.vt-h-summary:hover .vt-h-name),
+    .vt-section :global(.vt-h-summary[data-vt-active='true'] .vt-h-name) {
+      color: rgb(241, 245, 249);
+    }
+  }
+
+  /* ---------- Modal nativo del nodo horizontal ----------
+     `<dialog>:modal` ya queda en el top-layer; forzamos `inset: 0; margin: auto;`
+     porque algunos resets globales tumban el `margin: auto` por defecto del UA
+     y el diálogo termina pegado a la esquina superior-izquierda. */
+  .vt-section :global(.vt-modal) {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(36rem, 92vw);
+    height: fit-content;
+    max-width: min(36rem, 92vw);
+    max-height: min(80vh, 44rem);
+    padding: 0;
+    border: 1px solid rgba(96, 165, 250, 0.4);
+    border-radius: 1.1rem;
+    background: rgb(15, 23, 42);
+    color: rgb(241, 245, 249);
+    box-shadow:
+      0 30px 80px -20px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(96, 165, 250, 0.08);
+    overflow: hidden;
+  }
+  .vt-section :global(.vt-modal[data-vt-hito='true']) {
+    border-color: rgba(252, 211, 77, 0.5);
+  }
+  .vt-section :global(.vt-modal::backdrop) {
+    background: rgba(15, 23, 42, 0.74);
+    backdrop-filter: blur(6px);
+  }
+  .vt-section :global(.vt-modal-content) {
+    padding: 1.75rem 1.5rem 1.75rem;
+    overflow-y: auto;
+    max-height: min(80vh, 44rem);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(96, 165, 250, 0.5) transparent;
+  }
+  .vt-section :global(.vt-modal-content::-webkit-scrollbar) {
+    width: 6px;
+  }
+  .vt-section :global(.vt-modal-content::-webkit-scrollbar-thumb) {
+    background: rgba(96, 165, 250, 0.5);
+    border-radius: 9999px;
+  }
+  .vt-section :global(.vt-modal-close-form) {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    margin: 0;
+    z-index: 1;
+  }
+  .vt-section :global(.vt-modal-close) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: rgba(15, 23, 42, 0.85);
+    color: rgb(226, 232, 240);
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: background 200ms ease, border-color 200ms ease, transform 200ms ease;
+  }
+  .vt-section :global(.vt-modal-close:hover) {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(96, 165, 250, 0.55);
+    transform: scale(1.05);
+  }
+  .vt-section :global(.vt-modal-close:focus-visible) {
+    outline: 2px solid rgba(96, 165, 250, 0.85);
+    outline-offset: 2px;
+  }
+
+  /* Animación de aparición del modal. */
+  @keyframes vt-modal-in {
+    0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes vt-modal-backdrop-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .vt-section :global(.vt-modal[open]) {
+    animation: vt-modal-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .vt-section :global(.vt-modal[open]::backdrop) {
+    animation: vt-modal-backdrop-in 220ms ease;
+  }
+
+  /* Reducir movimiento: sin animaciones de modal ni hover del nodo. */
+  @media (prefers-reduced-motion: reduce) {
+    .vt-section :global(.vt-modal[open]),
+    .vt-section :global(.vt-modal[open]::backdrop) {
+      animation: none !important;
+    }
+    .vt-section :global(.vt-h-dot),
+    .vt-section :global(.vt-h-label) {
+      transition: none !important;
     }
   }
 </style>

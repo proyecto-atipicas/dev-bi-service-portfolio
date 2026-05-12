@@ -8,6 +8,10 @@ import { electionTimeline } from '../data/timeline-elecciones';
 
 const currentYear = new Date().getFullYear();
 
+/** Repositorio Power BI / Fabric con todos los tableros del ciclo electoral. */
+const repositorioPowerBiUrl =
+  'https://app.fabric.microsoft.com/view?r=eyJrIjoiMDNhYTFhMDMtZjFlYy00NjY3LThhOGQtMmVjMGY4YmZlMWRmIiwidCI6IjFiZmY4NTRkLWUwY2YtNDEwZi1iY2IwLWQ5NDkzNDQzMWU0MyIsImMiOjR9';
+
 const contactMarqueeTags = [
   'Tableros de control',
   'Análisis electoral',
@@ -70,36 +74,27 @@ const mailto = (() => {
             class="text-[11px] font-semibold uppercase tracking-[0.24em] text-blue-300/90"
             data-animate-text
           >
-            Business Intelligence · Portafolio interno
+            Business Intelligence
           </p>
           <h1
-            class="mt-4 text-balance text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl md:leading-tight"
+            class="mt-4 text-balance text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl md:leading-tight"
             data-animate-text
           >
-            Servicios de analítica e inteligencia de negocio para mover tu área con datos confiables.
+            Decide con datos confiables.
           </h1>
           <p
-            class="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-slate-200 md:text-lg md:leading-relaxed"
+            class="mt-5 max-w-xl text-pretty text-base leading-relaxed text-slate-200 md:text-lg md:leading-relaxed"
             data-animate-text
           >
-            Cuatro líneas de servicio listas para acompañar a cada área: automatización de tareas operativas,
-            reportería gobernada, desarrollo a la medida sobre los datos y estructuración de bases con
-            sincronización entre sistemas.
+            Portafolio de servicios del área de inteligencia de negocio.
           </p>
-          <div class="mt-7 flex flex-wrap gap-3" data-animate-text>
+          <div class="mt-7" data-animate-text>
             <a
               href="#servicios"
               class="inline-flex items-center gap-2 rounded-full bg-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
             >
               Ver los servicios
               <span aria-hidden="true">↓</span>
-            </a>
-            <a
-              href="#contacto"
-              class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:border-white/45 hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
-            >
-              Coordinar mesa de trabajo
-              <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>
@@ -243,11 +238,84 @@ const mailto = (() => {
       number={indexedServices[1].number}
       total={totalServices}
     >
+      {/* Repositorio Power BI / Fabric: acceso al consolidado de tableros antes del recorrido cronológico. */}
+      <section
+        id="reporteria-repositorio"
+        class="relative scroll-mt-32 bg-white py-14 md:py-20"
+        aria-labelledby="reporteria-repositorio-heading"
+      >
+        <div class="mx-auto w-[92%] max-w-7xl">
+          <header class="mb-8 max-w-3xl md:mb-10">
+            <p
+              class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
+              data-animate-text
+            >
+              Repositorio completo
+            </p>
+            <h3
+              id="reporteria-repositorio-heading"
+              class="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
+              data-animate-text
+            >
+              Repositorio de tableros Power BI del ciclo electoral
+            </h3>
+            <p
+              class="mt-4 text-pretty text-base leading-relaxed text-slate-600 md:text-lg"
+              data-animate-text
+            >
+              Vista consolidada con todos los tableros publicados por el área: elecciones atípicas, Congreso, consultas
+              y demás despliegues del ciclo. Da clic para abrir el repositorio completo en Power BI.
+            </p>
+          </header>
+
+          <a
+            href={repositorioPowerBiUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group relative block overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-md ring-1 ring-slate-900/[0.04] transition duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-900/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-500"
+            aria-label="Abrir el repositorio completo de tableros Power BI"
+          >
+            <div class="relative aspect-video w-full">
+              <iframe
+                src={repositorioPowerBiUrl}
+                title="Repositorio completo de tableros Power BI del ciclo electoral"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin"
+                class="absolute inset-0 h-full w-full border-0"
+              ></iframe>
+              {/* Capa transparente que captura el clic del enlace sin bloquear el iframe en hover. */}
+              <span class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-3 bg-gradient-to-t from-slate-950/85 via-slate-950/35 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:p-6">
+                <span class="text-[12px] font-semibold uppercase tracking-[0.18em] text-blue-200">
+                  Power BI · Repositorio completo
+                </span>
+                <span class="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-slate-900 shadow-sm">
+                  Abrir en pestaña nueva
+                  <span aria-hidden="true">↗</span>
+                </span>
+              </span>
+            </div>
+          </a>
+
+          <div class="mt-6 flex justify-center md:justify-start" data-animate-text>
+            <a
+              href={repositorioPowerBiUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-blue-950/25 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
+            >
+              Ver repositorio completo
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <VerticalTimeline
         id="linea-tiempo-elecciones"
         eyebrow="Vitrina de entregables · Evolución del servicio"
         heading="Línea de tiempo de elecciones atípicas, Congreso 2026 y Presidencia 2026"
-        description="Recorrido cronológico de los tableros publicados por el área durante el ciclo electoral. Cada parada concentra fecha, contexto y tableros embebidos, e ilustra cómo ha madurado la práctica de reportería al pasar de las atípicas locales a los hitos nacionales."
+        description="Recorrido cronológico de los despliegues publicados por el área durante el ciclo electoral. Cada parada incluye los enlaces a los tableros publicados; en el modo horizontal, pulsa un nodo para abrir el detalle de la elección."
         events={electionTimeline}
       />
     </ServiceSection>
@@ -278,62 +346,15 @@ const mailto = (() => {
       />
     </ServiceSection>
 
-    {/* GALERÍA DE APLICACIONES */}
-    <section
-      id="galeria-herramientas"
-      class="relative scroll-mt-32 border-t border-slate-200 bg-white py-16 md:py-20"
-      aria-labelledby="galeria-heading"
-      data-animate
-    >
-      <div class="mx-auto w-[92%] max-w-7xl">
-        <header class="mb-8 max-w-3xl md:mb-10">
-          <p
-            class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
-            data-animate-text
-          >
-            Cierre visual
-          </p>
-          <h2
-            id="galeria-heading"
-            class="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
-            data-animate-text
-          >
-            Todas las herramientas del área de BI
-          </h2>
-          <p
-            class="mt-4 text-pretty text-base leading-relaxed text-slate-600 md:text-lg"
-            data-animate-text
-          >
-            Todas las herramientas que construimos para que los equipos trabajen con datos confiables, desde la captura
-            hasta la decisión.
-          </p>
-        </header>
-
-        <figure
-          class="mx-auto max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm ring-1 ring-slate-950/[0.03] sm:max-w-lg md:max-w-2xl"
-        >
-          <img
-            src="/herramientas/allapps.png"
-            alt="Vista general de aplicaciones y herramientas del área de Business Intelligence"
-            class="h-auto w-full object-contain object-center"
-            width="688"
-            height="684"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-      </div>
-    </section>
-
     {/* CONTACTO */}
     <section
       id="contacto"
-      class="relative scroll-mt-32 overflow-x-hidden border-t border-slate-200 bg-slate-50 pb-16 pt-12 text-slate-900 md:pb-20 md:pt-16"
+      class="relative scroll-mt-32 overflow-x-hidden border-t border-slate-200 bg-white pb-16 pt-12 text-slate-900 md:pb-20 md:pt-16"
       aria-labelledby="contacto-heading"
       data-animate
     >
       <div
-        class="relative left-1/2 mb-10 w-screen max-w-none -translate-x-1/2 border-b border-slate-100 bg-white px-4 py-3 sm:px-8 md:mb-12 md:py-4"
+        class="relative left-1/2 mb-12 w-screen max-w-none -translate-x-1/2 border-y border-slate-100 bg-slate-50 px-4 py-3 sm:px-8 md:mb-16 md:py-4"
         role="region"
         aria-roledescription="carrusel"
         aria-label="Palabras clave del área de Business Intelligence"
@@ -366,46 +387,41 @@ const mailto = (() => {
         </div>
       </div>
 
-      <div class="relative mx-auto flex w-[92%] max-w-7xl justify-center">
-        <div
-          class="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white px-8 py-10 shadow-sm ring-1 ring-slate-900/[0.03] md:px-12 md:py-12"
+      <div class="relative mx-auto w-[92%] max-w-3xl text-center">
+        <p
+          class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
+          data-animate-text
         >
-          <p
-            class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
-            data-animate-text
-          >
-            Mesa de trabajo
-          </p>
-          <h2
-            id="contacto-heading"
-            class="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-[1.75rem] md:leading-snug"
-            data-animate-text
-          >
-            Coordinamos requerimientos con el área de BI
-          </h2>
-          <p
-            class="mt-5 max-w-md text-pretty text-[15px] leading-relaxed text-slate-600 md:text-base md:leading-relaxed"
-            data-animate-text
-          >
-            Priorizamos iniciativas con cada área, acordamos alcance y entregables, y acompañamos la puesta en marcha
-            para que la operación se mantenga estable y la adopción sea efectiva en el día a día.
-          </p>
+          Mesa de trabajo
+        </p>
+        <h2
+          id="contacto-heading"
+          class="mt-3 text-balance text-3xl font-bold tracking-tight text-slate-900 md:text-4xl md:leading-tight"
+          data-animate-text
+        >
+          Coordinamos requerimientos con el área de BI
+        </h2>
+        <p
+          class="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-slate-600 md:text-lg md:leading-relaxed"
+          data-animate-text
+        >
+          Priorizamos iniciativas con cada área, acordamos alcance y entregables, y acompañamos la puesta en marcha
+          para que la operación se mantenga estable y la adopción sea efectiva en el día a día.
+        </p>
 
-          <div class="mt-7 grid gap-3 sm:grid-cols-2" data-animate-text>
-            <a
-              href={mailto}
-              class="cta-header-attention relative inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
-            >
-              Escribir al área de BI
-              <span aria-hidden="true">→</span>
-            </a>
-            <a
-              href="mailto:proyecto.atipicas@linktic.com"
-              class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-800 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 md:text-[15px]"
-            >
-              proyecto.atipicas@linktic.com
-            </a>
-          </div>
+        <div class="mt-9 flex flex-wrap justify-center gap-3" data-animate-text>
+          <a
+            href={mailto}
+            class="cta-header-attention relative inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
+          >
+            Escribir al área de BI
+          </a>
+          <a
+            href="mailto:proyecto.atipicas@linktic.com"
+            class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-7 py-3.5 text-sm font-semibold text-slate-800 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 md:text-[15px]"
+          >
+            proyecto.atipicas@linktic.com
+          </a>
         </div>
       </div>
     </section>

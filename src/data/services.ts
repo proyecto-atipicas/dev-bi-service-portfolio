@@ -71,7 +71,7 @@ export const services: Record<ServiceKey, ServiceDetail> = {
   automatizacion: {
     anchor: 'automatizacion',
     title: 'Automatización',
-    valueSubtitle: 'Bots, n8n y monitoreo continuo que liberan a tu equipo del trabajo manual.',
+    valueSubtitle: 'Flujos de trabajo y monitoreo continuo que liberan a tu equipo del trabajo manual.',
     shortDesc: 'Procesos que corren solos y avisan cuando algo se desvía.',
     iconPath: ICON_AUTOMATIZACION,
     videoSrc: '/servicio-automatizacion.mp4',
@@ -94,7 +94,7 @@ export const services: Record<ServiceKey, ServiceDetail> = {
       {
         kind: 'link',
         subtitle: 'Monitoreo interno',
-        title: 'AppBI',
+        title: 'AppBI - PMO',
         description:
           'Aplicación transversal para el monitoreo de KPIs operativos y el seguimiento centralizado de los avances de la PMO.',
         url: 'https://appbi.actoreselectorales.com/',
@@ -118,7 +118,7 @@ export const services: Record<ServiceKey, ServiceDetail> = {
       {
         kind: 'link',
         subtitle: 'Documentos en línea',
-        title: 'Descarga de credenciales',
+        title: 'Visor de documentos',
         description:
           'Visor en línea para consultar y descargar resoluciones y credenciales del sistema CNE sin recorrer múltiples portales.',
         url: 'https://credenciales.actoreselectorales.com/',

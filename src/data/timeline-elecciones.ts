@@ -272,8 +272,15 @@ export const electionTimeline: TimelineEvent[] = [
     dateLabel: '19 de abril de 2026',
     location: 'Sitionuevo, Magdalena',
     description:
-      'Atípica posterior al hito de Congreso: pendiente de publicación de los tableros del despliegue.',
-    embeds: [],
+      'Atípica posterior al hito de Congreso: tablero municipal con la lectura completa de la jornada.',
+    embeds: [
+      pbiEmbed(
+        'Tablero Sitionuevo',
+        'https://app.powerbi.com/view?r=eyJrIjoiNDRiMmVmZmQtZmI0ZS00NDgzLWE3MzYtNzRmODljMTAxY2RlIiwidCI6IjFiZmY4NTRkLWUwY2YtNDEwZi1iY2IwLWQ5NDkzNDQzMWU0MyIsImMiOjR9',
+        'Resultados y cobertura de la atípica de Sitionuevo, Magdalena.',
+        'Power BI · Sitionuevo',
+      ),
+    ],
   },
   {
     id: 'atipica-fonseca-2026',
@@ -282,8 +289,15 @@ export const electionTimeline: TimelineEvent[] = [
     dateLabel: '3 de mayo de 2026',
     location: 'Fonseca, La Guajira',
     description:
-      'Atípica de La Guajira: pendiente de publicación de los tableros del despliegue.',
-    embeds: [],
+      'Atípica de La Guajira con tablero municipal del despliegue.',
+    embeds: [
+      pbiEmbed(
+        'Tablero Fonseca',
+        'https://app.powerbi.com/view?r=eyJrIjoiNjRjYTk3MDgtODY2My00ZWVkLWIwMTgtOWYzZDQ4NmY3YTczIiwidCI6IjFiZmY4NTRkLWUwY2YtNDEwZi1iY2IwLWQ5NDkzNDQzMWU0MyIsImMiOjR9',
+        'Resultados y cobertura de la atípica de Fonseca, La Guajira.',
+        'Power BI · Fonseca',
+      ),
+    ],
   },
   {
     id: 'presidencia-2026',
