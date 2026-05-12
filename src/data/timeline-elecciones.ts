@@ -67,7 +67,7 @@ export const electionTimeline: TimelineEvent[] = [
   },
   {
     id: 'cmj-2025',
-    title: 'Atípica CMJ',
+    title: 'CMJ',
     date: '2025-10-19',
     dateLabel: '19 de octubre de 2025',
     description:
