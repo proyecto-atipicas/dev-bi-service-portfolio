@@ -137,12 +137,12 @@ export const services: Record<ServiceKey, ServiceDetail> = {
       'Cada decisión exige un nuevo Excel, las cifras cambian según quién las consulte y los reportes ad-hoc se acumulan en la mesa del equipo. Sin una base común, la analítica se vuelve un cuello de botella en lugar de una palanca.',
     solutionParagraph:
       'Construimos catálogos de reportes y tableros versionados, con métricas homologadas y entregas programadas. Cada área accede a información comparable, auditable y siempre alineada a las fuentes oficiales, reduciendo solicitudes repetidas y acelerando la toma de decisión.',
-    benefits: [
-      'Tableros y reportes con métricas homologadas, sin "depende de quién pregunte".',
-      'Entregas programadas y suscripciones para que cada área reciba sus cifras a tiempo.',
-      'Reducción inmediata de solicitudes ad-hoc al concentrarlas en reportes base.',
-      'Cobertura especial del ciclo electoral: atípicas, Congreso 2026 y Presidencia 2026.',
-    ],
+      benefits: [
+        'Tableros y reportes con métricas de las elecciones presidenciales y Congreso 2026.',
+        'Tableros y reportes con métricas de las elecciones atipicas',
+        'Modelamiento de datos para las elecciones de Presidencia y Congreso 2026 y atipicas',
+        'Modelado de datos para analsisis electoral',
+      ],
     successMetrics: [
       'Más de 20 tableros versionados publicados a lo largo del ciclo electoral 2025–2026.',
       'Reducción medible de solicitudes ad-hoc al concentrar preguntas frecuentes en reportes base.',
