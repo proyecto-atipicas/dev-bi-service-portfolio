@@ -1,0 +1,163 @@
+---
+/**
+ * DeliverablesShowcase.astro
+ * --------------------------
+ * Vitrina genérica de entregables de un servicio. Renderiza una grilla
+ * tipada que admite distintos formatos (iframe embebido, imagen, video,
+ * enlace externo o tarjeta placeholder cuando aún no hay activo público).
+ *
+ * Se utiliza para los servicios distintos a reportería; reportería tiene
+ * su propia vitrina viva (`VerticalTimeline`) con la línea de tiempo
+ * electoral.
+ */
+import type { DeliverableItem } from '../../data/services';
+
+interface Props {
+  items: DeliverableItem[];
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+}
+
+const {
+  items,
+  eyebrow = 'Vitrina de entregables',
+  heading = 'Entregables y referencias',
+  description = 'Una muestra de lo que el área entrega cuando este servicio se activa: aplicaciones, diagramas, tableros o documentación operativa.',
+} = Astro.props;
+
+const hasItems = items.length > 0;
+---
+
+<section class="deliverables-showcase bg-white py-14 md:py-20" data-deliverables>
+  <div class="mx-auto w-[92%] max-w-7xl">
+    <header class="mb-6 max-w-3xl md:mb-8">
+    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600" data-animate-text>
+      {eyebrow}
+    </p>
+    <h3
+      class="mt-3 text-balance text-xl font-bold tracking-tight text-slate-900 md:text-2xl"
+      data-animate-text
+    >
+      {heading}
+    </h3>
+    {description && (
+      <p class="mt-3 text-pretty text-[15px] leading-relaxed text-slate-600" data-animate-text>
+        {description}
+      </p>
+    )}
+  </header>
+
+  {hasItems ? (
+    <div class="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-6" data-stagger>
+      {items.map((item, idx) => (
+        <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm ring-1 ring-slate-900/[0.03] transition hover:-translate-y-0.5 hover:border-blue-300/70 hover:shadow-lg hover:shadow-blue-900/10">
+          <header class="flex items-baseline gap-2 px-5 pt-5">
+            <span class="font-mono text-[11px] font-semibold tabular-nums tracking-[0.18em] text-blue-600">
+              {String(idx + 1).padStart(2, '0')}
+            </span>
+            {item.subtitle && (
+              <span class="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
+                {item.subtitle}
+              </span>
+            )}
+          </header>
+
+          <div class="px-5 pt-2">
+            <h4 class="text-base font-semibold leading-snug tracking-tight text-slate-900 md:text-[17px]">
+              {item.title}
+            </h4>
+            <p class="mt-2 text-pretty text-sm leading-relaxed text-slate-600">
+              {item.description}
+            </p>
+          </div>
+
+          {item.kind === 'iframe' && item.url && (
+            <div class="mt-4 aspect-video w-full overflow-hidden border-t border-slate-200 bg-slate-50">
+              <iframe
+                src={item.url}
+                title={`Vista previa: ${item.title}`}
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin"
+                class="h-full w-full"
+              ></iframe>
+            </div>
+          )}
+
+          {item.kind === 'image' && item.url && (
+            <div class="mt-4 aspect-video w-full overflow-hidden border-t border-slate-200 bg-slate-50">
+              <img
+                src={item.url}
+                alt={item.title}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover"
+              />
+            </div>
+          )}
+
+          {item.kind === 'video' && item.url && (
+            <div class="mt-4 aspect-video w-full overflow-hidden border-t border-slate-200 bg-slate-50">
+              <video
+                src={item.url}
+                muted
+                loop
+                playsinline
+                autoplay
+                preload="metadata"
+                class="h-full w-full object-cover"
+                aria-label={item.title}
+              ></video>
+            </div>
+          )}
+
+          {item.kind === 'placeholder' && (
+            <div
+              class="mx-5 mt-4 flex aspect-video w-auto items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 text-center text-[12px] uppercase tracking-[0.18em] text-slate-400"
+              role="status"
+            >
+              Próxima publicación
+            </div>
+          )}
+
+          {item.kind === 'link' && (
+            <div
+              aria-hidden="true"
+              class="mx-5 mt-4 flex aspect-video w-auto items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 via-white to-slate-100 text-blue-600 ring-1 ring-blue-100"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-12">
+                <path d="M9 7H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M21 3h-7m7 0v7m0-7L10 14" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          )}
+
+          <footer class="mt-auto flex items-center justify-between gap-2 px-5 py-4">
+            {item.url && item.kind !== 'placeholder' ? (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 text-[13px] font-semibold text-blue-700 transition hover:text-blue-800"
+              >
+                Abrir entregable
+                <span aria-hidden="true">→</span>
+              </a>
+            ) : (
+              <span class="text-[12px] font-medium uppercase tracking-[0.18em] text-slate-400">
+                Próximamente
+              </span>
+            )}
+          </footer>
+        </article>
+      ))}
+    </div>
+  ) : (
+    <article
+      class="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600"
+      data-animate-text
+    >
+      Estamos preparando la vitrina pública de este servicio. Coordina con el área de BI para acceder a los entregables disponibles.
+    </article>
+  )}
+  </div>
+</section>

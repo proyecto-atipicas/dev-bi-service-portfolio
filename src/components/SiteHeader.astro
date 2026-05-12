@@ -1,8 +1,14 @@
 ---
+/**
+ * Header global del sitio. Mantiene logo + CTA de contacto y, debajo,
+ * incluye el sub-nav sticky con las anclas de los servicios para que
+ * la navegación dentro de la landing se sienta continua.
+ */
+import { indexedServices } from '../data/services';
 ---
 
 <header
-  class="sticky top-0 z-20 border-b border-white/10 bg-slate-950 text-slate-100 backdrop-blur-md supports-[backdrop-filter]:bg-slate-950/95"
+  class="sticky top-0 z-30 border-b border-white/10 bg-slate-950 text-slate-100 backdrop-blur-md supports-[backdrop-filter]:bg-slate-950/95"
 >
   <div class="mx-auto flex w-[92%] max-w-7xl items-center justify-between gap-4 py-4">
     <a
@@ -12,16 +18,17 @@
     >
       Data<span class="text-blue-400">Vision BI</span>
     </a>
-    <nav class="hidden items-center gap-5 text-sm md:flex">
+
+    <nav class="hidden items-center gap-5 text-sm md:flex" aria-label="Navegación principal">
       <a
-        href="/#servicios"
+        href="#servicios"
         class="font-medium text-slate-300 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
         data-animate-nav
       >
         Servicios
       </a>
       <a
-        href="/#contacto"
+        href="#contacto"
         class="cta-header-attention relative inline-flex rounded-full border border-blue-400/45 bg-blue-500/20 px-4 py-2 font-semibold text-white transition hover:border-blue-300/70 hover:bg-blue-500/35 hover:shadow-md hover:shadow-blue-950/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
         data-animate-nav
       >
@@ -29,4 +36,63 @@
       </a>
     </nav>
   </div>
+
+  {/* Sub-nav sticky con anclas a cada servicio + contacto. */}
+  <nav
+    class="border-t border-white/5 bg-slate-950/95 backdrop-blur-md"
+    aria-label="Navegación de servicios"
+    data-services-subnav
+  >
+    <div class="mx-auto flex w-[92%] max-w-7xl items-center gap-2 overflow-x-auto py-2 text-[13px]">
+      <span
+        class="hidden shrink-0 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 md:inline"
+        aria-hidden="true"
+      >
+        Servicios
+      </span>
+      <span
+        class="hidden h-4 w-px shrink-0 bg-white/10 md:inline-block"
+        aria-hidden="true"
+      ></span>
+
+      {indexedServices.map((service) => (
+        <a
+          href={`#${service.anchor}`}
+          data-subnav-link={service.anchor}
+          class="group inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-medium text-slate-200 transition hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+        >
+          <span class="font-mono text-[11px] font-semibold tabular-nums text-slate-500 transition group-hover:text-blue-300">
+            {service.number}
+          </span>
+          <span class="whitespace-nowrap">{service.title.split(' ')[0]}</span>
+        </a>
+      ))}
+
+      <span class="ml-auto hidden h-4 w-px shrink-0 bg-white/10 md:inline-block" aria-hidden="true"></span>
+      <a
+        href="#contacto"
+        class="inline-flex shrink-0 items-center gap-2 rounded-full border border-blue-400/40 bg-blue-500/15 px-3.5 py-1.5 font-semibold text-white transition hover:border-blue-300/70 hover:bg-blue-500/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+      >
+        Contacto
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </nav>
 </header>
+
+<style>
+  [data-services-subnav] {
+    scrollbar-width: none;
+  }
+  [data-services-subnav] > div::-webkit-scrollbar {
+    display: none;
+  }
+  [data-services-subnav] a[data-subnav-link][data-active='true'] {
+    background-color: rgba(59, 130, 246, 0.22);
+    border-color: rgba(96, 165, 250, 0.55);
+    color: white;
+  }
+  [data-services-subnav] a[data-subnav-link][data-active='true'] span:first-child {
+    color: rgb(147 197 253);
+  }
+</style>

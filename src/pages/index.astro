@@ -1,6 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { services } from '../data/services';
+import ServiceSection from '../components/ServiceSection.astro';
+import DeliverablesShowcase from '../components/shared/DeliverablesShowcase.astro';
+import VerticalTimeline from '../components/shared/VerticalTimeline.astro';
+import { indexedServices, services, totalServices } from '../data/services';
+import { electionTimeline } from '../data/timeline-elecciones';
 
 const currentYear = new Date().getFullYear();
 
@@ -12,28 +16,38 @@ const contactMarqueeTags = [
   'Estructuración de bases de datos',
 ];
 
-/* Orden controlado para el showcase (numeración 01..04). */
-const showcaseOrder = [
-  'automatizacion',
-  'reporteria',
-  'desarrollo-medida-datos',
-  'estructuracion-bases-sincronizacion',
-] as const;
-
-const showcaseEntries = showcaseOrder.map((id, index) => ({
-  id,
-  number: String(index + 1).padStart(2, '0'),
-  ...services[id],
-}));
-const totalShowcase = String(showcaseEntries.length).padStart(2, '0');
+/* Cuerpo prediseñado del correo para la mesa de trabajo. */
+const mailto = (() => {
+  const subject = encodeURIComponent('Mesa de trabajo con el área de BI');
+  const body = encodeURIComponent(
+    [
+      'Hola equipo de BI,',
+      '',
+      'Me gustaría coordinar una mesa de trabajo para un nuevo requerimiento.',
+      '',
+      '· Servicio de interés (automatización / reportería / desarrollo / estructuración):',
+      '· Contexto / objetivo del requerimiento:',
+      '· Resultado esperado:',
+      '· Fecha aproximada o ventana de tiempo:',
+      '',
+      'Gracias por la coordinación.',
+    ].join('\n'),
+  );
+  return `mailto:proyecto.atipicas@linktic.com?subject=${subject}&body=${body}`;
+})();
 ---
 
 <Layout
-  title="Servicios internos de Business Intelligence"
-  description="Portafolio interno del área de Business Intelligence: automatización, reportería, desarrollo a la medida enfocado a los datos y estructuración de bases con sincronización."
+  title="Portafolio · Servicios de Business Intelligence"
+  description="Portafolio del área de Business Intelligence: automatización, reportería, desarrollo a la medida y estructuración de bases de datos enfocados al consumo del negocio."
 >
   <main class="bg-white text-slate-900">
-    <section class="hero-visual relative isolate min-h-[calc(100vh-73px)] overflow-hidden" data-animate>
+    {/* HERO */}
+    <section
+      class="hero-visual relative isolate min-h-[calc(100vh-128px)] overflow-hidden bg-slate-950"
+      aria-label="Portafolio de servicios de Business Intelligence"
+      data-animate
+    >
       <video
         src="/hero.mp4"
         poster="/portada.png"
@@ -42,265 +56,280 @@ const totalShowcase = String(showcaseEntries.length).padStart(2, '0');
         loop
         playsinline
         preload="auto"
-        aria-label="Animación de servicios internos de Business Intelligence"
+        aria-label="Animación de presentación del portafolio de servicios"
         class="absolute inset-0 -z-20 h-full w-full object-cover"
       ></video>
+      <div
+        class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/40 via-slate-950/35 to-slate-950/85"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative mx-auto flex min-h-[calc(100vh-128px)] w-[92%] max-w-7xl flex-col justify-end pb-12 md:pb-16">
+        <div class="max-w-3xl">
+          <p
+            class="text-[11px] font-semibold uppercase tracking-[0.24em] text-blue-300/90"
+            data-animate-text
+          >
+            Business Intelligence · Portafolio interno
+          </p>
+          <h1
+            class="mt-4 text-balance text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl md:leading-tight"
+            data-animate-text
+          >
+            Servicios de analítica e inteligencia de negocio para mover tu área con datos confiables.
+          </h1>
+          <p
+            class="mt-5 max-w-2xl text-pretty text-base leading-relaxed text-slate-200 md:text-lg md:leading-relaxed"
+            data-animate-text
+          >
+            Cuatro líneas de servicio listas para acompañar a cada área: automatización de tareas operativas,
+            reportería gobernada, desarrollo a la medida sobre los datos y estructuración de bases con
+            sincronización entre sistemas.
+          </p>
+          <div class="mt-7 flex flex-wrap gap-3" data-animate-text>
+            <a
+              href="#servicios"
+              class="inline-flex items-center gap-2 rounded-full bg-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-950/40 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
+            >
+              Ver los servicios
+              <span aria-hidden="true">↓</span>
+            </a>
+            <a
+              href="#contacto"
+              class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:border-white/45 hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
+            >
+              Coordinar mesa de trabajo
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
 
+    {/* ÍNDICE HORIZONTAL DE SERVICIOS */}
     <section
       id="servicios"
-      class="relative scroll-mt-20 bg-slate-950 py-16 text-slate-100 md:py-24"
-      aria-labelledby="servicios-heading"
+      class="relative scroll-mt-32 bg-slate-950 py-16 text-slate-100 md:py-20"
+      aria-labelledby="indice-servicios-heading"
       data-animate
-      data-services-showcase
     >
       <div
         class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(59,130,246,0.14),transparent_55%)]"
         aria-hidden="true"
       ></div>
-      <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" aria-hidden="true"></div>
+      <div
+        class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
+        aria-hidden="true"
+      ></div>
 
       <div class="relative mx-auto w-[92%] max-w-7xl">
-        <header class="mb-10 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 md:mb-14">
+        <header class="mb-10 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 md:mb-12">
           <div class="max-w-2xl">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400" data-animate-text>Líneas de servicio</p>
+            <p
+              class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-400"
+              data-animate-text
+            >
+              Acceso rápido
+            </p>
             <h2
-              id="servicios-heading"
+              id="indice-servicios-heading"
               class="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl"
               data-animate-text
             >
-              Servicios del área de Business Intelligence
+              Recorre las cuatro líneas de servicio
             </h2>
-            <p class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg" data-animate-text>
-              Recorre los cuatro frentes desde una sola vista: las pestañas avanzan solas, las puedes detener al pasar el cursor
-              y navegarlas con teclado (↑/↓ o las teclas 1–4) para ir al detalle que más te interese.
+            <p
+              class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg"
+              data-animate-text
+            >
+              Cada tarjeta abre la sección completa del servicio. Pasa el cursor para ver el video; pulsa para saltar
+              directamente al detalle, los beneficios y la vitrina de entregables.
             </p>
           </div>
-
-          {/* Contador grande: ancla visual permanente para que el usuario no se pierda. */}
-          <div
-            class="flex items-baseline gap-3 self-start rounded-full border border-white/10 bg-white/5 px-4 py-2 text-slate-200 md:self-end"
-            aria-live="polite"
+          <span
+            class="inline-flex items-baseline gap-3 self-start rounded-full border border-white/10 bg-white/5 px-4 py-2 text-slate-200 md:self-end"
           >
-            <span
-              class="font-mono text-2xl font-bold tabular-nums text-white md:text-3xl"
-              data-showcase-counter
-            >
-              01
+            <span class="font-mono text-2xl font-bold tabular-nums text-white md:text-3xl">
+              {totalServices}
             </span>
-            <span class="font-mono text-sm text-slate-400">/ {totalShowcase}</span>
-            <span class="ml-2 hidden text-[11px] uppercase tracking-[0.18em] text-slate-400 sm:inline">
-              Servicios
-            </span>
-          </div>
+            <span class="text-[11px] uppercase tracking-[0.18em] text-slate-400">Servicios</span>
+          </span>
         </header>
 
-        {/* Browser interactivo: lista a la izquierda, preview + panel a la derecha */}
-        <div class="grid gap-6 lg:grid-cols-12 lg:gap-10">
-          {/* Lista de pestañas */}
-          <ol
-            class="services-tablist relative space-y-2 lg:col-span-5 lg:space-y-3"
-            role="tablist"
-            aria-label="Servicios del área de Business Intelligence"
-          >
-            {
-              showcaseEntries.map((entry, index) => (
-                <li>
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={index === 0 ? 'true' : 'false'}
-                    aria-controls={`servicio-panel-${entry.id}`}
-                    id={`servicio-tab-${entry.id}`}
-                    tabindex={index === 0 ? 0 : -1}
-                    data-showcase-tab
-                    data-tab-index={index}
-                    data-active={index === 0 ? 'true' : 'false'}
-                    class="service-tab group relative block w-full overflow-hidden rounded-2xl border border-white/10 bg-slate-900/55 px-5 py-4 text-left ring-1 ring-white/5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:px-6 md:py-5"
-                  >
-                    {/* Barra vertical de "activo" */}
-                    <span
-                      class="service-tab-bar pointer-events-none absolute inset-y-3 left-0 w-[3px] origin-top scale-y-0 rounded-r-full bg-gradient-to-b from-blue-400 to-blue-600 transition-transform duration-500"
-                      aria-hidden="true"
-                    />
-                    <div class="flex items-start gap-4">
-                      <span class="service-tab-number font-mono text-sm font-semibold tabular-nums tracking-[0.18em] text-slate-500 transition group-hover:text-blue-300">
-                        {entry.number}
-                      </span>
-                      <div class="min-w-0 flex-1">
-                        <div class="flex items-baseline justify-between gap-3">
-                          <h3 class="service-tab-title text-base font-semibold leading-snug tracking-tight text-slate-200 transition md:text-lg">
-                            {entry.title}
-                          </h3>
-                          <span
-                            class="service-tab-arrow text-base leading-none text-slate-500 transition"
-                            aria-hidden="true"
-                          >
-                            →
-                          </span>
-                        </div>
-                        <p class="service-tab-desc mt-1 text-pretty text-[13px] leading-relaxed text-slate-400 transition md:text-sm">
-                          {entry.shortDesc}
-                        </p>
-                        {/* Barra de progreso de auto-rotación */}
-                        <div
-                          class="service-tab-progress mt-3 h-[2px] w-full overflow-hidden rounded-full bg-white/10"
-                          aria-hidden="true"
-                        >
-                          <div
-                            class="h-full origin-left scale-x-0 rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600"
-                            data-showcase-progress-fill
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                </li>
-              ))
-            }
-          </ol>
-
-          {/* Preview + panel del activo */}
-          <div class="lg:col-span-7">
-            {/* Preview con crossfade entre videos */}
-            <div class="relative aspect-video overflow-hidden rounded-2xl border border-white/10 bg-slate-950 shadow-2xl shadow-black/40 ring-1 ring-white/5">
-              <div
-                class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-slate-950/15 to-transparent"
-                aria-hidden="true"
-              ></div>
-              {
-                showcaseEntries.map((entry, index) => (
+        <ol
+          class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6"
+          data-stagger
+          aria-label="Índice de servicios"
+        >
+          {indexedServices.map((service) => (
+            <li class="h-full">
+              <a
+                href={`#${service.anchor}`}
+                class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 ring-1 ring-white/5 transition hover:-translate-y-1 hover:border-blue-400/45 hover:bg-slate-900/80 hover:shadow-xl hover:shadow-blue-950/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+                aria-label={`Ir a la sección del servicio ${service.title}`}
+              >
+                <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+                  <div
+                    class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent"
+                    aria-hidden="true"
+                  ></div>
                   <video
-                    src={entry.videoSrc}
-                    data-showcase-video
-                    data-video-index={index}
-                    data-active={index === 0 ? 'true' : 'false'}
-                    autoplay={index === 0}
+                    data-service-preview
+                    src={service.videoSrc}
+                    autoplay
                     muted
                     loop
                     playsinline
-                    preload={index === 0 ? 'auto' : 'metadata'}
-                    aria-label={`Vista previa del servicio: ${entry.title}`}
-                    class="service-video absolute inset-0 z-0 h-full w-full object-cover opacity-0 transition-opacity duration-700"
-                  />
-                ))
-              }
-            </div>
-
-            {/* Paneles de detalle (uno visible a la vez) */}
-            <div class="relative mt-6 min-h-[14rem] md:mt-8 md:min-h-[16rem]">
-              {
-                showcaseEntries.map((entry, index) => (
-                  <article
-                    role="tabpanel"
-                    id={`servicio-panel-${entry.id}`}
-                    aria-labelledby={`servicio-tab-${entry.id}`}
-                    aria-hidden={index === 0 ? 'false' : 'true'}
-                    data-showcase-panel
-                    data-panel-index={index}
-                    data-active={index === 0 ? 'true' : 'false'}
-                    class="service-panel absolute inset-0 opacity-0 transition-all duration-500 ease-out"
+                    preload="metadata"
+                    aria-hidden="true"
+                    class="relative z-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  ></video>
+                  <span
+                    class="absolute left-3 top-3 z-20 inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/70 px-2.5 py-1 backdrop-blur"
                   >
-                    <div class="flex flex-wrap items-baseline gap-3">
-                      <span class="font-mono text-xs font-medium tabular-nums uppercase tracking-[0.18em] text-blue-300/90">
-                        {entry.number}
-                      </span>
-                      <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">
-                        {entry.badge}
-                      </span>
-                    </div>
-                    <h3 class="mt-2 text-pretty text-xl font-semibold leading-snug tracking-tight text-white md:text-2xl">
-                      {entry.title}
-                    </h3>
-                    <p class="mt-3 max-w-2xl text-pretty text-sm leading-relaxed text-slate-300 md:text-[15px] md:leading-relaxed">
-                      {entry.shortDesc}
-                    </p>
-                    {entry.bullets && entry.bullets.length > 0 && (
-                      <ul class="mt-4 grid gap-2 sm:grid-cols-2">
-                        {entry.bullets.slice(0, 3).map((b) => (
-                          <li class="flex items-start gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-2 text-[12.5px] leading-snug text-slate-300 md:text-[13px]">
-                            <span class="mt-0.5 inline-block size-1.5 shrink-0 rounded-full bg-blue-400" aria-hidden="true" />
-                            <span>{b}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <a
-                      href={`/servicio/${entry.id}`}
-                      class="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-950/50 transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
-                    >
-                      Ver detalle de {entry.title}
-                      <span class="text-base leading-none opacity-80" aria-hidden="true">→</span>
-                    </a>
-                  </article>
-                ))
-              }
-            </div>
-          </div>
-        </div>
-
-        {/* Hint discreto de teclado */}
-        <p class="mt-8 text-center text-[11px] uppercase tracking-[0.18em] text-slate-500 md:mt-10">
-          ↑ ↓ navega · 1–4 atajos · pausa al pasar el cursor
-        </p>
+                    <span class="font-mono text-[11px] font-semibold tabular-nums text-blue-200">
+                      {service.number}
+                    </span>
+                    <span class="text-[10px] font-medium uppercase tracking-[0.16em] text-slate-300">
+                      Servicio
+                    </span>
+                  </span>
+                  <span
+                    class="absolute right-3 top-3 z-20 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-slate-950/70 text-blue-200 backdrop-blur"
+                    aria-hidden="true"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="size-5">
+                      <path d={service.iconPath} stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </span>
+                </div>
+                <div class="flex flex-1 flex-col gap-2 px-5 py-5">
+                  <h3 class="text-balance text-lg font-semibold leading-snug tracking-tight text-white">
+                    {service.title}
+                  </h3>
+                  <p class="text-pretty text-sm leading-relaxed text-slate-300">
+                    {service.shortDesc}
+                  </p>
+                  <span
+                    class="mt-auto inline-flex items-center gap-1.5 pt-2 text-[12.5px] font-semibold text-blue-300 transition group-hover:text-blue-200"
+                  >
+                    Ver detalle
+                    <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
+                  </span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ol>
       </div>
-
-      <style>
-        /* Estados visuales sincronizados con `data-active` que setea el script */
-        [data-services-showcase] [data-showcase-tab][data-active='true'] {
-          background-color: rgba(15, 23, 42, 0.85);
-          border-color: rgba(96, 165, 250, 0.35);
-        }
-        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-bar {
-          transform: scaleY(1);
-        }
-        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-number {
-          color: rgb(96 165 250);
-        }
-        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-title {
-          color: white;
-        }
-        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-desc {
-          color: rgb(203 213 225);
-        }
-        [data-services-showcase] [data-showcase-tab][data-active='true'] .service-tab-arrow {
-          color: rgb(147 197 253);
-          transform: translateX(2px);
-        }
-        [data-services-showcase] [data-showcase-tab]:not([data-active='true']):hover {
-          background-color: rgba(15, 23, 42, 0.65);
-          border-color: rgba(96, 165, 250, 0.18);
-        }
-        [data-services-showcase] [data-showcase-tab]:not([data-active='true']):hover .service-tab-arrow {
-          transform: translateX(2px);
-          color: rgb(148 163 184);
-        }
-        [data-services-showcase] [data-showcase-video][data-active='true'] {
-          opacity: 1;
-        }
-        [data-services-showcase] [data-showcase-panel][data-active='true'] {
-          opacity: 1;
-          pointer-events: auto;
-          transform: translateY(0);
-        }
-        [data-services-showcase] [data-showcase-panel]:not([data-active='true']) {
-          pointer-events: none;
-          transform: translateY(8px);
-        }
-        @media (prefers-reduced-motion: reduce) {
-          [data-services-showcase] .service-video,
-          [data-services-showcase] .service-panel,
-          [data-services-showcase] .service-tab-bar {
-            transition: none;
-          }
-        }
-      </style>
-
     </section>
 
+    {/* SECCIONES DE CADA SERVICIO */}
+    <ServiceSection
+      service={services.automatizacion}
+      number={indexedServices[0].number}
+      total={totalServices}
+    >
+      <DeliverablesShowcase
+        items={services.automatizacion.deliverables}
+        eyebrow="Vitrina de entregables"
+        heading="Servicios de automatización en producción"
+        description="Aplicaciones internas y flujos que ya corren de forma autónoma: monitorean KPIs, vigilan bases de datos, orquestan procesos operativos y agilizan trámites documentales."
+      />
+    </ServiceSection>
+
+    <ServiceSection
+      service={services.reporteria}
+      number={indexedServices[1].number}
+      total={totalServices}
+    >
+      <VerticalTimeline
+        id="linea-tiempo-elecciones"
+        eyebrow="Vitrina de entregables · Evolución del servicio"
+        heading="Línea de tiempo de elecciones atípicas, Congreso 2026 y Presidencia 2026"
+        description="Recorrido cronológico de los tableros publicados por el área durante el ciclo electoral. Cada parada concentra fecha, contexto y tableros embebidos, e ilustra cómo ha madurado la práctica de reportería al pasar de las atípicas locales a los hitos nacionales."
+        events={electionTimeline}
+      />
+    </ServiceSection>
+
+    <ServiceSection
+      service={services.desarrollo}
+      number={indexedServices[2].number}
+      total={totalServices}
+    >
+      <DeliverablesShowcase
+        items={services.desarrollo.deliverables}
+        eyebrow="Vitrina de entregables"
+        heading="Componentes, APIs y aplicaciones a la medida"
+        description="Diagramas de arquitectura, contratos de integración y aplicaciones analíticas construidas a medida del proceso de cada área."
+      />
+    </ServiceSection>
+
+    <ServiceSection
+      service={services.estructuracion}
+      number={indexedServices[3].number}
+      total={totalServices}
+    >
+      <DeliverablesShowcase
+        items={services.estructuracion.deliverables}
+        eyebrow="Vitrina de entregables"
+        heading="Modelado, migraciones y sincronización"
+        description="Esquemas, historial de migraciones y flujos de sincronización que mantienen los datos consistentes entre sistemas y entornos."
+      />
+    </ServiceSection>
+
+    {/* GALERÍA DE APLICACIONES */}
+    <section
+      id="galeria-herramientas"
+      class="relative scroll-mt-32 border-t border-slate-200 bg-white py-16 md:py-20"
+      aria-labelledby="galeria-heading"
+      data-animate
+    >
+      <div class="mx-auto w-[92%] max-w-7xl">
+        <header class="mb-8 max-w-3xl md:mb-10">
+          <p
+            class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
+            data-animate-text
+          >
+            Cierre visual
+          </p>
+          <h2
+            id="galeria-heading"
+            class="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
+            data-animate-text
+          >
+            Todas las herramientas del área de BI
+          </h2>
+          <p
+            class="mt-4 text-pretty text-base leading-relaxed text-slate-600 md:text-lg"
+            data-animate-text
+          >
+            Todas las herramientas que construimos para que los equipos trabajen con datos confiables, desde la captura
+            hasta la decisión.
+          </p>
+        </header>
+
+        <figure
+          class="mx-auto max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm ring-1 ring-slate-950/[0.03] sm:max-w-lg md:max-w-2xl"
+        >
+          <img
+            src="/herramientas/allapps.png"
+            alt="Vista general de aplicaciones y herramientas del área de Business Intelligence"
+            class="h-auto w-full object-contain object-center"
+            width="688"
+            height="684"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </section>
+
+    {/* CONTACTO */}
     <section
       id="contacto"
-      class="relative scroll-mt-20 overflow-x-hidden border-t border-slate-200 bg-white pb-16 pt-10 text-slate-900 md:pb-20 md:pt-14"
+      class="relative scroll-mt-32 overflow-x-hidden border-t border-slate-200 bg-slate-50 pb-16 pt-12 text-slate-900 md:pb-20 md:pt-16"
+      aria-labelledby="contacto-heading"
       data-animate
     >
       <div
@@ -316,99 +345,73 @@ const totalShowcase = String(showcaseEntries.length).padStart(2, '0');
             tabindex="0"
           >
             <div class="flex w-max shrink-0 items-stretch gap-4 sm:gap-5 md:gap-6">
-              {
-                [...contactMarqueeTags, ...contactMarqueeTags].map((label, i) => (
+              {[...contactMarqueeTags, ...contactMarqueeTags].map((label, i) => (
+                <span
+                  class="inline-flex min-h-[4.5rem] w-[13.75rem] shrink-0 items-stretch gap-3 rounded-xl border border-slate-200/95 bg-white p-3 shadow-sm ring-1 ring-slate-950/[0.04] sm:min-h-[4.75rem] sm:w-[15rem] sm:gap-3.5 sm:p-3.5 md:min-h-[5rem] md:w-[16.5rem] md:p-4"
+                  aria-hidden={i >= contactMarqueeTags.length ? true : undefined}
+                >
                   <span
-                    class="inline-flex min-h-[4.5rem] w-[13.75rem] shrink-0 items-stretch gap-3 rounded-xl border border-slate-200/95 bg-white p-3 shadow-sm ring-1 ring-slate-950/[0.04] sm:min-h-[4.75rem] sm:w-[15rem] sm:gap-3.5 sm:p-3.5 md:min-h-[5rem] md:w-[16.5rem] md:p-4"
-                    aria-hidden={i >= contactMarqueeTags.length ? true : undefined}
+                    class="w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-blue-500 to-blue-600/85"
+                    aria-hidden="true"
+                  ></span>
+                  <span
+                    class="flex min-w-0 flex-1 items-center text-pretty text-[13px] font-medium leading-snug tracking-tight text-slate-800 sm:text-sm md:leading-snug"
                   >
-                    <span
-                      class="w-1 shrink-0 self-stretch rounded-full bg-gradient-to-b from-blue-500 to-blue-600/85"
-                      aria-hidden="true"
-                    />
-                    <span class="flex min-w-0 flex-1 items-center text-pretty text-[13px] font-medium leading-snug tracking-tight text-slate-800 sm:text-sm md:leading-snug">
-                      {label}
-                    </span>
+                    {label}
                   </span>
-                ))
-              }
+                </span>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      <div
-        id="galeria-herramientas"
-        class="relative mx-auto mb-12 w-[92%] max-w-7xl scroll-mt-20 md:mb-16"
-        role="region"
-        aria-labelledby="galeria-heading"
-        data-animate
-      >
-        <header class="mb-6 max-w-3xl md:mb-8">
-          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600" data-animate-text>
-            Galería
-          </p>
-          <h2
-            id="galeria-heading"
-            class="mt-2 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-3xl"
-            data-animate-text
-          >
-            Aplicaciones del área
-          </h2>
-          <p class="mt-3 text-pretty text-base leading-relaxed text-slate-600" data-animate-text>
-            Vista del conjunto de soluciones y herramientas disponibles para las áreas usuarias.
-          </p>
-        </header>
-
-        <figure
-          class="mx-auto max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm ring-1 ring-slate-950/[0.03] sm:max-w-lg md:max-w-xl"
-        >
-          <img
-            src="/herramientas/allapps.png"
-            alt="Vista general de aplicaciones y herramientas del área de Business Intelligence"
-            class="h-auto w-full object-contain object-center"
-            width="688"
-            height="684"
-            loading="lazy"
-            decoding="async"
-          />
-        </figure>
-      </div>
-
       <div class="relative mx-auto flex w-[92%] max-w-7xl justify-center">
         <div
-          class="w-full max-w-lg rounded-3xl border border-slate-200 bg-white px-8 py-10 text-center shadow-sm ring-1 ring-slate-900/[0.03] md:max-w-xl md:px-12 md:py-12"
+          class="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white px-8 py-10 shadow-sm ring-1 ring-slate-900/[0.03] md:px-12 md:py-12"
         >
-          <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600" data-animate-text>
+          <p
+            class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
+            data-animate-text
+          >
             Mesa de trabajo
           </p>
           <h2
+            id="contacto-heading"
             class="mt-3 text-balance text-2xl font-bold tracking-tight text-slate-900 md:text-[1.75rem] md:leading-snug"
             data-animate-text
           >
             Coordinamos requerimientos con el área de BI
           </h2>
           <p
-            class="mx-auto mt-5 max-w-md text-pretty text-[15px] leading-relaxed text-slate-600 md:max-w-[26rem] md:text-base md:leading-relaxed"
+            class="mt-5 max-w-md text-pretty text-[15px] leading-relaxed text-slate-600 md:text-base md:leading-relaxed"
             data-animate-text
           >
             Priorizamos iniciativas con cada área, acordamos alcance y entregables, y acompañamos la puesta en marcha
             para que la operación se mantenga estable y la adopción sea efectiva en el día a día.
           </p>
-          <a
-            href="mailto:john.rojas@linktic.com"
-            class="cta-header-attention relative mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/35 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
-            data-animate-text
-          >
-            Solicitar mesa de trabajo con BI
-            <span class="text-base leading-none opacity-90" aria-hidden="true">→</span>
-          </a>
+
+          <div class="mt-7 grid gap-3 sm:grid-cols-2" data-animate-text>
+            <a
+              href={mailto}
+              class="cta-header-attention relative inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
+            >
+              Escribir al área de BI
+              <span aria-hidden="true">→</span>
+            </a>
+            <a
+              href="mailto:proyecto.atipicas@linktic.com"
+              class="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-6 py-3.5 text-sm font-semibold text-slate-800 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 md:text-[15px]"
+            >
+              proyecto.atipicas@linktic.com
+            </a>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-slate-200 py-8">
+  <footer class="border-t border-slate-200 bg-white py-8">
     <div class="mx-auto w-[92%] max-w-7xl text-center text-sm text-slate-500">
       <p data-animate-text>&copy; {currentYear} DataVision BI. Todos los derechos reservados.</p>
     </div>
@@ -416,11 +419,11 @@ const totalShowcase = String(showcaseEntries.length).padStart(2, '0');
 
   <script>
     import { initContactKeywordSlider, initHomePageEffects } from '../scripts/site-animations';
-    import { initServicesShowcase } from '../scripts/services-showcase';
+    import { initVerticalTimelines } from '../scripts/vertical-timeline';
     try {
       initHomePageEffects();
       initContactKeywordSlider();
-      initServicesShowcase();
+      initVerticalTimelines();
     } catch (e) {
       console.error('[animaciones] Error en efectos de la home.', e);
     }

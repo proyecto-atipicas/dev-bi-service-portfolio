@@ -19,15 +19,22 @@ npm run remotion:render:desarrollo      # Renderiza public/servicio-desarrollo.m
 npm run remotion:render:basesdatos      # Renderiza public/servicio-basesdatos.mp4
 ```
 
-## Estructura
+## Arquitectura
+
+Landing **de una sola página**: la navegación es siempre scroll a anclas
+internas (`#servicios`, `#automatizacion`, `#reporteria`, `#desarrollo`,
+`#estructuracion`, `#galeria-herramientas`, `#contacto`). No existen
+páginas secundarias ni rutas adicionales.
 
 ```
 src/
 ├── assets/                    # SVG / imágenes estáticas
 ├── components/
-│   ├── shared/                # Componentes reutilizables entre servicios
-│   │   └── VerticalTimeline.astro   # Línea de tiempo vertical animada
-│   ├── SiteHeader.astro       # Barra superior global (sticky)
+│   ├── shared/
+│   │   ├── DeliverablesShowcase.astro # Vitrina genérica de entregables
+│   │   └── VerticalTimeline.astro     # Línea de tiempo vertical animada
+│   ├── ServiceSection.astro   # Plantilla por servicio (intro + dolor/solución + métricas + slot vitrina)
+│   ├── SiteHeader.astro       # Barra superior + sub-nav sticky de servicios
 │   └── Welcome.astro
 ├── data/
 │   ├── services.ts            # Catálogo tipado de los 4 servicios
@@ -35,13 +42,10 @@ src/
 ├── layouts/
 │   └── Layout.astro           # Layout base (head, header, slot, scripts)
 ├── pages/
-│   ├── index.astro            # Home con video hero + grilla de servicios
-│   └── servicio/
-│       ├── [idservicio].astro       # Detalle dinámico por servicio
-│       └── detalle-servicio.astro   # Vista plana de detalle (referencia)
+│   └── index.astro            # Landing única: hero + índice + 4 servicios + galería + contacto
 ├── remotion/                  # Composiciones Remotion (videos del sitio)
 ├── scripts/
-│   ├── site-animations.ts     # Animaciones globales (nav, scroll-reveal, slider)
+│   ├── site-animations.ts     # Animaciones globales y sub-nav activo
 │   └── vertical-timeline.ts   # Comportamiento del componente VerticalTimeline
 └── styles/
     └── global.css             # Tailwind v4 + utilidades del sitio
@@ -71,9 +75,11 @@ desde su bloque `<script>` (Astro empaqueta el módulo).
 - `initNavAndTextAnimations()` — auto-cargado desde `Layout.astro`. Anima
   `[data-animate-nav]` (header) y `[data-animate-text]` (textos al entrar al
   viewport).
+- `initServicesSubnav()` — auto-cargado desde `Layout.astro`. Marca el
+  enlace activo del sub-nav (`[data-subnav-link]`) según la sección visible.
 - `initHomePageEffects()` — anima `[data-animate]`, `[data-stagger]` y los
-  videos `[data-service-preview]`. Se invoca en home y en detalle de servicio.
-- `initContactKeywordSlider()` — slider continuo de palabras clave (home).
+  videos `[data-service-preview]`. Se invoca desde `index.astro`.
+- `initContactKeywordSlider()` — slider continuo de palabras clave.
 - `initVerticalTimelines()` — comportamiento del componente
   `VerticalTimeline.astro` (ver sección dedicada).
 
@@ -90,9 +96,10 @@ Datos del caso electoral: `src/data/timeline-elecciones.ts`.
 
 Renderiza una línea de tiempo vertical, animada y responsiva, pensada para
 mostrar la evolución cronológica de proyectos / despliegues con tableros
-embebidos. Inicialmente está integrada solo en el servicio de **Reportería**
-(`/servicio/reporteria`) para visualizar las elecciones atípicas, Congreso 2026
-y Presidencia 2026, pero está diseñada para reutilizarse en otros servicios.
+embebidos. Está integrada como **vitrina de entregables** del servicio de
+Reportería dentro de la sección `#reporteria` de la landing, para visualizar
+las elecciones atípicas, Congreso 2026 y Presidencia 2026; está diseñada
+para reutilizarse en otros servicios.
 
 ### Props
 
@@ -159,3 +166,8 @@ import { electionTimeline } from '../../data/timeline-elecciones';
 - **2026-05-08**: corrección ortográfica integral (tildes y términos en
   español) en home, layout, header y vista de detalle de servicios. Se agregó
   el componente `VerticalTimeline` y los datos de las jornadas electorales.
+- **2026-05-12**: reestructuración del portafolio como **landing de una sola
+  página enfocada a la venta**. Se eliminaron las rutas `/servicio/...`, se
+  introdujeron `ServiceSection.astro` y `DeliverablesShowcase.astro` como
+  plantilla común, y el sub-nav sticky con anclas reemplaza la navegación a
+  páginas separadas.

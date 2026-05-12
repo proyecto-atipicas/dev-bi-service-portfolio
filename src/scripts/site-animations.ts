@@ -159,6 +159,57 @@ export function initHomePageEffects(): void {
 }
 
 /**
+ * Resalta el enlace del sub-nav de servicios correspondiente a la sección
+ * actualmente visible. Usa `IntersectionObserver` para no atar el render
+ * al scroll y respeta `prefers-reduced-motion` no cambiando la marca.
+ */
+export function initServicesSubnav(): void {
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-subnav-link]'),
+  );
+  if (links.length === 0) return;
+
+  const sectionToLink = new Map<HTMLElement, HTMLAnchorElement>();
+  links.forEach((link) => {
+    const anchor = link.dataset.subnavLink;
+    if (!anchor) return;
+    const target = document.getElementById(anchor);
+    if (target instanceof HTMLElement) sectionToLink.set(target, link);
+  });
+
+  if (sectionToLink.size === 0) return;
+
+  const markActive = (anchor: string | null): void => {
+    links.forEach((link) => {
+      const isActive = link.dataset.subnavLink === anchor;
+      if (isActive) link.dataset.active = 'true';
+      else delete link.dataset.active;
+    });
+  };
+
+  const visibility = new Map<HTMLElement, number>();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!(entry.target instanceof HTMLElement)) return;
+        visibility.set(entry.target, entry.intersectionRatio);
+      });
+      let top: { el: HTMLElement; ratio: number } | null = null;
+      visibility.forEach((ratio, el) => {
+        if (!top || ratio > top.ratio) top = { el, ratio };
+      });
+      if (top && top.ratio > 0) {
+        markActive(top.el.id);
+      } else {
+        markActive(null);
+      }
+    },
+    { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.15, 0.5, 1] },
+  );
+  sectionToLink.forEach((_, section) => observer.observe(section));
+}
+
+/**
  * Slider horizontal de palabras clave (home, sección contacto):
  * desplazamiento continuo + flechas; bucle con dos copias del contenido.
  */

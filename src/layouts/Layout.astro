@@ -28,9 +28,10 @@ const {
 		<SiteHeader />
 		<slot />
 		<script>
-			import { initNavAndTextAnimations } from '../scripts/site-animations';
+			import { initNavAndTextAnimations, initServicesSubnav } from '../scripts/site-animations';
 			try {
 				initNavAndTextAnimations();
+				initServicesSubnav();
 			} catch (e) {
 				console.error('[animaciones] Error al iniciar animaciones.', e);
 			}
