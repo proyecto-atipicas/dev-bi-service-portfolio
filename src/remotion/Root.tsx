@@ -1,6 +1,7 @@
 import { Composition } from 'remotion';
 import { TestVideo } from './TestVideo';
 import { HeroVideo } from './HeroVideo';
+import { SimaeHeroVideo } from './SimaeHeroVideo';
 import { AutomatizacionVideo } from './AutomatizacionVideo';
 import { ReporteriaVideo } from './ReporteriaVideo';
 import { DesarrolloVideo } from './DesarrolloVideo';
@@ -13,6 +14,14 @@ export const RemotionRoot: React.FC = () => {
         id="HeroVideo"
         component={HeroVideo}
         durationInFrames={210}
+        fps={30}
+        width={1280}
+        height={720}
+      />
+      <Composition
+        id="SimaeHeroVideo"
+        component={SimaeHeroVideo}
+        durationInFrames={320}
         fps={30}
         width={1280}
         height={720}

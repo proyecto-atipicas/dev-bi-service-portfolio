@@ -13,6 +13,7 @@
     "remotion:studio": "remotion studio src/remotion/index.ts",
     "remotion:render": "remotion render src/remotion/index.ts TestVideo out/test-video.mp4",
     "remotion:render:hero": "remotion render src/remotion/index.ts HeroVideo public/hero.mp4",
+    "remotion:render:hero_simae": "remotion render src/remotion/index.ts SimaeHeroVideo public/hero_simae.mp4",
     "remotion:render:automatizacion": "remotion render src/remotion/index.ts AutomatizacionVideo public/servicio-automatizacion.mp4",
     "remotion:render:reporteria": "remotion render src/remotion/index.ts ReporteriaVideo public/servicio-reporteria.mp4",
     "remotion:render:desarrollo": "remotion render src/remotion/index.ts DesarrolloVideo public/servicio-desarrollo.mp4",
