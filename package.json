@@ -17,7 +17,16 @@
     "remotion:render:automatizacion": "remotion render src/remotion/index.ts AutomatizacionVideo public/servicio-automatizacion.mp4",
     "remotion:render:reporteria": "remotion render src/remotion/index.ts ReporteriaVideo public/servicio-reporteria.mp4",
     "remotion:render:desarrollo": "remotion render src/remotion/index.ts DesarrolloVideo public/servicio-desarrollo.mp4",
-    "remotion:render:basesdatos": "remotion render src/remotion/index.ts BasesDatosVideo public/servicio-basesdatos.mp4"
+    "remotion:render:basesdatos": "remotion render src/remotion/index.ts BasesDatosVideo public/servicio-basesdatos.mp4",
+    "remotion:render:carrucel:appbi": "remotion render src/remotion/index.ts CarrucelAppbi public/hero_carrucel_v1_appbi.mp4",
+    "remotion:render:carrucel:bot-bi": "remotion render src/remotion/index.ts CarrucelBotBi public/hero_carrucel_v1_bot-bi.mp4",
+    "remotion:render:carrucel:credenciales": "remotion render src/remotion/index.ts CarrucelCredenciales public/hero_carrucel_v1_credenciales.mp4",
+    "remotion:render:carrucel:historico_presidencia": "remotion render src/remotion/index.ts CarrucelHistoricoPresidencia public/hero_carrucel_v1_historico_presidencia_ojodeaguila.mp4",
+    "remotion:render:carrucel:historico_territoriales": "remotion render src/remotion/index.ts CarrucelHistoricoTerritoriales public/hero_carrucel_v1_historico_territoriales_ojodeaguila.mp4",
+    "remotion:render:carrucel:seguimiento-data": "remotion render src/remotion/index.ts CarrucelSeguimientoData public/hero_carrucel_v1_seguimiento-data.mp4",
+    "remotion:render:carrucel:tableros_elecciones": "remotion render src/remotion/index.ts CarrucelTablerosElecciones public/hero_carrucel_v1_tableros_elecciones_powerbi.mp4",
+    "remotion:render:carrucel:tablero_simae": "remotion render src/remotion/index.ts CarrucelTableroSimae public/hero_carrucel_v1_tablero_simae.mp4",
+    "remotion:render:carrucel:all": "npm run remotion:render:carrucel:appbi && npm run remotion:render:carrucel:bot-bi && npm run remotion:render:carrucel:credenciales && npm run remotion:render:carrucel:historico_presidencia && npm run remotion:render:carrucel:historico_territoriales && npm run remotion:render:carrucel:seguimiento-data && npm run remotion:render:carrucel:tableros_elecciones && npm run remotion:render:carrucel:tablero_simae"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",

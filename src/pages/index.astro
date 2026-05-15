@@ -5,6 +5,7 @@ import DeliverablesShowcase from '../components/shared/DeliverablesShowcase.astr
 import VerticalTimeline from '../components/shared/VerticalTimeline.astro';
 import { indexedServices, services, totalServices } from '../data/services';
 import { electionTimeline } from '../data/timeline-elecciones';
+import { heroCarouselVideos } from '../data/hero-carousel-videos';
 
 const currentYear = new Date().getFullYear();
 
@@ -52,21 +53,107 @@ const mailto = (() => {
       aria-label="Portafolio de servicios de Business Intelligence"
       data-animate
     >
-      <video
-        src="/hero_simae.mp4"
-        poster="/portada.png"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        aria-label="Animación de presentación del portafolio de servicios"
-        class="absolute inset-0 -z-20 h-full w-full object-cover"
-      ></video>
+      <div
+        class="absolute inset-0 -z-20"
+        data-hero-video-carousel
+        role="region"
+        aria-label="Carrusel de ejemplos en vídeo del portafolio"
+      >
+        {
+          heroCarouselVideos.map((clip, i) => (
+            <div
+              class:list={[i === 0 ? 'hero-slide--active' : 'hero-slide--idle']}
+              data-hero-carousel-slide
+              aria-hidden={i === 0 ? 'false' : 'true'}
+            >
+              <video
+                src={clip.src}
+                poster="/portada.png"
+                muted
+                playsinline
+                preload={i === 0 ? 'auto' : 'metadata'}
+                autoplay={i === 0}
+                aria-label={clip.ariaLabel}
+                class="h-full w-full object-cover"
+              />
+            </div>
+          ))
+        }
+      </div>
       <div
         class="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/40 via-slate-950/35 to-slate-950/85"
         aria-hidden="true"
       ></div>
+
+      {
+        heroCarouselVideos.length > 1 && (
+          <div
+            class="pointer-events-none absolute inset-x-0 bottom-[5.5rem] z-20 flex justify-center px-4 md:bottom-[6.5rem]"
+          >
+            <div
+              class="pointer-events-auto inline-flex max-w-[min(100%,20rem)] items-center gap-0.5 rounded-full border border-white/[0.08] bg-black/22 py-0.5 pl-0.5 pr-0.5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_8px_24px_-8px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:max-w-none sm:gap-1 sm:py-1 sm:pl-1 sm:pr-1"
+              data-hero-carousel-controls
+              role="group"
+              aria-label="Controles del carrusel de vídeos de fondo"
+              tabindex="0"
+            >
+              <button
+                type="button"
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
+                data-hero-carousel-prev
+                aria-label="Vídeo anterior"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.79 5.23a.75.75 0 0 1-.02 1.06L8.832 10l3.938 3.71a.75.75 0 1 1-1.04 1.08l-4.5-4.25a.75.75 0 0 1 0-1.08l4.5-4.25a.75.75 0 0 1 1.06.02Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <div
+                class="scrollbar-none flex min-w-0 max-w-[11.5rem] flex-nowrap items-center justify-center gap-[5px] overflow-x-auto px-0.5 sm:max-w-none sm:gap-1.5 sm:px-1"
+              >
+                {heroCarouselVideos.map((clip, i) => (
+                  <button
+                    type="button"
+                    data-hero-carousel-dot
+                    aria-label={`Ir al vídeo ${i + 1} de ${heroCarouselVideos.length}: ${clip.ariaLabel}`}
+                    {...(i === 0 ? { 'data-active': '' } : {})}
+                    class="h-1.5 w-1.5 shrink-0 rounded-full bg-white/16 transition-[width,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/28 data-[active]:h-1.5 data-[active]:w-[18px] data-[active]:rounded-full data-[active]:bg-blue-300/45 data-[active]:shadow-[0_0_14px_rgba(125,211,252,0.12)] sm:data-[active]:w-5"
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
+                data-hero-carousel-next
+                aria-label="Vídeo siguiente"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )
+      }
 
       <div class="relative mx-auto flex min-h-[calc(100vh-128px)] w-[92%] max-w-7xl flex-col justify-end pb-12 md:pb-16">
         <div class="max-w-3xl">
@@ -434,9 +521,14 @@ const mailto = (() => {
   </footer>
 
   <script>
-    import { initContactKeywordSlider, initHomePageEffects } from '../scripts/site-animations';
+    import {
+      initContactKeywordSlider,
+      initHeroVideoCarousel,
+      initHomePageEffects,
+    } from '../scripts/site-animations';
     import { initVerticalTimelines } from '../scripts/vertical-timeline';
     try {
+      initHeroVideoCarousel();
       initHomePageEffects();
       initContactKeywordSlider();
       initVerticalTimelines();

@@ -2,6 +2,201 @@ import { animate, stagger } from 'animejs';
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** Duración del fundido; debe coincidir con `global.css` (`[data-hero-carousel-slide]`). */
+const HERO_CAROUSEL_CROSSFADE_MS = 1150;
+
+const SL_ACTIVE = 'hero-slide--active';
+const SL_IDLE = 'hero-slide--idle';
+const SL_TOP = 'hero-slide--top';
+
+/**
+ * Carrusel de vídeos de fondo en el hero: fundido cruzado con leve zoom,
+ * avance automático al terminar cada clip (salvo movimiento reducido) y
+ * controles de flechas y puntos.
+ */
+export function initHeroVideoCarousel(): void {
+  const root = document.querySelector<HTMLElement>('[data-hero-video-carousel]');
+  if (!root) return;
+
+  const controls = document.querySelector<HTMLElement>('[data-hero-carousel-controls]');
+  const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-hero-carousel-slide]'));
+  const videos = slides
+    .map((s) => s.querySelector('video'))
+    .filter((v): v is HTMLVideoElement => v instanceof HTMLVideoElement);
+
+  if (videos.length === 0) return;
+
+  if (videos.length === 1) {
+    videos[0].loop = true;
+    controls?.setAttribute('hidden', '');
+    return;
+  }
+
+  const dots = controls
+    ? Array.from(controls.querySelectorAll<HTMLButtonElement>('[data-hero-carousel-dot]'))
+    : [];
+  const btnPrev = controls?.querySelector<HTMLButtonElement>('[data-hero-carousel-prev]');
+  const btnNext = controls?.querySelector<HTMLButtonElement>('[data-hero-carousel-next]');
+
+  const rm = reducedMotion();
+  let index = 0;
+  let transitioning = false;
+  let transitionTimer: ReturnType<typeof window.setTimeout> | null = null;
+
+  const applySlide = (slide: HTMLElement, mode: 'active' | 'idle'): void => {
+    slide.classList.toggle(SL_ACTIVE, mode === 'active');
+    slide.classList.toggle(SL_IDLE, mode === 'idle');
+    if (mode === 'idle') slide.classList.remove(SL_TOP);
+  };
+
+  const setAriaSlides = (activeIndex: number): void => {
+    slides.forEach((slide, i) => {
+      slide.setAttribute('aria-hidden', i === activeIndex ? 'false' : 'true');
+    });
+  };
+
+  const syncControls = (): void => {
+    dots.forEach((d, i) => {
+      if (i === index) {
+        d.setAttribute('data-active', '');
+        d.setAttribute('aria-current', 'true');
+      } else {
+        d.removeAttribute('data-active');
+        d.removeAttribute('aria-current');
+      }
+    });
+  };
+
+  const goTo = async (raw: number): Promise<void> => {
+    const n = ((raw % videos.length) + videos.length) % videos.length;
+    if (n === index) return;
+    if (transitioning) return;
+
+    const prev = index;
+    transitioning = true;
+
+    videos[prev].pause();
+    videos.forEach((v) => {
+      v.loop = false;
+    });
+
+    index = n;
+    syncControls();
+
+    const prevSlide = slides[prev];
+    const nextSlide = slides[n];
+    const nextVideo = videos[n];
+
+    nextVideo.currentTime = 0;
+    if (rm) nextVideo.loop = true;
+
+    if (rm) {
+      slides.forEach((s, i) => applySlide(s, i === n ? 'active' : 'idle'));
+      setAriaSlides(n);
+      transitioning = false;
+      try {
+        await nextVideo.play();
+      } catch {
+        /* política de autoplay o pestaña en segundo plano */
+      }
+      return;
+    }
+
+    nextVideo.loop = false;
+    nextSlide.classList.add(SL_TOP);
+
+    try {
+      await nextVideo.play();
+    } catch {
+      /* política de autoplay o pestaña en segundo plano */
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        applySlide(nextSlide, 'active');
+        applySlide(prevSlide, 'idle');
+        setAriaSlides(n);
+      });
+    });
+
+    transitionTimer = window.setTimeout(() => {
+      nextSlide.classList.remove(SL_TOP);
+      transitioning = false;
+      transitionTimer = null;
+    }, HERO_CAROUSEL_CROSSFADE_MS + 50);
+  };
+
+  videos.forEach((v) => {
+    v.loop = false;
+  });
+  if (rm) videos[0].loop = true;
+
+  if (!rm) {
+    videos.forEach((v, i) => {
+      v.addEventListener('ended', () => {
+        if (index !== i) return;
+        void goTo(i + 1);
+      });
+    });
+  }
+
+  dots.forEach((d, i) => {
+    d.addEventListener('click', (e) => {
+      e.stopPropagation();
+      void goTo(i);
+    });
+  });
+  btnPrev?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    void goTo(index - 1);
+  });
+  btnNext?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    void goTo(index + 1);
+  });
+
+  controls?.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      void goTo(index - 1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      void goTo(index + 1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      void goTo(0);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      void goTo(videos.length - 1);
+    }
+  });
+
+  syncControls();
+
+  if (rm) {
+    videos.forEach((v, i) => {
+      if (i === 0) void v.play().catch(() => {});
+      else v.pause();
+    });
+  }
+
+  const hero = root.closest('.hero-visual');
+  if (hero) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          const active = videos[index];
+          if (!active) return;
+          if (e.isIntersecting) void active.play().catch(() => {});
+          else active.pause();
+        });
+      },
+      { threshold: 0.06 },
+    );
+    io.observe(hero);
+  }
+}
+
 /** Nav + textos con scroll: todas las páginas que usan Layout. */
 export function initNavAndTextAnimations(): void {
   if (reducedMotion()) return;

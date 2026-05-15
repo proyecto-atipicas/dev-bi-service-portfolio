@@ -56,4 +56,57 @@
   .cta-header-attention {
     animation: none;
   }
+
+  [data-hero-carousel-slide] {
+    transition: none !important;
+  }
+
+  [data-hero-carousel-slide].hero-slide--idle {
+    transform: none !important;
+  }
+
+  [data-hero-carousel-slide].hero-slide--active {
+    transform: none !important;
+  }
+}
+
+/**
+ * Carrusel hero: fundido cruzado con leve zoom (ease simétrico).
+ * Duración alineada con `HERO_CAROUSEL_CROSSFADE_MS` en `site-animations.ts`.
+ */
+[data-hero-carousel-slide] {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform-origin: center center;
+  will-change: opacity, transform;
+  transition:
+    opacity 1.15s cubic-bezier(0.42, 0, 0.58, 1),
+    transform 1.15s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+[data-hero-carousel-slide].hero-slide--active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+[data-hero-carousel-slide].hero-slide--active:not(.hero-slide--top) {
+  z-index: 10;
+}
+
+[data-hero-carousel-slide].hero-slide--active.hero-slide--top {
+  z-index: 30;
+}
+
+[data-hero-carousel-slide].hero-slide--idle {
+  opacity: 0;
+  transform: scale(1.052);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/** Capa superior durante el fundido (entrante aún con opacidad 0). */
+[data-hero-carousel-slide].hero-slide--idle.hero-slide--top {
+  z-index: 30;
 }
