@@ -11,6 +11,10 @@ import {
   type CarouselAsset,
   type ToolCarouselHeroProps,
 } from './ToolCarouselHero';
+import {
+  OjoDeAguilaHero,
+  OJO_DE_AGUILA_HERO_DURATION,
+} from './OjoDeAguilaHero';
 
 const ROOT = 'herraminetas_imagenes_videos';
 
@@ -176,6 +180,15 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1920}
         height={1080}
+      />
+
+      <Composition
+        id="CarrucelOjoDeAguila"
+        component={OjoDeAguilaHero}
+        durationInFrames={OJO_DE_AGUILA_HERO_DURATION}
+        fps={30}
+        width={1280}
+        height={720}
       />
 
       {carrucelTools.map((t) => (

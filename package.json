@@ -23,6 +23,7 @@
     "remotion:render:carrucel:credenciales": "remotion render src/remotion/index.ts CarrucelCredenciales public/hero_carrucel_v1_credenciales.mp4",
     "remotion:render:carrucel:historico_presidencia": "remotion render src/remotion/index.ts CarrucelHistoricoPresidencia public/hero_carrucel_v1_historico_presidencia_ojodeaguila.mp4",
     "remotion:render:carrucel:historico_territoriales": "remotion render src/remotion/index.ts CarrucelHistoricoTerritoriales public/hero_carrucel_v1_historico_territoriales_ojodeaguila.mp4",
+    "remotion:render:carrucel:ojo_de_aguila": "remotion render src/remotion/index.ts CarrucelOjoDeAguila public/carrucel/hero_carrucel_v1_ojo_de_aguila.mp4",
     "remotion:render:carrucel:seguimiento-data": "remotion render src/remotion/index.ts CarrucelSeguimientoData public/hero_carrucel_v1_seguimiento-data.mp4",
     "remotion:render:carrucel:tableros_elecciones": "remotion render src/remotion/index.ts CarrucelTablerosElecciones public/hero_carrucel_v1_tableros_elecciones_powerbi.mp4",
     "remotion:render:carrucel:tablero_simae": "remotion render src/remotion/index.ts CarrucelTableroSimae public/hero_carrucel_v1_tablero_simae.mp4",

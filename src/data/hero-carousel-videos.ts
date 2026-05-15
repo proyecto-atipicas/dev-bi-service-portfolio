@@ -7,6 +7,7 @@ export interface HeroCarouselClip {
 
 export const heroCarouselVideos: HeroCarouselClip[] = [
   { src: '/carrucel/hero_carrucel_v1_tablero_simae.mp4', ariaLabel: 'Tablero SIMAE' },
+  { src: '/carrucel/hero_carrucel_v1_ojo_de_aguila.mp4', ariaLabel: 'Ojo de Aguila' },
   {
     src: '/carrucel/hero_carrucel_v1_historico_presidencia_ojodeaguila.mp4',
     ariaLabel: 'Histórico de resultados presidenciales',
