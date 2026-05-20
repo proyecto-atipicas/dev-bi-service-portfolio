@@ -43,14 +43,15 @@ const mailto = (() => {
 ---
 
 <Layout
-  title="Portafolio · Servicios de Business Intelligence"
-  description="Portafolio del área de Business Intelligence: automatización, reportería, desarrollo a la medida y estructuración de bases de datos enfocados al consumo del negocio."
+  title="Linktic · DataVision · Portafolio de Business Intelligence"
+  description="Portafolio de servicios de Business Intelligence de Linktic (DataVision): reportería en tres paquetes, automatización, desarrollo a la medida y estructuración de bases de datos para los proyectos de la compañía."
 >
   <main class="bg-white text-slate-900">
     {/* HERO */}
     <section
       class="hero-visual relative isolate min-h-[calc(100vh-128px)] overflow-hidden bg-slate-950"
       aria-label="Portafolio de servicios de Business Intelligence"
+      data-hero-fullscreen-root
       data-animate
     >
       <div
@@ -85,24 +86,25 @@ const mailto = (() => {
         aria-hidden="true"
       ></div>
 
-      {
-        heroCarouselVideos.length > 1 && (
-          <div
-            class="pointer-events-none absolute inset-x-0 bottom-[5.5rem] z-20 flex justify-center px-4 md:bottom-[6.5rem]"
-          >
-            <div
-              class="pointer-events-auto inline-flex max-w-[min(100%,20rem)] items-center gap-0.5 rounded-full border border-white/[0.08] bg-black/22 py-0.5 pl-0.5 pr-0.5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_8px_24px_-8px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:max-w-none sm:gap-1 sm:py-1 sm:pl-1 sm:pr-1"
-              data-hero-carousel-controls
-              role="group"
-              aria-label="Controles del carrusel de vídeos de fondo"
-              tabindex="0"
-            >
-              <button
-                type="button"
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
-                data-hero-carousel-prev
-                aria-label="Vídeo anterior"
-              >
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-[5.5rem] z-20 flex justify-center px-4 md:bottom-[6.5rem]"
+      >
+        <div
+          class="pointer-events-auto inline-flex max-w-[min(100%,24rem)] items-center gap-0.5 rounded-full border border-white/[0.08] bg-black/22 py-0.5 pl-0.5 pr-0.5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_8px_24px_-8px_rgba(0,0,0,0.45)] backdrop-blur-sm sm:max-w-none sm:gap-1 sm:py-1 sm:pl-1 sm:pr-1"
+          data-hero-carousel-controls
+          role="group"
+          aria-label="Controles del carrusel de vídeos de fondo"
+          tabindex="0"
+        >
+          {
+            heroCarouselVideos.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
+                  data-hero-carousel-prev
+                  aria-label="Vídeo anterior"
+                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -116,10 +118,10 @@ const mailto = (() => {
                     clip-rule="evenodd"
                   />
                 </svg>
-              </button>
-              <div
-                class="scrollbar-none flex min-w-0 max-w-[11.5rem] flex-nowrap items-center justify-center gap-[5px] overflow-x-auto px-0.5 sm:max-w-none sm:gap-1.5 sm:px-1"
-              >
+                </button>
+                <div
+                  class="scrollbar-none flex min-w-0 max-w-[11.5rem] flex-nowrap items-center justify-center gap-[5px] overflow-x-auto px-0.5 sm:max-w-none sm:gap-1.5 sm:px-1"
+                >
                 {heroCarouselVideos.map((clip, i) => (
                   <button
                     type="button"
@@ -129,13 +131,13 @@ const mailto = (() => {
                     class="h-1.5 w-1.5 shrink-0 rounded-full bg-white/16 transition-[width,background-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/28 data-[active]:h-1.5 data-[active]:w-[18px] data-[active]:rounded-full data-[active]:bg-blue-300/45 data-[active]:shadow-[0_0_14px_rgba(125,211,252,0.12)] sm:data-[active]:w-5"
                   />
                 ))}
-              </div>
-              <button
-                type="button"
-                class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
-                data-hero-carousel-next
-                aria-label="Vídeo siguiente"
-              >
+                </div>
+                <button
+                  type="button"
+                  class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
+                  data-hero-carousel-next
+                  aria-label="Vídeo siguiente"
+                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
@@ -149,11 +151,57 @@ const mailto = (() => {
                     clip-rule="evenodd"
                   />
                 </svg>
-              </button>
-            </div>
-          </div>
-        )
-      }
+                </button>
+                <span
+                  class="mx-0.5 h-4 w-px shrink-0 bg-white/10 sm:mx-1"
+                  aria-hidden="true"
+                ></span>
+              </>
+            )
+          }
+          <button
+            type="button"
+            role="switch"
+            aria-checked="true"
+            data-hero-carousel-play
+            aria-label="Pausar reproducción del carrusel"
+            class="hero-carousel-switch shrink-0"
+          >
+            <span class="hero-carousel-switch-thumb" aria-hidden="true"></span>
+          </button>
+          <button
+            type="button"
+            class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white/38 transition-[color,background-color] duration-300 ease-out hover:bg-white/[0.06] hover:text-white/72 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-white/35 sm:h-8 sm:w-8"
+            data-hero-carousel-fullscreen
+            aria-label="Ver en pantalla completa"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="h-3.5 w-3.5 sm:h-4 sm:w-4"
+              data-fs-enter
+              aria-hidden="true"
+            >
+              <path
+                d="M3 4.25A2.25 2.25 0 0 1 5.25 2h2.5a.75.75 0 0 1 0 1.5H5.25a.75.75 0 0 0-.75.75v2.5a.75.75 0 0 1-1.5 0v-2.5ZM14.75 2h-2.5a.75.75 0 0 1 0 1.5h2.5a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 0 1.5 0v-2.5A2.25 2.25 0 0 0 14.75 2ZM3.75 14.75v-2.5a.75.75 0 0 0-1.5 0v2.5A2.25 2.25 0 0 0 4.25 17h2.5a.75.75 0 0 0 0-1.5H4.25a.75.75 0 0 1-.75-.75ZM17 14.75v-2.5a.75.75 0 0 0-1.5 0v2.5A2.25 2.25 0 0 1 14.75 17h-2.5a.75.75 0 0 1 0-1.5h2.5a.75.75 0 0 0 .75-.75Z"
+              />
+            </svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              class="hidden h-3.5 w-3.5 sm:h-4 sm:w-4"
+              data-fs-exit
+              aria-hidden="true"
+            >
+              <path
+                d="M3.75 5.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5H5.25v2.5a.75.75 0 0 1-1.5 0V5.25ZM14.75 4.5a.75.75 0 0 1 1.5 0v2.5A2.25 2.25 0 0 1 14 7.25h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5ZM4.5 14.75a.75.75 0 0 1-1.5 0v-2.5A2.25 2.25 0 0 1 5.25 12h2.5a.75.75 0 0 1 0 1.5H5.25v2.5ZM15.5 12.25a.75.75 0 0 1 1.5 0v2.5A2.25 2.25 0 0 1 14.75 17h-2.5a.75.75 0 0 1 0-1.5h2.5v-2.5Z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
 
       <div class="relative mx-auto flex min-h-[calc(100vh-128px)] w-[92%] max-w-7xl flex-col justify-end pb-12 md:pb-16">
         <div class="max-w-3xl">
@@ -161,7 +209,7 @@ const mailto = (() => {
             class="text-[11px] font-semibold uppercase tracking-[0.24em] text-blue-300/90"
             data-animate-text
           >
-            Business Intelligence
+            Linktic · DataVision · Business Intelligence
           </p>
           <h1
             class="mt-4 text-balance text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl md:leading-tight"
@@ -173,7 +221,7 @@ const mailto = (() => {
             class="mt-5 max-w-xl text-pretty text-base leading-relaxed text-slate-200 md:text-lg md:leading-relaxed"
             data-animate-text
           >
-            Portafolio de servicios del área de inteligencia de negocio.
+            Portafolio del área de Business Intelligence de Linktic, disponible para todos los proyectos de la compañía.
           </p>
           <div class="mt-7" data-animate-text>
             <a
@@ -325,6 +373,308 @@ const mailto = (() => {
       number={indexedServices[1].number}
       total={totalServices}
     >
+      {/* PAQUETES DE REPORTERÍA: Básico · Medium · Plus
+          Catálogo interactivo del servicio. Las tres tarjetas resaltan al
+          pasar el cursor y exponen un detalle expandible (<details>) con la
+          ficha técnica completa. Mantiene la línea oscura del sitio. */}
+      <section
+        id="reporteria-paquetes"
+        class="relative scroll-mt-32 overflow-hidden bg-slate-950 py-16 text-slate-100 md:py-24"
+        aria-labelledby="reporteria-paquetes-heading"
+        data-animate
+      >
+        <div
+          class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(59,130,246,0.18),transparent_55%)]"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative mx-auto w-[92%] max-w-7xl">
+          <header class="mx-auto max-w-3xl text-center">
+            <p
+              class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-300"
+              data-animate-text
+            >
+              Catálogo del servicio
+            </p>
+            <h3
+              id="reporteria-paquetes-heading"
+              class="mt-3 text-balance text-3xl font-bold tracking-tight text-white md:text-4xl"
+              data-animate-text
+            >
+              Tres paquetes para la reportería de tu proyecto
+            </h3>
+            <p
+              class="mt-4 text-pretty text-base leading-relaxed text-slate-300 md:text-lg"
+              data-animate-text
+            >
+              Cada paquete escala en profundidad, modo de conexión a los datos y experiencia para el usuario final. Pasa el cursor o toca una tarjeta y expande la ficha técnica para conocer el detalle.
+            </p>
+          </header>
+
+          <div
+            class="mt-12 grid gap-5 md:mt-14 md:gap-6 lg:grid-cols-3"
+            data-stagger
+            role="list"
+            aria-label="Paquetes de reportería"
+          >
+            {/* 01 · Básico */}
+            <article
+              role="listitem"
+              class="pkg-card group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/55 p-7 ring-1 ring-white/5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/45 hover:bg-slate-900/85 hover:shadow-2xl hover:shadow-blue-950/40 focus-within:-translate-y-1.5 focus-within:border-blue-400/55"
+            >
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-sky-400/0 via-sky-400/70 to-sky-400/0 transition-transform duration-500 group-hover:scale-x-100"
+              ></span>
+              <header class="flex items-center justify-between gap-3">
+                <span class="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-300">
+                  01 · Básico
+                </span>
+                <span
+                  class="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-200"
+                >
+                  Modo importación
+                </span>
+              </header>
+
+              <h4 class="mt-5 text-balance text-2xl font-bold tracking-tight text-white">
+                Tableros consolidados, listos para consultar
+              </h4>
+
+              <p class="mt-3 text-[14.5px] leading-relaxed text-slate-300">
+                Implementación visual sobre datos importados al modelo. Ideal para informes que se actualizan en ventanas
+                programadas, sin requerir lectura en vivo de la base.
+              </p>
+
+              <ul class="pkg-features mt-6 grid gap-3 text-[14px] leading-relaxed text-slate-200">
+                <li>Tableros en Power BI o Tableau en modo importación.</li>
+                <li>Sincronización programada cada 30&nbsp;minutos.</li>
+                <li>Fuentes: Excel, CSV, SharePoint, archivos planos.</li>
+                <li>Entrega de un enlace público o privado al tablero.</li>
+              </ul>
+
+              <details class="pkg-details mt-6 rounded-xl border border-white/10 bg-white/[0.03] open:bg-white/[0.05]">
+                <summary
+                  class="flex cursor-pointer select-none items-center justify-between gap-3 px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/70"
+                >
+                  Ficha técnica
+                  <span aria-hidden="true" class="pkg-details-chev">+</span>
+                </summary>
+                <div class="border-t border-white/10 px-4 py-4 text-[13.5px] leading-relaxed text-slate-300">
+                  <p>
+                    <strong class="font-semibold text-white">Ideal para:</strong> reportes ejecutivos donde la cifra
+                    no cambia en tiempo real y donde un refresco cada 30&nbsp;min basta para tomar decisiones.
+                  </p>
+                  <ul class="mt-3 grid gap-1.5">
+                    <li class="text-slate-300">· Datos estáticos en el modelo importado.</li>
+                    <li class="text-slate-300">· Herramientas: Power BI, Tableau u otras de visualización.</li>
+                    <li class="text-slate-300">· Acceso al tablero por enlace; sin embebido en aplicativo.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <footer class="mt-6 inline-flex items-center gap-1.5 self-start text-[11.5px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                <span class="inline-block size-1.5 rounded-full bg-sky-400/80" aria-hidden="true"></span>
+                Refresh · cada 30 min
+              </footer>
+            </article>
+
+            {/* 02 · Medium */}
+            <article
+              role="listitem"
+              class="pkg-card group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-slate-900/55 p-7 ring-1 ring-white/5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/45 hover:bg-slate-900/85 hover:shadow-2xl hover:shadow-blue-950/40 focus-within:-translate-y-1.5 focus-within:border-blue-400/55"
+            >
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-blue-400/0 via-blue-400/80 to-blue-400/0 transition-transform duration-500 group-hover:scale-x-100"
+              ></span>
+              <header class="flex items-center justify-between gap-3">
+                <span class="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-300">
+                  02 · Medium
+                </span>
+                <span
+                  class="rounded-full border border-blue-400/30 bg-blue-500/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-100"
+                >
+                  DirectQuery + RLS
+                </span>
+              </header>
+
+              <h4 class="mt-5 text-balance text-2xl font-bold tracking-tight text-white">
+                Tableros en vivo con seguridad por rol
+              </h4>
+
+              <p class="mt-3 text-[14.5px] leading-relaxed text-slate-300">
+                Conexión directa a la base de datos para análisis detallado en tiempo real. Embebido autenticado en el
+                aplicativo del cliente y filtrado por usuario con RLS.
+              </p>
+
+              <ul class="pkg-features mt-6 grid gap-3 text-[14px] leading-relaxed text-slate-200">
+                <li>Conexión DirectQuery a la base productiva del cliente.</li>
+                <li>Información en tiempo real, sin ventanas de sincronización.</li>
+                <li>Seguridad RLS: cada rol ve únicamente sus datos.</li>
+                <li>Embebido en el aplicativo del cliente con su propia autenticación.</li>
+                <li>Pruebas de estrés y carga sobre los tableros publicados.</li>
+              </ul>
+
+              <details class="pkg-details mt-6 rounded-xl border border-white/10 bg-white/[0.03] open:bg-white/[0.05]">
+                <summary
+                  class="flex cursor-pointer select-none items-center justify-between gap-3 px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400/70"
+                >
+                  Ficha técnica
+                  <span aria-hidden="true" class="pkg-details-chev">+</span>
+                </summary>
+                <div class="border-t border-white/10 px-4 py-4 text-[13.5px] leading-relaxed text-slate-300">
+                  <p>
+                    <strong class="font-semibold text-white">Ideal para:</strong> productos internos de Linktic donde el
+                    tablero forma parte del aplicativo y debe respetar los permisos del usuario que ya tiene sesión.
+                  </p>
+                  <ul class="mt-3 grid gap-1.5">
+                    <li class="text-slate-300">· Tiempo de actualización dictado por la fuente original.</li>
+                    <li class="text-slate-300">· Autenticación heredada del aplicativo (sin login Microsoft).</li>
+                    <li class="text-slate-300">· Validación de rendimiento bajo concurrencia esperada.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <footer class="mt-6 inline-flex items-center gap-1.5 self-start text-[11.5px] font-semibold uppercase tracking-[0.2em] text-blue-200">
+                <span class="inline-block size-1.5 rounded-full bg-blue-400" aria-hidden="true"></span>
+                Tiempo real · embebido
+              </footer>
+            </article>
+
+            {/* 03 · Plus — destacado */}
+            <article
+              role="listitem"
+              class="pkg-card pkg-card--featured group relative isolate flex h-full flex-col overflow-hidden rounded-2xl border border-blue-400/40 bg-gradient-to-br from-blue-500/[0.14] via-slate-900/70 to-slate-900/85 p-7 ring-1 ring-blue-400/15 transition duration-300 hover:-translate-y-1.5 hover:border-blue-300/70 hover:shadow-2xl hover:shadow-blue-900/50 focus-within:-translate-y-1.5 focus-within:border-blue-300/80"
+            >
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-300/0 via-blue-300/90 to-blue-300/0"
+              ></span>
+              <header class="flex items-center justify-between gap-3">
+                <span class="font-mono text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-200">
+                  03 · Plus
+                </span>
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-full border border-blue-300/50 bg-blue-400/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white"
+                >
+                  <span class="size-1.5 rounded-full bg-blue-200 shadow-[0_0_8px_rgba(191,219,254,0.6)]" aria-hidden="true"></span>
+                  Experiencia inmersiva
+                </span>
+              </header>
+
+              <h4 class="mt-5 text-balance text-2xl font-bold tracking-tight text-white">
+                Aplicativos inmersivos para eventos en vivo
+              </h4>
+
+              <p class="mt-3 text-[14.5px] leading-relaxed text-slate-200">
+                Tableros y aplicativos totalmente personalizados con datos en tiempo real, pensados para eventos donde el
+                público interactúa con la información en pantalla.
+              </p>
+
+              <ul class="pkg-features mt-6 grid gap-3 text-[14px] leading-relaxed text-slate-100">
+                <li>Tableros y aplicativos 100&nbsp;% a la medida.</li>
+                <li>Información en tiempo real para experiencias en vivo.</li>
+                <li>Diseño orientado a UX para eventos y muestras públicas.</li>
+                <li>Visualizaciones avanzadas y narrativa interactiva.</li>
+                <li>Integra todo lo del paquete Medium.</li>
+              </ul>
+
+              <details class="pkg-details mt-6 rounded-xl border border-blue-300/20 bg-white/[0.04] open:bg-white/[0.06]">
+                <summary
+                  class="flex cursor-pointer select-none items-center justify-between gap-3 px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.16em] text-blue-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300"
+                >
+                  Ficha técnica
+                  <span aria-hidden="true" class="pkg-details-chev">+</span>
+                </summary>
+                <div class="border-t border-blue-300/15 px-4 py-4 text-[13.5px] leading-relaxed text-slate-200">
+                  <p>
+                    <strong class="font-semibold text-white">Ideal para:</strong> jornadas, lanzamientos y eventos donde
+                    la pantalla en vivo cuenta una historia con los datos del proyecto.
+                  </p>
+                  <ul class="mt-3 grid gap-1.5">
+                    <li>· Render web a la medida (frontend dedicado).</li>
+                    <li>· Animaciones y visualizaciones avanzadas.</li>
+                    <li>· Conexión en streaming a las fuentes del evento.</li>
+                  </ul>
+                </div>
+              </details>
+
+              <footer class="mt-6 inline-flex items-center gap-1.5 self-start text-[11.5px] font-semibold uppercase tracking-[0.2em] text-blue-100">
+                <span class="inline-block size-1.5 rounded-full bg-blue-200 shadow-[0_0_8px_rgba(191,219,254,0.6)]" aria-hidden="true"></span>
+                Tiempo real · a la medida
+              </footer>
+            </article>
+          </div>
+
+          {/* Callout: servicio en modo caja negra */}
+          <aside
+            class="relative mt-14 overflow-hidden rounded-2xl border border-blue-400/25 bg-gradient-to-br from-blue-500/[0.10] via-slate-900/55 to-slate-900/85 p-7 ring-1 ring-blue-400/10 md:mt-16 md:p-9"
+            aria-labelledby="reporteria-cajanegra-heading"
+            data-animate-text
+          >
+            <div
+              class="pointer-events-none absolute -right-16 -top-16 size-56 rounded-full bg-blue-500/15 blur-3xl"
+              aria-hidden="true"
+            ></div>
+            <div class="relative grid gap-6 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-10">
+              <div
+                class="flex size-14 items-center justify-center rounded-2xl border border-blue-300/30 bg-blue-500/15 text-blue-100 md:size-16"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" class="size-7 md:size-8">
+                  <path
+                    d="M4 7h16M4 12h16M4 17h10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M18 16l2 2 3-4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </div>
+              <div class="max-w-2xl">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.22em] text-blue-200">
+                  Servicio complementario
+                </p>
+                <h4
+                  id="reporteria-cajanegra-heading"
+                  class="mt-2 text-balance text-xl font-bold tracking-tight text-white md:text-2xl"
+                >
+                  Modo caja negra: entreganos el dato, recíbelo limpio al 99,9&nbsp;%
+                </h4>
+                <p class="mt-3 text-pretty text-[15px] leading-relaxed text-slate-300 md:text-base">
+                  Para los proyectos que prefieren no operar el dato: tú nos entregas la fuente cruda y nosotros la
+                  procesamos —limpieza, normalización y análisis— hasta dejarla con un nivel de confiabilidad del
+                  <span class="font-semibold text-white"> 99,9&nbsp;%</span>. Aplica como complemento a cualquiera de los
+                  tres paquetes anteriores.
+                </p>
+              </div>
+              <ul class="grid gap-2 text-[13px] text-slate-200 md:justify-self-end" aria-label="Etapas del proceso caja negra">
+                <li class="inline-flex items-center gap-2">
+                  <span class="font-mono text-[11px] font-semibold tabular-nums text-blue-300">01</span>
+                  Recepción del dato crudo
+                </li>
+                <li class="inline-flex items-center gap-2">
+                  <span class="font-mono text-[11px] font-semibold tabular-nums text-blue-300">02</span>
+                  Limpieza y normalización
+                </li>
+                <li class="inline-flex items-center gap-2">
+                  <span class="font-mono text-[11px] font-semibold tabular-nums text-blue-300">03</span>
+                  Análisis y entrega
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
       {/* Repositorio Power BI / Fabric: acceso al consolidado de tableros antes del recorrido cronológico. */}
       <section
         id="reporteria-repositorio"
@@ -515,8 +865,25 @@ const mailto = (() => {
   </main>
 
   <footer class="border-t border-slate-200 bg-white py-8">
-    <div class="mx-auto w-[92%] max-w-7xl text-center text-sm text-slate-500">
-      <p data-animate-text>&copy; {currentYear} DataVision BI. Todos los derechos reservados.</p>
+    <div class="mx-auto flex w-[92%] max-w-7xl flex-col items-center gap-3 text-center text-sm text-slate-500 md:flex-row md:justify-between md:gap-4 md:text-left">
+      <div class="inline-flex items-center gap-3" data-animate-text>
+        <img
+          src="/logo-negro-LinkTIC.svg"
+          alt="Linktic"
+          width="96"
+          height="14"
+          class="h-4 w-auto opacity-80"
+          loading="lazy"
+          decoding="async"
+        />
+        <span class="text-slate-400" aria-hidden="true">·</span>
+        <span class="font-semibold text-slate-700">
+          Data<span class="text-blue-600">Vision</span>
+        </span>
+      </div>
+      <p data-animate-text>
+        &copy; {currentYear} Linktic · DataVision (Business Intelligence). Todos los derechos reservados.
+      </p>
     </div>
   </footer>
 

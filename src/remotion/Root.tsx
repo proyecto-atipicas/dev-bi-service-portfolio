@@ -113,10 +113,11 @@ const carrucelTools: Array<{
   {
     id: 'CarrucelTableroSimae',
     sceneDuration: 84,
-    durationInFrames: 84 + 72 + 72,
+    durationInFrames: 84 + 72 + 72 + 72,
     assets: [
-      { kind: 'image', src: `${ROOT}/Tablero SIMAE/1405_image1.png` },
-      { kind: 'image', src: `${ROOT}/Tablero SIMAE/1405_image2.png` },
+      { kind: 'image', src: `${ROOT}/Tablero SIMAE/1.jpg` },
+      { kind: 'image', src: `${ROOT}/Tablero SIMAE/2.jpg` },
+      { kind: 'image', src: `${ROOT}/Tablero SIMAE/3.jpg` },
       { kind: 'video', src: `${ROOT}/Tablero SIMAE/video_tablerosimae.mp4` },
     ],
   },

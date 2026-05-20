@@ -26,22 +26,59 @@ export function initHeroVideoCarousel(): void {
 
   if (videos.length === 0) return;
 
-  if (videos.length === 1) {
-    videos[0].loop = true;
-    controls?.setAttribute('hidden', '');
-    return;
-  }
-
   const dots = controls
     ? Array.from(controls.querySelectorAll<HTMLButtonElement>('[data-hero-carousel-dot]'))
     : [];
   const btnPrev = controls?.querySelector<HTMLButtonElement>('[data-hero-carousel-prev]');
   const btnNext = controls?.querySelector<HTMLButtonElement>('[data-hero-carousel-next]');
+  const btnPlay = controls?.querySelector<HTMLButtonElement>('[data-hero-carousel-play]');
+  const btnFullscreen = controls?.querySelector<HTMLButtonElement>('[data-hero-carousel-fullscreen]');
+  const fsEnterIcon = btnFullscreen?.querySelector<SVGElement>('[data-fs-enter]');
+  const fsExitIcon = btnFullscreen?.querySelector<SVGElement>('[data-fs-exit]');
+  const fullscreenRoot = document.querySelector<HTMLElement>('[data-hero-fullscreen-root]');
 
   const rm = reducedMotion();
   let index = 0;
   let transitioning = false;
   let transitionTimer: ReturnType<typeof window.setTimeout> | null = null;
+  let autoplayEnabled = !rm;
+  let heroVisible = true;
+
+  if (videos.length === 1) {
+    videos[0].loop = true;
+  }
+
+  const syncPlaySwitch = (): void => {
+    if (!btnPlay) return;
+    btnPlay.setAttribute('aria-checked', autoplayEnabled ? 'true' : 'false');
+    btnPlay.setAttribute(
+      'aria-label',
+      autoplayEnabled ? 'Pausar reproducción del carrusel' : 'Reanudar reproducción del carrusel',
+    );
+  };
+
+  const syncFullscreenUi = (): void => {
+    if (!btnFullscreen || !fullscreenRoot) return;
+    const isFs =
+      document.fullscreenElement === fullscreenRoot ||
+      (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement ===
+        fullscreenRoot;
+    btnFullscreen.setAttribute(
+      'aria-label',
+      isFs ? 'Salir de pantalla completa' : 'Ver en pantalla completa',
+    );
+    fsEnterIcon?.classList.toggle('hidden', isFs);
+    fsExitIcon?.classList.toggle('hidden', !isFs);
+  };
+
+  const pauseAllVideos = (): void => {
+    videos.forEach((v) => v.pause());
+  };
+
+  const playActiveIfAllowed = (): void => {
+    if (!autoplayEnabled || !heroVisible) return;
+    void videos[index].play().catch(() => {});
+  };
 
   const applySlide = (slide: HTMLElement, mode: 'active' | 'idle'): void => {
     slide.classList.toggle(SL_ACTIVE, mode === 'active');
@@ -94,22 +131,14 @@ export function initHeroVideoCarousel(): void {
       slides.forEach((s, i) => applySlide(s, i === n ? 'active' : 'idle'));
       setAriaSlides(n);
       transitioning = false;
-      try {
-        await nextVideo.play();
-      } catch {
-        /* política de autoplay o pestaña en segundo plano */
-      }
+      playActiveIfAllowed();
       return;
     }
 
     nextVideo.loop = false;
     nextSlide.classList.add(SL_TOP);
 
-    try {
-      await nextVideo.play();
-    } catch {
-      /* política de autoplay o pestaña en segundo plano */
-    }
+    playActiveIfAllowed();
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -131,10 +160,10 @@ export function initHeroVideoCarousel(): void {
   });
   if (rm) videos[0].loop = true;
 
-  if (!rm) {
+  if (!rm && videos.length > 1) {
     videos.forEach((v, i) => {
       v.addEventListener('ended', () => {
-        if (index !== i) return;
+        if (index !== i || !autoplayEnabled) return;
         void goTo(i + 1);
       });
     });
@@ -172,23 +201,63 @@ export function initHeroVideoCarousel(): void {
   });
 
   syncControls();
+  syncPlaySwitch();
 
-  if (rm) {
-    videos.forEach((v, i) => {
-      if (i === 0) void v.play().catch(() => {});
-      else v.pause();
-    });
+  if (autoplayEnabled) {
+    playActiveIfAllowed();
+  } else {
+    pauseAllVideos();
   }
+
+  btnPlay?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    autoplayEnabled = !autoplayEnabled;
+    syncPlaySwitch();
+    if (autoplayEnabled) {
+      playActiveIfAllowed();
+    } else {
+      pauseAllVideos();
+    }
+  });
+
+  btnFullscreen?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!fullscreenRoot) return;
+    const doc = document as Document & {
+      webkitFullscreenElement?: Element;
+      webkitExitFullscreen?: () => Promise<void>;
+    };
+    const isFs =
+      document.fullscreenElement === fullscreenRoot ||
+      doc.webkitFullscreenElement === fullscreenRoot;
+    const requestFs =
+      fullscreenRoot.requestFullscreen?.bind(fullscreenRoot) ??
+      (fullscreenRoot as HTMLElement & { webkitRequestFullscreen?: () => void })
+        .webkitRequestFullscreen?.bind(fullscreenRoot);
+    try {
+      if (isFs) {
+        if (document.exitFullscreen) void document.exitFullscreen();
+        else void doc.webkitExitFullscreen?.();
+      } else if (requestFs) {
+        void requestFs();
+      }
+    } catch {
+      /* API no disponible */
+    }
+  });
+
+  document.addEventListener('fullscreenchange', syncFullscreenUi);
+  document.addEventListener('webkitfullscreenchange', syncFullscreenUi);
+  syncFullscreenUi();
 
   const hero = root.closest('.hero-visual');
   if (hero) {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          const active = videos[index];
-          if (!active) return;
-          if (e.isIntersecting) void active.play().catch(() => {});
-          else active.pause();
+          heroVisible = e.isIntersecting;
+          if (heroVisible) playActiveIfAllowed();
+          else pauseAllVideos();
         });
       },
       { threshold: 0.06 },

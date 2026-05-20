@@ -128,27 +128,30 @@ export const services: Record<ServiceKey, ServiceDetail> = {
 
   reporteria: {
     anchor: 'reporteria',
-    title: 'Reportería',
-    valueSubtitle: 'Tableros y reportes en los que cada área puede confiar para decidir.',
-    shortDesc: 'Métricas homologadas, entregas a tiempo y trazabilidad de versiones.',
+    title: 'Reportería y visualización de datos',
+    valueSubtitle:
+      'Reportería en tres niveles para cualquier proyecto de Linktic: del tablero con datos consolidados hasta la experiencia inmersiva en tiempo real.',
+    shortDesc: 'Tres paquetes (Básico, Medium y Plus) para cada profundidad de análisis.',
     iconPath: ICON_REPORTERIA,
     videoSrc: '/servicio-reporteria.mp4',
     painParagraph:
-      'Cada decisión exige un nuevo Excel, las cifras cambian según quién las consulte y los reportes ad-hoc se acumulan en la mesa del equipo. Sin una base común, la analítica se vuelve un cuello de botella en lugar de una palanca.',
+      'Cada proyecto pide una reportería distinta: unos necesitan un tablero rápido sobre archivos planos, otros demandan conexión directa a la base con seguridad por rol, y los eventos exigen experiencias en tiempo real frente al público. Sin un catálogo claro, cada solicitud se vuelve un desarrollo aparte.',
     solutionParagraph:
-      'Construimos catálogos de reportes y tableros versionados, con métricas homologadas y entregas programadas. Cada área accede a información comparable, auditable y siempre alineada a las fuentes oficiales, reduciendo solicitudes repetidas y acelerando la toma de decisión.',
-      benefits: [
-        'Tableros y reportes con métricas de las elecciones presidenciales y Congreso 2026.',
-        'Tableros y reportes con métricas de las elecciones atipicas',
-        'Modelamiento de datos para las elecciones de Presidencia y Congreso 2026 y atipicas',
-        'Modelado de datos para analsisis electoral',
-      ],
-    successMetrics: [
-      'Más de 20 tableros versionados publicados a lo largo del ciclo electoral 2025–2026.',
-      'Reducción medible de solicitudes ad-hoc al concentrar preguntas frecuentes en reportes base.',
-      'Homologación de KPIs entre equipos a partir de un mismo conjunto de reglas de negocio.',
+      'Estructuramos el servicio en tres paquetes —Básico, Medium y Plus— para que cada proyecto de Linktic elija el nivel que necesita. Trabajamos con Power BI, Tableau y otras herramientas de visualización, e integramos seguridad RLS, conexión DirectQuery, embebido autenticado en el aplicativo del cliente y aplicaciones inmersivas según el paquete contratado.',
+    benefits: [
+      'Tres niveles de servicio: Básico (modo importación), Medium (DirectQuery + RLS) y Plus (experiencia inmersiva en tiempo real).',
+      'Conexión directa a la base de datos con información actualizada en tiempo real (Medium y Plus).',
+      'Seguridad Row-Level Security (RLS): cada usuario ve solo la información que le corresponde según su rol.',
+      'Embebido del tablero en el aplicativo del cliente con su propia autenticación, sin depender de Microsoft.',
+      'Servicio de caja negra: tú entregas el dato crudo y recibes información lista al 99,9 % tras limpieza, normalización y análisis.',
     ],
-    /* La vitrina de reportería usa la línea de tiempo electoral; ver index.astro. */
+    successMetrics: [
+      'Más de 20 tableros versionados publicados durante el ciclo electoral 2025–2026 reutilizables como referencia interna.',
+      'Tableros con DirectQuery y RLS aplicados en proyectos internos: información en tiempo real filtrada por rol.',
+      'Pruebas de estrés sobre los tableros del paquete Medium para garantizar respuesta bajo concurrencia.',
+    ],
+    /* La vitrina de reportería combina el catálogo de paquetes y la línea
+       de tiempo electoral; ver index.astro. */
     deliverables: [],
   },
 

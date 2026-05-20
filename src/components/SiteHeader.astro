@@ -16,10 +16,28 @@ import { indexedServices } from '../data/services';
   >
     <a
       href="/"
-      class="shrink-0 text-lg font-bold text-white transition hover:text-slate-200"
+      class="brand-lockup group inline-flex shrink-0 items-center gap-2.5 transition hover:opacity-95 md:gap-3"
+      aria-label="Linktic · DataVision (Business Intelligence)"
       data-animate-nav
     >
-      Data<span class="text-blue-400">Vision BI</span>
+      <img
+        src="/logo-negro-LinkTIC.svg"
+        alt="Linktic"
+        width="120"
+        height="18"
+        class="brand-lockup-logo h-5 w-auto md:h-[22px]"
+        loading="eager"
+        decoding="async"
+      />
+      <span
+        class="hidden h-5 w-px bg-white/15 sm:inline-block md:h-6"
+        aria-hidden="true"
+      ></span>
+      <span
+        class="hidden text-base font-bold leading-none text-white sm:inline-block md:text-lg"
+      >
+        Data<span class="text-blue-400">Vision</span>
+      </span>
     </a>
 
     <nav
@@ -74,5 +92,15 @@ import { indexedServices } from '../data/services';
   }
   [data-services-subnav] a[data-subnav-link][data-active='true'] span:first-child {
     color: rgb(147 197 253);
+  }
+  /* Logo de Linktic: el SVG original es negro (#171725). Lo blanqueamos
+     para que se lea sobre el header oscuro (bg-slate-950) sin tener que
+     duplicar el asset en otra versión cromática. */
+  .brand-lockup-logo {
+    filter: brightness(0) invert(1);
+    transition: filter 0.3s ease;
+  }
+  .brand-lockup:hover .brand-lockup-logo {
+    filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(96, 165, 250, 0.35));
   }
 </style>

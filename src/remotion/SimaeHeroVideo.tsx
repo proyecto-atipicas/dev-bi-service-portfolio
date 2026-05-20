@@ -638,6 +638,7 @@ const FloatingCard: React.FC<{
 }> = ({ src, x, y, w, h, rotate, opacity, framePhase, delay }) => {
   const drift = Math.sin((framePhase + delay) * 0.05) * 5;
   const driftY = Math.cos((framePhase + delay) * 0.045) * 4;
+  const isCneMap = src === ASSET_MAP;
   return (
     <div
       style={{
@@ -664,6 +665,19 @@ const FloatingCard: React.FC<{
           filter: 'brightness(1.02) saturate(1.05)',
         }}
       />
+      {isCneMap && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '8%',
+            height: '10%',
+            background: COLORS.bgDeep,
+            zIndex: 10,
+          }}
+        />
+      )}
       <AbsoluteFill
         style={{
           background: `linear-gradient(135deg, rgba(34,211,238,0.08) 0%, transparent 50%, rgba(139,92,246,0.08) 100%)`,
