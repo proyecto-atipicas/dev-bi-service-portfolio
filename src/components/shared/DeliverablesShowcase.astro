@@ -10,7 +10,7 @@
  * su propia vitrina viva (`VerticalTimeline`) con la línea de tiempo
  * electoral.
  */
-import type { DeliverableItem } from '../../data/services';
+import type { DeliverableItem } from '../../data/evidence';
 
 interface Props {
   items: DeliverableItem[];
@@ -114,7 +114,6 @@ const hasItems = items.length > 0;
           {item.kind === 'placeholder' && (
             <div
               class="mx-5 mt-4 flex aspect-video w-auto items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 text-center text-[12px] uppercase tracking-[0.18em] text-slate-400"
-              role="status"
             >
               Próxima publicación
             </div>

@@ -1,0 +1,364 @@
+<h2 class="sr-only">Portafolio de servicios B2B de la gerencia BI, versión refinada con pilares concentrados y verticales especializados desarrollados en profundidad para presentación a cliente.</h2>
+
+<style>
+  .pf-wrap { font-family: var(--font-sans); padding: 4px 0; }
+  .pf-brand { background: #042C53; color: #E6F1FB; padding: 18px 24px; border-radius: var(--border-radius-lg); margin-bottom: 14px; }
+  .pf-eyebrow { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #85B7EB; font-weight: 500; }
+  .pf-name { font-size: 22px; font-weight: 500; margin-top: 4px; letter-spacing: -0.3px; }
+  .pf-tag { font-size: 13px; color: #B5D4F4; margin-top: 6px; line-height: 1.5; max-width: 600px; }
+  .pf-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+  .tab { font-size: 13px; padding: 8px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all 0.15s; font-weight: 500; }
+  .tab:hover { border-color: var(--color-border-secondary); color: var(--color-text-primary); }
+  .tab.on { background: #042C53; color: #E6F1FB; border-color: #042C53; }
+
+  /* Pillars */
+  .pillar-block { margin-bottom: 18px; }
+  .pillar-h { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: 600; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .pillar-h .pillar-num { color: #042C53; font-size: 13px; font-weight: 600; }
+  .pillar-h .pillar-sub { font-weight: 400; color: var(--color-text-tertiary); font-size: 11px; text-transform: none; letter-spacing: 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid-1 { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .svc { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .svc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .svc-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+  .svc-time { font-size: 11px; color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; padding: 2px 8px; background: var(--color-background-secondary); border-radius: 999px; flex-shrink: 0; }
+  .svc-target { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 8px; line-height: 1.4; }
+  .svc-target strong { color: var(--color-text-primary); font-weight: 500; }
+  .svc-incl { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .svc-incl strong { color: var(--color-text-primary); font-weight: 500; }
+  .proof { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #DEEFC9; color: #3B6D11; font-weight: 500; margin-top: 8px; letter-spacing: 0.3px; }
+
+  /* Journeys */
+  .journey-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 16px 18px; margin-bottom: 10px; border-left: 3px solid; }
+  .j1 { border-left-color: #85B7EB; }
+  .j2 { border-left-color: #5DA9E9; }
+  .j3 { border-left-color: #042C53; }
+  .j4 { border-left-color: #639922; }
+  .j5 { border-left-color: #854F0B; }
+  .j-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .j-name { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+  .j-meta { font-size: 11px; color: var(--color-text-tertiary); }
+  .j-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--color-background-secondary); color: var(--color-text-secondary); font-weight: 500; margin-right: 4px; vertical-align: 1px; }
+  .j-for { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+  .j-for strong { color: var(--color-text-primary); font-weight: 500; }
+  .j-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+
+  /* Verticals - sub-tab strip */
+  .vert-subtabs { display: flex; gap: 6px; flex-wrap: wrap; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .vsub { font-size: 12px; padding: 7px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); cursor: pointer; background: transparent; color: var(--color-text-secondary); transition: all 0.15s; font-weight: 500; }
+  .vsub:hover { border-color: var(--color-border-secondary); color: var(--color-text-primary); }
+  .vsub.on { background: var(--color-background-secondary); border-color: var(--color-border-secondary); color: var(--color-text-primary); }
+
+  /* Vertical detail */
+  .vert-hero { display: flex; gap: 14px; align-items: flex-start; padding: 16px 18px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); border-left: 4px solid; margin-bottom: 14px; }
+  .vert-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; font-weight: 600; color: white; }
+  .vert-hero-body { flex: 1; min-width: 0; }
+  .vert-hero-name { font-size: 17px; font-weight: 500; color: var(--color-text-primary); line-height: 1.25; }
+  .vert-hero-tagline { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.45; }
+  .vert-status { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 999px; margin-top: 8px; font-weight: 500; letter-spacing: 0.2px; }
+  .vert-status.active { background: #DEEFC9; color: #3B6D11; }
+  .vert-status.priority { background: #FAEEDA; color: #854F0B; }
+  .vert-status.next { background: #E6F1FB; color: #0C447C; }
+  .vert-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .vert-col { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+  .vert-col h4 { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: 600; margin-bottom: 10px; margin-top: 0; }
+  .vert-list { list-style: none; padding: 0; margin: 0; }
+  .vert-list li { font-size: 12px; color: var(--color-text-secondary); padding: 6px 0; padding-left: 16px; position: relative; line-height: 1.45; border-top: 0.5px solid var(--color-border-tertiary); }
+  .vert-list li:first-child { border-top: none; padding-top: 0; }
+  .vert-list li::before { content: '·'; position: absolute; left: 4px; top: 4px; font-weight: 700; color: var(--color-text-primary); }
+  .vert-list.pain li::before { content: '!'; color: #A32D2D; font-size: 11px; top: 7px; }
+  .vert-h-section { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: 600; margin: 14px 0 10px; }
+  .offer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .offer-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+  .offer-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; line-height: 1.3; }
+  .offer-desc { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+  .proof-block { background: linear-gradient(0deg, var(--color-background-secondary), var(--color-background-secondary)); border-radius: var(--border-radius-lg); padding: 14px 16px; margin-bottom: 14px; border-left: 3px solid #042C53; }
+  .proof-h { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #042C53; font-weight: 600; margin-bottom: 4px; }
+  .proof-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; line-height: 1.3; }
+  .proof-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; }
+  .metrics-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 16px; }
+  .metric-row { font-size: 12px; color: var(--color-text-secondary); padding: 6px 0; padding-left: 18px; position: relative; line-height: 1.45; border-top: 0.5px solid var(--color-border-tertiary); }
+  .metric-row:first-of-type { border-top: none; padding-top: 0; }
+  .metric-row::before { content: '✓'; position: absolute; left: 0; top: 6px; color: #3B6D11; font-weight: 600; font-size: 11px; }
+  .metric-row:first-of-type::before { top: 0; }
+
+  @media(max-width: 580px) { .grid, .vert-2col, .offer-grid { grid-template-columns: 1fr; } }
+</style>
+
+<div class="pf-wrap">
+  <div class="pf-brand">
+    <div class="pf-eyebrow">Propuesta de Gerencia · BI Analítica</div>
+    <div class="pf-name">Suite BI · Portafolio B2B</div>
+    <div class="pf-tag">Pilares de capacidad concentrados, journeys empaquetados, servicios continuos y verticales especializados con evidencia. Para presentación a cliente y a dirección.</div>
+  </div>
+
+  <div class="pf-tabs" id="tabs">
+    <button class="tab on" data-view="pillars">Pilares de capacidad</button>
+    <button class="tab" data-view="journeys">Journeys empaquetados</button>
+    <button class="tab" data-view="managed">Servicios continuos</button>
+    <button class="tab" data-view="verticals">Verticales especializados</button>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+(function() {
+  const pillars = [
+    {
+      num: '01', title: 'Transformación de datos',
+      sub: 'Hacer que los datos sean confiables y queryable',
+      services: [
+        { name: 'Auditoría de fuentes y diagnóstico', time: '2–3 sem', target: 'Cliente con datos dispersos sin visión consolidada de su panorama informativo', incl: 'Inventario de fuentes, mapeo de calidad, evaluación de gobernanza actual, roadmap priorizado por valor de negocio y estimación de esfuerzo para fases posteriores. Entrega documento ejecutivo y técnico.' }
+      ]
+    },
+    {
+      num: '02', title: 'Analítica avanzada',
+      sub: 'Convertir datos en modelos y señales accionables',
+      services: [
+        { name: 'Modelado semántico para BI', time: '3–6 sem', target: 'Cliente con datos crudos sin capa de negocio coherente', incl: 'Modelo semántico optimizado, medidas DAX, row-level security, documentación automática del modelo y capacitación para usuarios power del cliente.' },
+        { name: 'Análisis geoespacial', time: '4–6 sem', target: 'Cliente con datos con dimensión territorial donde el mapa cuenta la historia', incl: 'Topologías geográficas proyectadas, mapas interactivos por nivel administrativo (departamento, municipio, zona), joins georreferenciados, performance optimizada para volúmenes nacionales.', proof: 'SIMAE · 33 departamentos' }
+      ]
+    },
+    {
+      num: '03', title: 'Visualización y automatización',
+      sub: 'El producto que el cliente y sus usuarios ven',
+      services: [
+        { name: 'Suite de tableros integrales', time: '4–10 sem', target: 'Cualquier organización con necesidad de visualizar datos para decisión', incl: 'Catálogo flexible de tableros con tres variantes: ejecutiva (KPIs estratégicos para dirección), operacional (datos en tiempo cuasi-real para equipos), embebida (consumo dentro de los productos del cliente). Cada variante se entrega sola o combinada según el caso.' },
+        { name: 'Visualización interactiva', time: '6–10 sem', target: 'Cliente que requiere experiencia diferenciada y de uso diario en sus tableros', incl: 'Drill-down multinivel con preservación de contexto, mapas y gráficos interactivos, filtros avanzados, datos en tiempo real, exportación auditable, integración con sistemas externos, modo offline opcional para entornos sin red estable.', proof: 'Pattern SIMAE · uso institucional' }
+      ]
+    }
+  ];
+
+  const journeys = [
+    { cls: 'j1', name: 'BI Discovery Sprint', time: '2 semanas', tags: ['Entry', 'Bajo riesgo'], forWho: 'Cliente nuevo que necesita entender qué le aporta BI antes de comprometer presupuesto grande.', body: 'Auditoría de fuentes + 1 prototipo navegable + roadmap priorizado a 6 meses. Inversión acotada, contrato corto, garantía de aprendizaje aunque no contrate fase siguiente.' },
+    { cls: 'j2', name: 'Tablero Express', time: '6 semanas', tags: ['Un caso de uso', 'Time-to-value rápido'], forWho: 'Cliente con caso de uso claro que necesita resultado visible pronto para defender la inversión internamente.', body: 'Un tablero end-to-end: modelado + pipeline + visualización + despliegue. Alcance acotado a una dirección de negocio. Sirve como prueba para escalar a Plataforma completa.' },
+    { cls: 'j3', name: 'Plataforma BI completa', time: '12 semanas', tags: ['Implementación full', 'Plurianual'], forWho: 'Cliente que adopta BI como capacidad permanente, con varios stakeholders y casos de uso.', body: 'Los tres pilares activos: capa de datos, modelo semántico, 4–6 tableros en producción, embedding, gobernanza, capacitación. Marco de 4 KPIs contractuales para medir cumplimiento.' },
+    { cls: 'j4', name: 'BI Embebido B2B', time: '10–16 semanas', tags: ['Producto del cliente', 'Premium'], forWho: 'Cliente cuyo negocio es ofrecer información a terceros y necesita que el tablero sea parte de su producto.', body: 'Es el pattern SIMAE generalizado: tableros embebidos en el portal del cliente, white-label, autenticación contextual, datos en vivo. Modelo más rentable porque el cliente lo monetiza directamente.' },
+    { cls: 'j5', name: 'Migración BI', time: '8–20 semanas · variable', tags: ['Sale-side', 'Migra desde legacy'], forWho: 'Cliente con BI existente (Excel pesados, Tableau viejo, Looker no usado) o tableros Power BI con limitaciones de licencia que quiere migrar a stack moderno propio.', body: 'Análisis del estado actual, mapeo de reportes existentes, plan de migración por olas, paralelo durante transición. Valor para el cliente: independencia de licencias, mejor performance, mayor flexibilidad de integración.' }
+  ];
+
+  const managed = [
+    { name: 'Operación BI managed', cadence: 'Mensual recurrente', forWho: 'Clientes ya servidos por Suite BI que quieren delegar operación.', incl: 'Monitoreo de disponibilidad, gestión de incidencias, refresh de datos, soporte de primer nivel. SLA por contrato.' },
+    { name: 'Optimización continua', cadence: 'Ciclos trimestrales', forWho: 'Clientes con tableros en producción que detectan lentitud, baja adopción o data drift.', incl: 'Análisis de performance, optimización DAX/queries, revisión de adopción, ajuste de KPIs según evolución de negocio.' },
+    { name: 'Soporte y on-call', cadence: 'Mensual', forWho: 'Clientes con tableros críticos (ej. eventos en vivo, picos estacionales).', incl: 'Cobertura on-call 24/7 durante ventanas críticas, response time garantizado, war room virtual si aplica.' },
+    { name: 'Evolución del portafolio', cadence: 'Anual', forWho: 'Clientes con relación de largo plazo que quieren ampliar uso de BI año tras año.', incl: 'Revisión estratégica, identificación de nuevos casos, retiro de tableros sin uso, plan de inversión para el siguiente ciclo.' }
+  ];
+
+  const verticals = [
+    {
+      id: 'electoral', name: 'Electoral y Gubernamental',
+      tagline: 'Información oficial confiable, en vivo, ante stakeholders múltiples.',
+      status: 'Probado en producción · SIMAE', statusType: 'active',
+      color: '#042C53', icon: '⚖',
+      targets: [
+        'Autoridades electorales (CNE, Registraduría)',
+        'Superintendencias y entidades de control',
+        'Gobiernos territoriales y entidades estadísticas oficiales',
+        'Organismos internacionales con observación en Colombia'
+      ],
+      pains: [
+        'Picos extremos de demanda en ventanas críticas como jornadas electorales',
+        'Necesidad de transparencia auditable ante observadores múltiples',
+        'Reporting territorial multinivel: departamento, municipio, puesto, mesa',
+        'Embedding seguro en portales institucionales con identidad gráfica propia'
+      ],
+      offerings: [
+        { name: 'Tablero de cobertura territorial en tiempo real', desc: 'Visualización con datos en vivo de la operación, con coloreado semafórico por nivel territorial y drill-down preservando contexto.' },
+        { name: 'Centro de monitoreo de jornadas', desc: 'Tablero de comando para días críticos, con simulacros de carga previos, equipo on-call y plan de contingencia documentado.' },
+        { name: 'Visualización geoespacial multinivel', desc: 'Mapas interactivos con drill-down de departamento a municipio a puesto, optimizados para volúmenes nacionales.' },
+        { name: 'Embedding seguro institucional', desc: 'Integración en portales del cliente con autenticación contextual, tokens de corta duración y adopción de la identidad gráfica oficial.' }
+      ],
+      proof: { title: 'SIMAE para el CNE · Presidenciales 2026', desc: '156.564 actores registrados, 122.016 mesas en 33 departamentos. Cero incidentes mayores en jornada electoral. 100% de cumplimiento contractual y 96.7% de Excelencia Operativa A.C.E. en la primera vuelta presidencial.' },
+      metrics: [ 'Disponibilidad en ventana crítica ≥ 99.5%', 'Tiempo entre evento y visualización < 5 segundos', 'Trazabilidad completa de la jornada para auditoría posterior' ]
+    },
+    {
+      id: 'financiero', name: 'Financiero y de Consumo',
+      tagline: 'Detección de patrones críticos y experiencias embebidas para el cliente final.',
+      status: 'Capacidad técnica lista', statusType: 'priority',
+      color: '#3B6D11', icon: '$',
+      targets: [
+        'Bancos comerciales y cooperativas financieras',
+        'Fintechs en etapa de escala',
+        'Aseguradoras y compañías de crédito de consumo',
+        'Retailers grandes con datos transaccionales'
+      ],
+      pains: [
+        'Detección de fraude y comportamiento atípico transaccional en tiempo real',
+        'Reporting regulatorio recurrente ante Superfinanciera y otros entes',
+        'Necesidad de ofrecer dashboards al cliente final desde la app o portal',
+        'Análisis de portafolio, exposición de riesgo y comportamiento de cohortes'
+      ],
+      offerings: [
+        { name: 'Motor de detección de atípicas transaccionales', desc: 'Algoritmos estadísticos y de machine learning sobre alto volumen, con precisión ≥ 90% en validación.' },
+        { name: 'Tableros de riesgo y exposición', desc: 'Vista consolidada de portafolio para riesgo, tesorería y dirección, con drill-down por producto, segmento y geografía.' },
+        { name: 'Embedded analytics en apps del cliente final', desc: 'Tableros embebidos en la app móvil o web del cliente final, con experiencia coherente con la marca del banco.' },
+        { name: 'Reportes regulatorios automatizados', desc: 'Generación periódica de reportes para entes de control, con trazabilidad de cifras y firma electrónica cuando aplica.' }
+      ],
+      proof: { title: 'Núcleo técnico transferible desde electoral', desc: 'El motor de detección de atípicas y la arquitectura de embedding seguro desarrollados y certificados para SIMAE son directamente adaptables al sector financiero. Reduce significativamente tiempo y riesgo de implementación frente a empezar de cero.' },
+      metrics: [ 'Reducción del tiempo de detección de patrones críticos', 'Precisión del scoring ≥ 90% en validación', 'Adopción del embedded analytics por el cliente final del banco' ]
+    },
+    {
+      id: 'operaciones', name: 'Operaciones, Logística y Manufactura',
+      tagline: 'Centro de control con visibilidad en tiempo real sobre redes operacionales complejas.',
+      status: 'Metodología validada', statusType: 'priority',
+      color: '#854F0B', icon: '⚙',
+      targets: [
+        'Empresas logísticas y de transporte (terrestre, courier, marítimo)',
+        'Manufactureras con cadenas multinivel',
+        'Operadores de servicios públicos (energía, agua, telecom)',
+        'Empresas con flotas o redes territoriales extensas'
+      ],
+      pains: [
+        'Visibilidad operacional fragmentada entre sistemas heredados',
+        'KPIs de SLA y disponibilidad sin instrumentación unificada',
+        'Análisis geoespacial de rutas, cobertura y capacidad de red',
+        'Necesidad de centros de control con alertas en múltiples niveles'
+      ],
+      offerings: [
+        { name: 'Centro de Control operacional integral', desc: 'Tablero único que consolida KPIs, alertas, mapas y cola de decisiones operativas. Reemplaza la dispersión de Excel y reportes inconexos.' },
+        { name: 'Marco de KPIs operacionales en 4 dimensiones', desc: 'Marco estandarizado: velocidad, calidad, eficiencia, impacto al negocio. Indicadores con umbrales semafóricos y propietario único por KPI.' },
+        { name: 'Análisis geoespacial de rutas y red', desc: 'Visualización de cobertura, identificación de zonas críticas y optimización de capacidad por nivel territorial.' },
+        { name: 'Sistema de alertas multitier', desc: 'Reglas configurables con criterios cuantitativos, escalamiento automático por severidad, integración con canales del cliente.' }
+      ],
+      proof: { title: 'Metodología propia validada internamente', desc: 'El Centro de Control desarrollado para gestionar nuestros 4 KPIs contractuales en el proyecto Operaciones 360 es una metodología probada y replicable. Estructura, plantillas y marco están listos para adaptación al cliente.' },
+      metrics: [ 'Cumplimiento de SLA por servicio', 'Tiempo entre detección y mitigación de incidencias', 'Visibilidad consolidada sobre operación dispersa' ]
+    },
+    {
+      id: 'comercial', name: 'Comercial, Ventas y Customer Analytics',
+      tagline: 'Tableros que dejan de ser reportes y se convierten en herramientas de uso diario.',
+      status: 'Diseño listo', statusType: 'next',
+      color: '#5DA9E9', icon: '↗',
+      targets: [
+        'Empresas B2B con ciclos de venta largos y pipeline complejo',
+        'E-commerce y retail digital de mediano a alto volumen',
+        'SaaS LATAM en fase de escala con foco en customer success',
+        'Compañías con modelos de suscripción y revenue recurrente'
+      ],
+      pains: [
+        'Visibilidad del pipeline y precisión de forecast a 90 días',
+        'Análisis de cohortes, customer lifetime value y retención sin instrumentación',
+        'Predicción de churn con ventana de acción suficiente',
+        'Tableros comerciales genéricos que no logran adopción del equipo'
+      ],
+      offerings: [
+        { name: 'Tableros ejecutivos de pipeline y forecast', desc: 'Vista de dirección comercial con drill-down a oportunidad individual, métricas de salud del pipeline y proyección probabilística.' },
+        { name: 'Análisis de cohortes y CLV', desc: 'Visualización temporal de comportamiento de cohortes, customer lifetime value por segmento y canal.' },
+        { name: 'Modelos de churn prediction', desc: 'Scoring de probabilidad de baja con ventana de acción configurable, integración con flujos de customer success.' },
+        { name: 'Embedding en CRMs comerciales', desc: 'Integración nativa con el CRM del cliente (Salesforce, HubSpot u otros) para que los comerciales no cambien de herramienta.' }
+      ],
+      proof: { title: 'Diferenciación por experiencia, no por reporte', desc: 'El mercado de BI comercial está saturado de tableros genéricos. La ventaja competitiva está en la combinación de visualización interactiva más embedding contextual que validamos en SIMAE, aplicada al mundo comercial.' },
+      metrics: [ 'Precisión de forecast a 90 días', 'Reducción de churn por intervención temprana', 'Adopción medida en sesiones activas del equipo comercial' ]
+    }
+  ];
+
+  function renderPillars() {
+    return pillars.map(p => `
+      <div class="pillar-block">
+        <div class="pillar-h"><span><span class="pillar-num">${p.num}</span> · ${p.title}</span><span class="pillar-sub">${p.sub}</span></div>
+        <div class="${p.services.length === 1 ? 'grid-1' : 'grid'}">
+          ${p.services.map(s => `
+            <div class="svc">
+              <div class="svc-head"><div class="svc-name">${s.name}</div><div class="svc-time">${s.time}</div></div>
+              <div class="svc-target"><strong>Para:</strong> ${s.target}</div>
+              <div class="svc-incl"><strong>Incluye:</strong> ${s.incl}</div>
+              ${s.proof ? `<span class="proof">✓ ${s.proof}</span>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderJourneys() {
+    return journeys.map(j => `
+      <div class="journey-card ${j.cls}">
+        <div class="j-head">
+          <div><span class="j-name">${j.name}</span> ${j.tags.map(t => `<span class="j-tag">${t}</span>`).join('')}</div>
+          <span class="j-meta">${j.time}</span>
+        </div>
+        <div class="j-for"><strong>Para:</strong> ${j.forWho}</div>
+        <div class="j-body">${j.body}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderManaged() {
+    return `<div class="grid-1">` + managed.map(m => `
+      <div class="svc">
+        <div class="svc-head"><div class="svc-name">${m.name}</div><div class="svc-time">${m.cadence}</div></div>
+        <div class="svc-target"><strong>Para:</strong> ${m.forWho}</div>
+        <div class="svc-incl"><strong>Incluye:</strong> ${m.incl}</div>
+      </div>
+    `).join('') + `</div>`;
+  }
+
+  let activeVertical = 'electoral';
+
+  function renderVerticals() {
+    const v = verticals.find(x => x.id === activeVertical);
+    return `
+      <div class="vert-subtabs">
+        ${verticals.map(x => `<button class="vsub ${x.id === activeVertical ? 'on' : ''}" data-vid="${x.id}">${x.name.split(' y ')[0].split(',')[0]}</button>`).join('')}
+      </div>
+      <div class="vert-hero" style="border-left-color: ${v.color}">
+        <div class="vert-icon" style="background: ${v.color}">${v.icon}</div>
+        <div class="vert-hero-body">
+          <div class="vert-hero-name">${v.name}</div>
+          <div class="vert-hero-tagline">${v.tagline}</div>
+          <span class="vert-status ${v.statusType}">${v.status}</span>
+        </div>
+      </div>
+      <div class="vert-2col">
+        <div class="vert-col">
+          <h4>Perfil del cliente</h4>
+          <ul class="vert-list">${v.targets.map(t => `<li>${t}</li>`).join('')}</ul>
+        </div>
+        <div class="vert-col">
+          <h4>Dolor que atendemos</h4>
+          <ul class="vert-list pain">${v.pains.map(p => `<li>${p}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="vert-h-section">Ofertas insignia</div>
+      <div class="offer-grid">
+        ${v.offerings.map(o => `<div class="offer-card"><div class="offer-name">${o.name}</div><div class="offer-desc">${o.desc}</div></div>`).join('')}
+      </div>
+      <div class="proof-block">
+        <div class="proof-h">Evidencia</div>
+        <div class="proof-title">${v.proof.title}</div>
+        <div class="proof-desc">${v.proof.desc}</div>
+      </div>
+      <div class="vert-h-section">Métricas de valor</div>
+      <div class="metrics-card">
+        ${v.metrics.map(m => `<div class="metric-row">${m}</div>`).join('')}
+      </div>
+    `;
+  }
+
+  const renderers = { pillars: renderPillars, journeys: renderJourneys, managed: renderManaged, verticals: renderVerticals };
+  const content = document.getElementById('content');
+  let currentView = 'pillars';
+
+  function render(view) { currentView = view; content.innerHTML = renderers[view](); attachVerticalSubtabs(); }
+
+  function attachVerticalSubtabs() {
+    if (currentView !== 'verticals') return;
+    document.querySelectorAll('.vsub').forEach(b => {
+      b.addEventListener('click', () => {
+        activeVertical = b.dataset.vid;
+        render('verticals');
+      });
+    });
+  }
+
+  render('pillars');
+
+  document.querySelectorAll('#tabs .tab').forEach(t => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('#tabs .tab').forEach(x => x.classList.remove('on'));
+      t.classList.add('on');
+      render(t.dataset.view);
+    });
+  });
+})();
+</script>

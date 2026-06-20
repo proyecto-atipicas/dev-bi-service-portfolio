@@ -1,10 +1,18 @@
 ---
 /**
- * Header global del sitio. Una sola fila: logo + sub-nav de servicios
- * (anclas internas) + CTA de contacto. Sticky en la parte superior para
- * que la navegación dentro de la landing se sienta continua.
+ * Header global del sitio. Una sola fila: logo + sub-nav de las secciones del
+ * portafolio (anclas internas) + CTA de contacto. Sticky en la parte superior
+ * para que la navegación dentro de la landing se sienta continua.
  */
-import { indexedServices } from '../data/services';
+
+/** Secciones del portafolio; el `id` coincide con el `id` de cada `<section>`. */
+const navSections = [
+  { id: 'pilares', num: '01', label: 'Pilares' },
+  { id: 'journeys', num: '02', label: 'Journeys' },
+  { id: 'verticales', num: '03', label: 'Verticales' },
+  { id: 'evidencia', num: '04', label: 'Evidencia' },
+  { id: 'continuos', num: '05', label: 'Continuos' },
+];
 ---
 
 <header
@@ -42,26 +50,26 @@ import { indexedServices } from '../data/services';
 
     <nav
       class="min-w-0 flex-1"
-      aria-label="Navegación de servicios"
+      aria-label="Navegación del portafolio"
     >
       <ul
         class="flex items-center gap-2 overflow-x-auto py-1 text-[13px]"
         role="list"
       >
-        {indexedServices.map((service) => (
+        {navSections.map((section) => (
           <li class="shrink-0">
             <a
-              href={`#${service.anchor}`}
-              data-subnav-link={service.anchor}
+              href={`#${section.id}`}
+              data-subnav-link={section.id}
               data-animate-nav
               class="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 font-medium text-slate-200 transition hover:border-blue-400/50 hover:bg-blue-500/15 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
             >
               <span
                 class="font-mono text-[11px] font-semibold tabular-nums text-slate-500 transition group-hover:text-blue-300"
               >
-                {service.number}
+                {section.num}
               </span>
-              <span class="whitespace-nowrap">{service.title.split(' ')[0]}</span>
+              <span class="whitespace-nowrap">{section.label}</span>
             </a>
           </li>
         ))}

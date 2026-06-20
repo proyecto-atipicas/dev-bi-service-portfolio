@@ -21,35 +21,53 @@ npm run remotion:render:basesdatos      # Renderiza public/servicio-basesdatos.m
 
 ## Arquitectura
 
-Landing **de una sola página**: la navegación es siempre scroll a anclas
-internas (`#servicios`, `#automatizacion`, `#reporteria`, `#desarrollo`,
-`#estructuracion`, `#galeria-herramientas`, `#contacto`). No existen
-páginas secundarias ni rutas adicionales.
+Landing **de una sola página** organizada por la propuesta de gerencia (BI B2B):
+la navegación es siempre scroll a anclas internas. Tras la **reestructuración a
+pilares / journeys / verticales** (ver _Despliegues_), las secciones son
+`#pilares`, `#suite-tableros`, `#journeys`, `#verticales`, `#evidencia`,
+`#continuos` y `#contacto`. No existen páginas secundarias ni rutas adicionales.
+
+El sub-nav del header expone cinco anclas: Pilares · Journeys · Verticales ·
+Evidencia · Continuos.
 
 ```
 src/
 ├── assets/                    # SVG / imágenes estáticas
 ├── components/
+│   ├── sections/              # Una sección de la landing por archivo
+│   │   ├── PillarsSection.astro          # 3 pilares de capacidad + sus servicios
+│   │   ├── SuiteTablerosSection.astro    # Detalle Pilar 03: paquetes Básico/Medium/Plus + caja negra
+│   │   ├── JourneysSection.astro         # 5 journeys empaquetados
+│   │   ├── VerticalsExplorer.astro       # Explorador con pestañas de las 4 verticales
+│   │   └── ManagedServicesSection.astro  # 4 servicios continuos (managed)
 │   ├── shared/
-│   │   ├── DeliverablesShowcase.astro # Vitrina genérica de entregables
-│   │   └── VerticalTimeline.astro     # Línea de tiempo vertical animada
-│   ├── ServiceSection.astro   # Plantilla por servicio (intro + dolor/solución + métricas + slot vitrina)
-│   ├── SiteHeader.astro       # Barra superior + sub-nav sticky de servicios
+│   │   ├── DeliverablesShowcase.astro    # Vitrina genérica de entregables
+│   │   └── VerticalTimeline.astro        # Línea de tiempo vertical animada
+│   ├── SiteHeader.astro       # Barra superior + sub-nav sticky de secciones
 │   └── Welcome.astro
 ├── data/
-│   ├── services.ts            # Catálogo tipado de los 4 servicios
-│   └── timeline-elecciones.ts # Datos de la línea de tiempo electoral
+│   ├── pillars.ts             # Pilares de capacidad y sus servicios
+│   ├── journeys.ts            # Journeys empaquetados
+│   ├── managed-services.ts    # Servicios continuos (managed)
+│   ├── verticals.ts           # Verticales especializadas (perfil/dolor/ofertas/evidencia/métricas)
+│   ├── evidence.ts            # Tipos de entregable + apps en producción (evidencia viva)
+│   ├── timeline-elecciones.ts # Datos de la línea de tiempo electoral
+│   └── hero-carousel-videos.ts # Clips del carrusel del hero
 ├── layouts/
 │   └── Layout.astro           # Layout base (head, header, slot, scripts)
 ├── pages/
-│   └── index.astro            # Landing única: hero + índice + 4 servicios + galería + contacto
+│   └── index.astro            # Landing única: hero + pilares + suite + journeys + verticales + evidencia + continuos + contacto
 ├── remotion/                  # Composiciones Remotion (videos del sitio)
 ├── scripts/
-│   ├── site-animations.ts     # Animaciones globales y sub-nav activo
+│   ├── site-animations.ts     # Animaciones globales, sub-nav activo y explorador de verticales
 │   └── vertical-timeline.ts   # Comportamiento del componente VerticalTimeline
 └── styles/
     └── global.css             # Tailwind v4 + utilidades del sitio
 ```
+
+> El catálogo anterior de 4 servicios (`data/services.ts`) y la plantilla
+> `ServiceSection.astro` se eliminaron: sus contenidos se reagruparon en los
+> pilares, la Suite de tableros y la sección de evidencia.
 
 ## Convenciones
 
@@ -60,12 +78,16 @@ src/
 - **Mobile-first**: cada bloque parte del estilo móvil y agrega breakpoints
   `sm:` / `md:` / `lg:` solo cuando aporta. Las grillas usan `grid-cols-2`
   desde móvil cuando el espacio lo permite.
-- **Tema visual**: fondo blanco para descripción y formularios; bloques oscuros
-  (`bg-slate-950`) para hero, secciones de servicios y línea de tiempo. Color
-  de marca: `blue-500/blue-400`. Hitos electorales: acento `amber-300`.
-- **Accesibilidad**: anclas con `scroll-mt-20`, `aria-labelledby` en secciones,
-  marcadores decorativos con `aria-hidden`, `prefers-reduced-motion` respetado
-  en cada animación.
+- **Tema visual**: fondo blanco para texto/formularios; bloques oscuros
+  (`bg-slate-950`) para hero, pilares, suite de tableros y verticales. Color de
+  marca: `blue-500/blue-400`. Acentos puntuales por estado/sector:
+  `emerald` (activo/prueba), `amber` (prioridad/hito), `sky`/`cyan`/`indigo`
+  (siguiente). No se usan los tokens del archivo de referencia (`#042C53`, etc.):
+  solo la paleta Tailwind del sitio.
+- **Accesibilidad**: anclas con `scroll-mt-32`, `aria-labelledby` en secciones,
+  marcadores decorativos con `aria-hidden`, patrón `tablist`/`tab`/`tabpanel`
+  en el explorador de verticales y `prefers-reduced-motion` respetado en cada
+  animación.
 
 ## Animaciones
 
@@ -79,6 +101,9 @@ desde su bloque `<script>` (Astro empaqueta el módulo).
   enlace activo del sub-nav (`[data-subnav-link]`) según la sección visible.
 - `initHomePageEffects()` — anima `[data-animate]`, `[data-stagger]` y los
   videos `[data-service-preview]`. Se invoca desde `index.astro`.
+- `initVerticalsExplorer()` — gestiona las pestañas del explorador de verticales
+  (`[data-verticals]`): toggle de paneles `[data-vertical-panel]`, estados ARIA,
+  navegación con flechas/Home/End y fundido de entrada. Se invoca desde `index.astro`.
 - `initContactKeywordSlider()` — slider continuo de palabras clave.
 - `initVerticalTimelines()` — comportamiento del componente
   `VerticalTimeline.astro` (ver sección dedicada).
@@ -96,10 +121,10 @@ Datos del caso electoral: `src/data/timeline-elecciones.ts`.
 
 Renderiza una línea de tiempo vertical, animada y responsiva, pensada para
 mostrar la evolución cronológica de proyectos / despliegues con tableros
-embebidos. Está integrada como **vitrina de entregables** del servicio de
-Reportería dentro de la sección `#reporteria` de la landing, para visualizar
-las elecciones atípicas, Congreso 2026 y Presidencia 2026; está diseñada
-para reutilizarse en otros servicios.
+embebidos. Está integrada como **evidencia en producción** dentro de la sección
+`#evidencia` de la landing (junto al repositorio Power BI y a las apps en
+operación), para visualizar las elecciones atípicas, Congreso 2026 y Presidencia
+2026; está diseñada para reutilizarse en otras secciones.
 
 ### Props
 
@@ -171,3 +196,12 @@ import { electionTimeline } from '../../data/timeline-elecciones';
   introdujeron `ServiceSection.astro` y `DeliverablesShowcase.astro` como
   plantilla común, y el sub-nav sticky con anclas reemplaza la navegación a
   páginas separadas.
+- **2026-06-20**: **reestructuración completa a la arquitectura B2B** del archivo
+  `context/recursos/portafolio_servicios_bi_v2_verticales_profundizados.html`,
+  manteniendo la línea gráfica. El modelo de 4 servicios se reemplazó por
+  **Pilares de capacidad**, **Journeys empaquetados**, **Verticales especializados**
+  (Electoral, Financiero, Operaciones, Comercial) y **Servicios continuos**.
+  Se añadieron `data/{pillars,journeys,managed-services,verticals,evidence}.ts`
+  y `components/sections/*`; se eliminaron `data/services.ts` y
+  `ServiceSection.astro`; el `DeliverableItem` se movió a `data/evidence.ts`.
+  El repositorio Power BI del ciclo electoral apunta a la nueva URL de Fabric.

@@ -321,15 +321,6 @@ export function initNavAndTextAnimations(): void {
 
 /** Bloques, grid de servicios y videos: solo home. */
 export function initHomePageEffects(): void {
-  document.querySelectorAll('[data-service-preview]').forEach((el) => {
-    if (!(el instanceof HTMLVideoElement)) return;
-    el.loop = true;
-    el.addEventListener('ended', () => {
-      el.currentTime = 0;
-      void el.play();
-    });
-  });
-
   if (reducedMotion()) return;
 
   const fadeBlocks = document.querySelectorAll('[data-animate]');
@@ -392,34 +383,6 @@ export function initHomePageEffects(): void {
 
   fadeBlocks.forEach((block) => observer.observe(block));
   staggerContainers.forEach((block) => observer.observe(block));
-
-  const serviceCards = document.querySelectorAll('[data-service-card]');
-  const cardObserver = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        const card = entry.target;
-        const media = card.querySelector('.service-media');
-        if (media instanceof HTMLElement) {
-          media.style.opacity = '0.55';
-          media.style.transform = 'scale(1.08)';
-          animate(media, {
-            opacity: [0.55, 1],
-            scale: [1.08, 1],
-            duration: 900,
-            ease: 'outCubic',
-            onComplete: () => {
-              media.style.removeProperty('opacity');
-              media.style.removeProperty('transform');
-            },
-          });
-        }
-        obs.unobserve(card);
-      });
-    },
-    { threshold: 0.2 }
-  );
-  serviceCards.forEach((card) => cardObserver.observe(card));
 }
 
 /**
@@ -471,6 +434,70 @@ export function initServicesSubnav(): void {
     { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.15, 0.5, 1] },
   );
   sectionToLink.forEach((_, section) => observer.observe(section));
+}
+
+/**
+ * Explorador de verticales especializados (#verticales): pestañas accesibles
+ * que muestran/ocultan paneles. Navegable con flechas y con estados ARIA
+ * (`role="tab"`/`tabpanel"`, `aria-selected`). El fundido de entrada del panel
+ * respeta `prefers-reduced-motion`. Sin JS, el primer panel queda visible.
+ */
+export function initVerticalsExplorer(): void {
+  const root = document.querySelector<HTMLElement>('[data-verticals]');
+  if (!root) return;
+
+  const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-vertical-tab]'));
+  const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-vertical-panel]'));
+  if (tabs.length === 0 || panels.length === 0) return;
+
+  const rm = reducedMotion();
+
+  const activate = (id: string, focusPanel = false): void => {
+    if (!id) return;
+    tabs.forEach((tab) => {
+      const on = tab.dataset.verticalTab === id;
+      tab.dataset.active = on ? 'true' : 'false';
+      tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.tabIndex = on ? 0 : -1;
+    });
+    panels.forEach((panel) => {
+      const on = panel.dataset.verticalPanel === id;
+      panel.hidden = !on;
+      if (on) {
+        if (focusPanel) panel.focus();
+        if (!rm) {
+          animate(panel, {
+            opacity: [0, 1],
+            y: [8, 0],
+            duration: 360,
+            ease: 'outCubic',
+            onComplete: () => {
+              panel.style.removeProperty('opacity');
+              panel.style.removeProperty('transform');
+            },
+          });
+        }
+      }
+    });
+  };
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => activate(tab.dataset.verticalTab ?? ''));
+    tab.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') {
+        return;
+      }
+      e.preventDefault();
+      let nextIndex = i;
+      if (e.key === 'ArrowRight') nextIndex = (i + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') nextIndex = (i - 1 + tabs.length) % tabs.length;
+      else if (e.key === 'Home') nextIndex = 0;
+      else if (e.key === 'End') nextIndex = tabs.length - 1;
+      const next = tabs[nextIndex];
+      next.focus();
+      activate(next.dataset.verticalTab ?? '');
+    });
+  });
 }
 
 /**
