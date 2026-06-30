@@ -21,27 +21,27 @@ export const managedServices: ManagedService[] = [
     cadence: 'Mensual recurrente',
     target: 'Proyectos ya atendidos por la Suite BI que quieren delegar la operación.',
     includes:
-      'Monitoreo de disponibilidad, gestión de incidencias, refresco de datos y soporte de primer nivel, con SLA por contrato.',
+      'Monitoreo, gestión de incidencias, refresco de datos y soporte de primer nivel, con SLA por contrato.',
   },
   {
     name: 'Optimización continua',
     cadence: 'Ciclos trimestrales',
-    target: 'Tableros en producción con lentitud, baja adopción o data drift.',
+    target: 'Tableros en producción con lentitud, baja adopción o desviación de datos.',
     includes:
-      'Análisis de rendimiento, optimización de DAX y consultas, revisión de la adopción y ajuste de KPIs según la evolución del negocio.',
+      'Análisis de rendimiento, optimización de DAX y consultas, y ajuste de KPIs según el negocio.',
   },
   {
-    name: 'Soporte y on-call',
+    name: 'Soporte y guardia',
     cadence: 'Mensual',
     target: 'Tableros críticos como eventos en vivo o picos estacionales.',
     includes:
-      'Cobertura on-call 24/7 durante las ventanas críticas, tiempo de respuesta garantizado y sala de crisis virtual cuando aplica.',
+      'Cobertura de guardia 24/7 en ventanas críticas, con tiempo de respuesta garantizado.',
   },
   {
     name: 'Evolución del portafolio',
     cadence: 'Anual',
     target: 'Relaciones de largo plazo que quieren ampliar el uso de BI año tras año.',
     includes:
-      'Revisión estratégica, identificación de nuevos casos, retiro de tableros sin uso y plan de inversión para el siguiente ciclo.',
+      'Revisión estratégica, nuevos casos, retiro de tableros sin uso y plan de inversión.',
   },
 ];

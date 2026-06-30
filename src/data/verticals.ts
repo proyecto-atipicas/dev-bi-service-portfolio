@@ -77,24 +77,24 @@ export const verticals: Vertical[] = [
     offerings: [
       {
         name: 'Tablero de cobertura territorial en tiempo real',
-        desc: 'Datos en vivo de la operación, con coloreado semafórico por nivel territorial y drill-down que preserva el contexto.',
+        desc: 'Datos en vivo con semáforo por nivel territorial y desglose que preserva el contexto.',
       },
       {
         name: 'Centro de monitoreo de jornadas',
-        desc: 'Tablero de comando para los días críticos, con simulacros de carga previos, equipo on-call y plan de contingencia documentado.',
+        desc: 'Tablero de comando para los días críticos, con simulacros de carga y equipo de guardia.',
       },
       {
         name: 'Visualización geoespacial multinivel',
-        desc: 'Mapas interactivos con drill-down de departamento a municipio y a puesto, optimizados para volúmenes nacionales.',
+        desc: 'Mapas interactivos con desglose de departamento a puesto, optimizados para volúmenes nacionales.',
       },
       {
         name: 'Embebido seguro institucional',
-        desc: 'Integración en los portales del cliente con autenticación contextual, tokens de corta duración e identidad gráfica oficial.',
+        desc: 'Integración en portales del cliente con autenticación contextual e identidad gráfica oficial.',
       },
     ],
     proof: {
       title: 'SIMAE para el CNE · Presidenciales 2026',
-      desc: '156.564 actores registrados y 122.016 mesas en 33 departamentos. Cero incidentes mayores en la jornada, 100 % de cumplimiento contractual y 96,7 % de Excelencia Operativa A.C.E. en la primera vuelta presidencial.',
+      desc: '156.564 actores y 122.016 mesas en 33 departamentos. Cero incidentes mayores y 100 % de cumplimiento contractual.',
     },
     metrics: [
       'Disponibilidad en ventana crítica ≥ 99,5 %',
@@ -116,7 +116,7 @@ export const verticals: Vertical[] = [
       'Bancos comerciales y cooperativas financieras',
       'Fintechs en etapa de escala',
       'Aseguradoras y compañías de crédito de consumo',
-      'Retailers grandes con datos transaccionales',
+      'Grandes minoristas con datos transaccionales',
     ],
     pains: [
       'Detección de fraude y comportamiento atípico transaccional en tiempo real',
@@ -127,42 +127,42 @@ export const verticals: Vertical[] = [
     offerings: [
       {
         name: 'Motor de detección de atípicas transaccionales',
-        desc: 'Algoritmos estadísticos y de machine learning sobre alto volumen, con precisión ≥ 90 % en validación.',
+        desc: 'Algoritmos estadísticos y de aprendizaje automático con precisión ≥ 90 % en validación.',
       },
       {
         name: 'Tableros de riesgo y exposición',
-        desc: 'Vista consolidada del portafolio para riesgo, tesorería y dirección, con drill-down por producto, segmento y geografía.',
+        desc: 'Vista consolidada del portafolio con desglose por producto, segmento y geografía.',
       },
       {
-        name: 'Embedded analytics en apps del cliente final',
-        desc: 'Tableros embebidos en la app móvil o web del cliente final, coherentes con la marca del banco.',
+        name: 'Analítica embebida en apps del cliente final',
+        desc: 'Tableros embebidos en la app del cliente final, con la marca del banco.',
       },
       {
         name: 'Reportes regulatorios automatizados',
-        desc: 'Generación periódica de reportes para los entes de control, con trazabilidad de cifras y firma electrónica cuando aplica.',
+        desc: 'Reportes periódicos para los entes de control, con trazabilidad de cifras y firma electrónica.',
       },
     ],
     proof: {
       title: 'Núcleo técnico transferible desde lo electoral',
-      desc: 'El motor de detección de atípicas y la arquitectura de embebido seguro desarrollados y certificados para SIMAE son directamente adaptables al sector financiero. Reduce de forma significativa el tiempo y el riesgo de implementación frente a empezar de cero.',
+      desc: 'El motor de detección de atípicas y el embebido seguro certificados en SIMAE se adaptan directo al sector financiero, con menos tiempo y riesgo.',
     },
     metrics: [
       'Reducción del tiempo de detección de patrones críticos',
-      'Precisión del scoring ≥ 90 % en validación',
-      'Adopción del embedded analytics por el cliente final del banco',
+      'Precisión de la puntuación ≥ 90 % en validación',
+      'Adopción de la analítica embebida por el cliente final',
     ],
   },
   {
     id: 'operaciones',
     name: 'Operaciones, Logística y Manufactura',
     shortLabel: 'Operaciones',
-    tagline: 'Un centro de control con visibilidad en tiempo real sobre redes operacionales complejas.',
+    tagline: 'Un centro de control con visibilidad en tiempo real sobre operaciones complejas.',
     status: 'Metodología validada',
     statusType: 'priority',
     accent: 'amber',
     iconPath: 'M3 8h10v8H3zM13 11h4l3 3v2h-7M7.5 19a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm9 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z',
     targets: [
-      'Empresas logísticas y de transporte (terrestre, courier, marítimo)',
+      'Empresas de logística y transporte (terrestre, mensajería, marítimo)',
       'Manufactureras con cadenas multinivel',
       'Operadores de servicios públicos (energía, agua, telecomunicaciones)',
       'Empresas con flotas o redes territoriales extensas',
@@ -176,24 +176,24 @@ export const verticals: Vertical[] = [
     offerings: [
       {
         name: 'Centro de Control operacional integral',
-        desc: 'Un tablero único que consolida KPIs, alertas, mapas y la cola de decisiones operativas. Reemplaza la dispersión de Excel y reportes inconexos.',
+        desc: 'Un tablero único con KPIs, alertas y mapas que reemplaza la dispersión de Excel y reportes inconexos.',
       },
       {
         name: 'Marco de KPIs operacionales en 4 dimensiones',
-        desc: 'Marco estandarizado —velocidad, calidad, eficiencia e impacto al negocio— con umbrales semafóricos y un único responsable por KPI.',
+        desc: 'Velocidad, calidad, eficiencia e impacto al negocio, con umbrales semafóricos y un responsable por KPI.',
       },
       {
         name: 'Análisis geoespacial de rutas y red',
-        desc: 'Visualización de cobertura, identificación de zonas críticas y optimización de capacidad por nivel territorial.',
+        desc: 'Cobertura, zonas críticas y optimización de capacidad por nivel territorial.',
       },
       {
-        name: 'Sistema de alertas multitier',
-        desc: 'Reglas configurables con criterios cuantitativos, escalamiento automático por severidad e integración con los canales del cliente.',
+        name: 'Sistema de alertas multinivel',
+        desc: 'Reglas configurables con escalamiento automático por severidad e integración con los canales del cliente.',
       },
     ],
     proof: {
       title: 'Metodología propia validada internamente',
-      desc: 'El Centro de Control desarrollado para gestionar nuestros 4 KPIs contractuales en el proyecto Operaciones 360 es una metodología probada y replicable. Su estructura, plantillas y marco están listos para adaptarse al cliente.',
+      desc: 'El Centro de Control que gestiona nuestros 4 KPIs contractuales en Operaciones 360 es una metodología probada y replicable, lista para adaptarse al cliente.',
     },
     metrics: [
       'Cumplimiento de SLA por servicio',
@@ -203,7 +203,7 @@ export const verticals: Vertical[] = [
   },
   {
     id: 'comercial',
-    name: 'Comercial, Ventas y Customer Analytics',
+    name: 'Comercial, Ventas y Analítica de Clientes',
     shortLabel: 'Comercial',
     tagline: 'Tableros que dejan de ser reportes y se vuelven herramientas de uso diario.',
     status: 'Diseño listo',
@@ -211,42 +211,42 @@ export const verticals: Vertical[] = [
     accent: 'sky',
     iconPath: 'M3 17l5-5 4 4 8-8M21 8v5h-5',
     targets: [
-      'Empresas B2B con ciclos de venta largos y pipeline complejo',
-      'E-commerce y retail digital de volumen medio a alto',
-      'SaaS LATAM en fase de escala con foco en customer success',
+      'Empresas B2B con ciclos de venta largos y embudo complejo',
+      'Comercio electrónico y venta digital de volumen medio a alto',
+      'SaaS de Latinoamérica en escala, con foco en el éxito del cliente',
       'Compañías con modelos de suscripción e ingresos recurrentes',
     ],
     pains: [
-      'Visibilidad del pipeline y precisión del forecast a 90 días',
-      'Análisis de cohortes, CLV y retención sin instrumentación',
-      'Predicción de churn con ventana de acción suficiente',
+      'Visibilidad del embudo y precisión del pronóstico a 90 días',
+      'Análisis de cohortes, valor del cliente y retención sin instrumentación',
+      'Predicción de fuga con ventana de acción suficiente',
       'Tableros comerciales genéricos que no logran adopción del equipo',
     ],
     offerings: [
       {
-        name: 'Tableros ejecutivos de pipeline y forecast',
-        desc: 'Vista de la dirección comercial con drill-down a la oportunidad individual, métricas de salud del pipeline y proyección probabilística.',
+        name: 'Tableros ejecutivos de embudo y pronóstico',
+        desc: 'Vista de la dirección con desglose a la oportunidad, salud del embudo y proyección probabilística.',
       },
       {
-        name: 'Análisis de cohortes y CLV',
-        desc: 'Visualización temporal del comportamiento de cohortes y del customer lifetime value por segmento y canal.',
+        name: 'Análisis de cohortes y valor del cliente',
+        desc: 'Comportamiento de cohortes y valor del cliente por segmento y canal.',
       },
       {
-        name: 'Modelos de churn prediction',
-        desc: 'Scoring de probabilidad de baja con ventana de acción configurable e integración con los flujos de customer success.',
+        name: 'Modelos de predicción de fuga',
+        desc: 'Puntuación de probabilidad de baja, integrada con los flujos de éxito del cliente.',
       },
       {
-        name: 'Embebido en CRMs comerciales',
-        desc: 'Integración nativa con el CRM del cliente (Salesforce, HubSpot u otros) para que los comerciales no cambien de herramienta.',
+        name: 'Embebido en el CRM comercial',
+        desc: 'Integración nativa con el CRM del cliente (Salesforce, HubSpot) para no cambiar de herramienta.',
       },
     ],
     proof: {
       title: 'Diferenciación por experiencia, no por reporte',
-      desc: 'El mercado de BI comercial está saturado de tableros genéricos. La ventaja está en combinar la visualización interactiva con el embebido contextual que validamos en SIMAE, aplicada al mundo comercial.',
+      desc: 'El BI comercial está saturado de tableros genéricos. La ventaja está en combinar visualización interactiva con el embebido contextual que validamos en SIMAE.',
     },
     metrics: [
-      'Precisión del forecast a 90 días',
-      'Reducción de churn por intervención temprana',
+      'Precisión del pronóstico a 90 días',
+      'Reducción de la fuga por intervención temprana',
       'Adopción medida en sesiones activas del equipo comercial',
     ],
   },

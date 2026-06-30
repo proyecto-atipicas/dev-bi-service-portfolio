@@ -19,8 +19,8 @@ const repositorioPowerBiUrl =
 
 const contactMarqueeTags = [
   'Pilares de capacidad',
-  'Verticales especializados',
-  'Journeys de adopción',
+  'Líneas de negocio especializadas',
+  'Rutas de adopción',
   'BI embebido B2B',
   'Servicios continuos',
   'Evidencia en producción',
@@ -36,7 +36,7 @@ const mailto = (() => {
       'Me gustaría coordinar una mesa de trabajo para un nuevo requerimiento.',
       '',
       '· Pilar o servicio de interés (transformación / analítica / visualización y automatización):',
-      '· Journey o vertical de interés (Discovery Sprint, Tablero Express, electoral, financiero, etc.):',
+      '· Ruta o línea de negocio de interés (Descubrimiento BI, Tablero exprés, electoral, financiero, etc.):',
       '· Contexto / objetivo del requerimiento:',
       '· Resultado esperado:',
       '· Fecha aproximada o ventana de tiempo:',
@@ -50,7 +50,7 @@ const mailto = (() => {
 
 <Layout
   title="Linktic · DataVision · Portafolio de Business Intelligence"
-  description="Portafolio de Business Intelligence de Linktic (DataVision): pilares de capacidad, journeys de adopción, servicios continuos y verticales especializados (electoral, financiero, operaciones y comercial) con evidencia en producción."
+  description="Portafolio de Business Intelligence de Linktic (DataVision): pilares de capacidad, rutas de adopción, servicios continuos y líneas de negocio especializadas (electoral, financiero, operaciones y comercial) con evidencia en producción."
 >
   <main class="bg-white text-slate-900">
     {/* HERO */}
@@ -227,8 +227,8 @@ const mailto = (() => {
             class="mt-5 max-w-xl text-pretty text-base leading-relaxed text-slate-200 md:text-lg md:leading-relaxed"
             data-animate-text
           >
-            Portafolio del área de Business Intelligence de Linktic: pilares de capacidad, journeys de
-            adopción y verticales especializados con evidencia en producción.
+            Pilares de capacidad, rutas de adopción y líneas de negocio especializadas, con evidencia
+            en producción.
           </p>
           <div class="mt-7 flex flex-wrap gap-3" data-animate-text>
             <a
@@ -242,7 +242,7 @@ const mailto = (() => {
               href="#verticales"
               class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-slate-100 backdrop-blur-sm transition hover:border-blue-300/50 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300 md:text-[15px]"
             >
-              Ver verticales
+              Ver líneas de negocio
             </a>
           </div>
         </div>
@@ -258,7 +258,7 @@ const mailto = (() => {
     {/* 02 · JOURNEYS EMPAQUETADOS */}
     <JourneysSection />
 
-    {/* 03 · VERTICALES ESPECIALIZADOS */}
+    {/* 03 · LÍNEAS DE NEGOCIO ESPECIALIZADAS */}
     <VerticalsExplorer />
 
     {/* 04 · EVIDENCIA EN PRODUCCIÓN: repositorio Power BI + aplicaciones vivas + línea de tiempo */}
@@ -287,9 +287,8 @@ const mailto = (() => {
               class="mt-4 text-pretty text-base leading-relaxed text-slate-600 md:text-lg"
               data-animate-text
             >
-              La prueba detrás de los pilares y de la vertical electoral: el repositorio consolidado de
-              tableros Power BI, las aplicaciones que ya operan y el recorrido cronológico del ciclo. Da
-              clic para abrir el repositorio completo en Power BI.
+              El repositorio de tableros Power BI, las aplicaciones que ya operan y la línea de tiempo
+              del ciclo electoral.
             </p>
           </header>
 
@@ -336,18 +335,72 @@ const mailto = (() => {
         </div>
       </section>
 
+      {/* Accesos directos a las experiencias SIMAE en vivo */}
+      <section
+        class="bg-white pb-6 md:pb-8"
+        aria-labelledby="simae-experiencias-heading"
+        data-animate
+      >
+        <div class="mx-auto w-[92%] max-w-7xl">
+          <h3 id="simae-experiencias-heading" class="sr-only">
+            Experiencias SIMAE en vivo
+          </h3>
+          <div class="grid gap-5 sm:grid-cols-2 md:gap-6" data-stagger>
+            {
+              [
+                {
+                  src: '/carrucel/simae1.png',
+                  href: 'https://simae.actoreselectorales.com',
+                  label: 'SIMAE',
+                },
+                {
+                  src: '/carrucel/simae2.png',
+                  href: 'https://simae2.actoreselectorales.com/',
+                  label: 'SIMAE 2',
+                },
+              ].map((item) => (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group block overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 shadow-sm ring-1 ring-slate-900/[0.04] transition duration-300 hover:-translate-y-1 hover:border-blue-300/70 hover:shadow-lg hover:shadow-blue-900/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                >
+                  <img
+                    src={item.src}
+                    alt={`Tablero ${item.label} en vivo`}
+                    loading="lazy"
+                    decoding="async"
+                    class="h-auto w-full object-cover transition duration-500 group-hover:scale-[1.015]"
+                  />
+                  <div class="flex items-center justify-between gap-3 border-t border-white/10 px-4 py-3">
+                    <span class="text-[13px] font-semibold uppercase tracking-[0.16em] text-blue-200">
+                      {item.label}
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-200 transition group-hover:text-white">
+                      Abrir en pestaña nueva
+                      <span aria-hidden="true">↗</span>
+                    </span>
+                  </div>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+
       <DeliverablesShowcase
         items={appsEnProduccion}
         eyebrow="Aplicaciones en operación"
         heading="Aplicaciones y tableros que ya corren en producción"
-        description="Herramientas vivas del área —monitoreo, automatización, documentos y analítica electoral— que respaldan las capacidades del portafolio."
+        description="Herramientas vivas del área que respaldan las capacidades del portafolio."
       />
 
       <VerticalTimeline
         id="linea-tiempo-elecciones"
         eyebrow="Evidencia · Evolución del servicio"
         heading="Línea de tiempo de elecciones atípicas, Congreso 2026 y Presidencia 2026"
-        description="Recorrido cronológico de los despliegues publicados por el área durante el ciclo electoral. Cada parada incluye los enlaces a los tableros publicados; en el modo horizontal, pulsa un nodo para abrir el detalle de la elección."
+        description="Recorrido cronológico de los despliegues del ciclo electoral. Cada parada enlaza sus tableros publicados."
         events={electionTimeline}
       />
     </div>
@@ -416,8 +469,7 @@ const mailto = (() => {
           class="mx-auto mt-5 max-w-xl text-pretty text-base leading-relaxed text-slate-600 md:text-lg md:leading-relaxed"
           data-animate-text
         >
-          Priorizamos iniciativas con cada área, acordamos alcance y entregables, y acompañamos la puesta en marcha
-          para que la operación se mantenga estable y la adopción sea efectiva en el día a día.
+          Priorizamos iniciativas, acordamos alcance y entregables, y acompañamos la puesta en marcha.
         </p>
 
         <div class="mt-9 flex flex-wrap justify-center gap-3" data-animate-text>

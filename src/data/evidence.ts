@@ -34,7 +34,7 @@ export const appsEnProduccion: DeliverableItem[] = [
     subtitle: 'SIMAE · Experiencia electoral',
     title: 'Sistema Integral de Monitoreo y Analítica Electoral',
     description:
-      'Tablero de experiencia para la presidencial 2026: centro de lectura de la jornada con embebido seguro institucional.',
+      'Centro de lectura de la jornada presidencial 2026, con embebido seguro institucional.',
     url: 'https://simae.actoreselectorales.com/login',
   },
   {
@@ -42,7 +42,7 @@ export const appsEnProduccion: DeliverableItem[] = [
     subtitle: 'Monitoreo interno',
     title: 'AppBI · PMO',
     description:
-      'Aplicación transversal para el monitoreo de KPIs operativos y el seguimiento centralizado de los avances de la PMO.',
+      'Monitoreo de KPIs operativos y seguimiento centralizado de la PMO.',
     url: 'https://appbi.actoreselectorales.com/',
   },
   {
@@ -50,7 +50,7 @@ export const appsEnProduccion: DeliverableItem[] = [
     subtitle: 'Salud de bases de datos',
     title: 'Seguimiento DATA',
     description:
-      'Monitoreo y tracking continuo de las bases del proyecto: carga, estado y consumo siempre visibles para el equipo.',
+      'Monitoreo continuo de las bases: carga, estado y consumo siempre visibles.',
     url: 'https://seguimiento-data.actoreselectorales.com/',
   },
   {
@@ -58,7 +58,7 @@ export const appsEnProduccion: DeliverableItem[] = [
     subtitle: 'Procesos orquestados',
     title: 'Flujos de automatización n8n',
     description:
-      'Flujos que conectan sistemas, validan datos y ejecutan tareas operativas 24/7 sin intervención manual.',
+      'Flujos que conectan sistemas y ejecutan tareas 24/7 sin intervención manual.',
     url: 'https://botbi.actoreselectorales.com/',
   },
   {
@@ -66,7 +66,7 @@ export const appsEnProduccion: DeliverableItem[] = [
     subtitle: 'Documentos en línea',
     title: 'Visor de documentos',
     description:
-      'Consulta y descarga de resoluciones y credenciales del sistema CNE sin recorrer múltiples portales.',
+      'Consulta y descarga de resoluciones y credenciales del CNE en un solo lugar.',
     url: 'https://credenciales.actoreselectorales.com/',
   },
   {
@@ -74,7 +74,7 @@ export const appsEnProduccion: DeliverableItem[] = [
     subtitle: 'Analítica a la medida',
     title: 'Analítica de Presidencia',
     description:
-      'Herramienta a la medida para el análisis histórico de las elecciones presidenciales en Colombia.',
+      'Análisis histórico de las elecciones presidenciales en Colombia.',
     url: 'https://analisis-presidencia-colombia.vercel.app/',
   },
 ];

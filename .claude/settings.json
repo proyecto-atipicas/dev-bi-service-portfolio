@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(wsl -d Debian -- bash -lc \"cd /home/alejandro/Documents/BI/hilarious-galaxy && npm run build 2>&1 | tail -n 40\")",
+      "PowerShell(wsl -d Debian -- bash -lic \"cd /home/alejandro/Documents/BI/hilarious-galaxy && npm run build 2>&1 | tail -n 45\")",
+      "Bash(ls -la \"//wsl.localhost/Debian/home/alejandro/Documents/BI/hilarious-galaxy/public/carrucel/\" | grep -i simae)",
+      "Read(///wsl.localhost/Debian/home/alejandro/Documents/BI/hilarious-galaxy/public/**)",
+      "PowerShell(wsl -d Debian -- bash -lic \"cd /home/alejandro/Documents/BI/hilarious-galaxy && npm run build 2>&1 | tail -n 20\")"
+    ]
+  }
+}

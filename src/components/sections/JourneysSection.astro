@@ -21,7 +21,7 @@ import { journeys } from '../../data/journeys';
         class="text-[11px] font-semibold uppercase tracking-[0.2em] text-blue-600"
         data-animate-text
       >
-        Journeys empaquetados
+        Rutas de adopción
       </p>
       <h2
         id="journeys-heading"
@@ -34,8 +34,8 @@ import { journeys } from '../../data/journeys';
         class="mt-4 text-pretty text-base leading-relaxed text-slate-600 md:text-lg"
         data-animate-text
       >
-        Cada journey empaqueta alcance, tiempo y nivel de compromiso. Van de la exploración de bajo
-        riesgo a la plataforma completa y la migración desde sistemas heredados.
+        Cada ruta empaqueta alcance, tiempo y compromiso, de la exploración de bajo riesgo a la
+        plataforma completa.
       </p>
     </header>
 
@@ -49,20 +49,15 @@ import { journeys } from '../../data/journeys';
               journey.accent,
             ]}
           >
-            <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <h3 class="text-lg font-bold tracking-tight text-slate-900">{journey.name}</h3>
-                <div class="flex flex-wrap gap-1.5">
-                  {journey.tags.map((tag) => (
-                    <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <h3 class="text-lg font-bold tracking-tight text-slate-900">{journey.name}</h3>
+              <div class="flex flex-wrap gap-1.5">
+                {journey.tags.map((tag) => (
+                  <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-600">
+                    {tag}
+                  </span>
+                ))}
               </div>
-              <span class="font-mono text-[12px] font-semibold tabular-nums text-blue-600">
-                {journey.time}
-              </span>
             </div>
             <p class="mt-3 text-[14px] leading-relaxed text-slate-600">
               <span class="font-semibold text-slate-900">Para:</span> {journey.target}
